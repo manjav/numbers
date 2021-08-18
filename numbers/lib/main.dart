@@ -1,5 +1,4 @@
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
-import 'package:device_info/device_info.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +12,6 @@ import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
-import 'package:smartlook/smartlook.dart';
 
 import 'overlays/all.dart';
 import 'overlays/start.dart';
@@ -60,7 +58,6 @@ class _MainPageState extends State<MainPage> {
       Sound.init();
       Notifier.init();
       Prefs.init(() {
-        _recordApp();
         _loadingState = 1;
         setState(() {});
       });
@@ -87,15 +84,5 @@ class _MainPageState extends State<MainPage> {
     var result = await Rout.push(context, Overlays.quit(context),
         barrierDismissible: true);
     return result != null;
-  }
-
-  _recordApp() async {
-    if (Pref.visitCount.value > 1) return;
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    if (androidInfo.version.sdkInt < 26) return;
-    Smartlook.setupAndStartRecording(
-        SetupOptionsBuilder('0c098e523024224cb6c534619b7d46df3d9b04b1')
-            .build());
   }
 }

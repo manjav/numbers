@@ -19,16 +19,11 @@ dependencies:
   firebase_analytics: ^8.2.0
   firebase_core: ^1.4.0
   firebase_messaging: ^10.0.4
-  flutter_local_notifications: ^6.0.0
   flutter_svg: ^0.22.0
   games_services: ^2.0.0-nullsafety.3
   in_app_purchase: ^1.0.6
   intl: ^0.17.0
-  path_provider: ^2.0.2
-  screenshot: ^1.2.3
-  share: ^2.0.4
   shared_preferences: ^2.0.6
-  smartlook: ^2.0.1
   soundpool: ^2.1.0
   rive: ^0.7.22
   unity_ads_plugin: ^0.2.2
