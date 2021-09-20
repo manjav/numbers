@@ -87,61 +87,67 @@ class _ShopOverlayState extends State<ShopOverlay> {
           statsButton: SizedBox(),
           scoreButton: SizedBox(),
           coinButton: Positioned(
-              top: 48.d,
+              top: 32.d,
               left: 12.d,
               child: Components.coins(context, clickable: false)),
-          padding: EdgeInsets.fromLTRB(6.d, 0, 6.d, 16.d),
-          height: 460.d,
+          padding: EdgeInsets.all(8.d),
+          width: 310.d,
+          height: _getHeight(),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                  height: 240.d,
+                  height: 200.d,
                   child: GridView.count(
+                    padding: EdgeInsets.zero,
                     crossAxisCount: 3,
                     crossAxisSpacing: 3.d,
                     mainAxisSpacing: 2.d,
-                    childAspectRatio: 0.94,
+                    childAspectRatio: 1,
                     children: List.generate(
                         coins.length, (i) => _itemBuilder(theme, coins[i])),
                   )),
-              Container(
-                  height: 76,
-                  padding: EdgeInsets.fromLTRB(10.d, 6.d, 10.d, 12.d),
-                  decoration:
-                      ButtonDecor(TColors.whiteFlat.value, 12.d, true, false),
-                  child: Row(children: [
-                    SizedBox(width: 8.d),
-                    SVG.show("noads", 48),
-                    SizedBox(width: 24.d),
-                    Expanded(
-                        child:
-                            Text("No Ads", style: theme.textTheme.bodyText2)),
-                    SizedBox(
-                        width: 92.d,
-                        height: 40.d,
-                        child: BumpedButton(
-                          cornerRadius: 8.d,
-                          colors: TColors.green.value,
-                          content: Center(
-                              child: Text(
-                                  "${others.length > 0 ? others[0].price : 0}",
-                                  style: theme.textTheme.headline5)),
-                          onTap: () => _onShopItemTap(others[0]),
-                        )),
-                    SizedBox(height: 4.d)
-                  ])),
-              Container(
-                  height: 44.d,
-                  alignment: Alignment.center,
-                  child: Container(
-                      width: 48.d,
-                      height: 7.d,
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          shape: BoxShape.rectangle,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(24.d))))),
+              Device.size.aspectRatio > 0.6
+                  ? SizedBox()
+                  : Container(
+                      height: 72.d,
+                      padding: EdgeInsets.fromLTRB(10.d, 6.d, 10.d, 12.d),
+                      decoration: ButtonDecor(
+                          TColors.whiteFlat.value, 12.d, true, false),
+                      child: Row(children: [
+                        SizedBox(width: 8.d),
+                        SVG.show("noads", 48),
+                        SizedBox(width: 24.d),
+                        Expanded(
+                            child: Text("No Ads",
+                                style: theme.textTheme.bodyText2)),
+                        SizedBox(
+                            width: 92.d,
+                            height: 40.d,
+                            child: BumpedButton(
+                              cornerRadius: 8.d,
+                              colors: TColors.green.value,
+                              content: Center(
+                                  child: Text(
+                                      "${others.length > 0 ? others[0].price : 0}",
+                                      style: theme.textTheme.headline5)),
+                              onTap: () => _onShopItemTap(others[0]),
+                            )),
+                        SizedBox(height: 4.d)
+                      ])),
+              Device.size.aspectRatio > 0.6
+                  ? SizedBox()
+                  : Container(
+                      height: 32.d,
+                      alignment: Alignment.center,
+                      child: Container(
+                          width: 48.d,
+                          height: 7.d,
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              shape: BoxShape.rectangle,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(24.d))))),
               Container(
                   height: 80.d,
                   padding: EdgeInsets.symmetric(horizontal: 8.d),
@@ -277,6 +283,15 @@ class _ShopOverlayState extends State<ShopOverlay> {
       var product = coins.firstWhere((p) => p.id == purchaseDetails.productID);
       Pref.coin.increase(product.amount);
     }
+  }
+
+  double _getHeight() {
+    if (Device.size.aspectRatio > 0.7)
+      return 310.d;
+    else if (Device.size.aspectRatio > 0.6)
+      return 390.d;
+    else
+      return 410.d;
   }
 }
 

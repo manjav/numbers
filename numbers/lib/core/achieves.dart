@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:numbers/core/game.dart';
+import 'package:numbers/utils/utils.dart';
 
 class ScoreFX extends PositionComponent with HasGameRef<MyGame> {
   static final _textColor = Color(0xFFFFFFFF);
@@ -27,7 +28,7 @@ class ScoreFX extends PositionComponent with HasGameRef<MyGame> {
     y += change / 50;
     TextPaint(
             config: TextPaintConfig(
-                fontSize: 32,
+                fontSize: 24.d,
                 fontFamily: 'quicksand',
                 color: _textColor.withAlpha(_alpha)))
         .render(canvas, "+$value", Vector2.zero(), anchor: Anchor.center);

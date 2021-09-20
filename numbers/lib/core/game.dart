@@ -9,13 +9,14 @@ import 'package:flame/palette.dart';
 import 'package:flame_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
 import 'package:numbers/core/achieves.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
+import 'package:numbers/utils/utils.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
+import 'package:numbers/utils/gemeservice.dart';
 
 enum GameEvent {
   big,
@@ -30,7 +31,6 @@ enum GameEvent {
 }
 
 class MyGame extends BaseGame with TapDetector {
-  static final padding = 20.0;
   static final Random random = new Random();
   static int boostNextMode = 0;
   static bool boostBig = false;
@@ -42,7 +42,7 @@ class MyGame extends BaseGame with TapDetector {
   String? removingMode;
 
   bool _recordChanged = false;
-  bool _tutorMode = Pref.tutorMode.value == 0;
+  bool _tutorMode = false;
   int _numRewardCells = 0;
   int _mergesCount = 0;
   int _valueRecord = 0;
@@ -64,6 +64,11 @@ class MyGame extends BaseGame with TapDetector {
     Prefs.score = 0;
     this.bounds = bounds;
     this.onGameEvent = onGameEvent;
+    Cell.thickness = 4.6.d;
+    Cell.minSpeed = 0.01.d;
+    Cell.maxSpeed = 0.8.d;
+    Cell.round = 7.0.d;
+    Cell.border = 1.8.d;
   }
   @override
   Color backgroundColor() => TColors.black.value[0];
@@ -72,10 +77,8 @@ class MyGame extends BaseGame with TapDetector {
     if (_tutorMode) return;
     var _new = Prefs.score += Cell.getScore(value);
     onGameEvent?.call(GameEvent.score, _new);
-    GamesServices.submitScore(
-        score: Score(
-            androidLeaderboardID: "CgkIw9yXzt4XEAIQAQ", value: Prefs.score));
     if (Pref.record.value >= Prefs.score) return;
+    PlayGames.submitScoreById("CgkIw9yXzt4XEAIQAQ", Prefs.score);
     Pref.record.set(Prefs.score);
     if (Prefs.score > Cell.firstRecord) {
       if (!_recordChanged) {
@@ -90,12 +93,10 @@ class MyGame extends BaseGame with TapDetector {
   void onAttach() async {
     super.onAttach();
 
+    _tutorMode = Pref.tutorMode.value == 0;
     Pref.playCount.increase(1);
 
     _linePaint.color = TColors.black.value[0];
-    var width = size.x - padding * 2;
-    Cell.diameter = width / Cells.width;
-    Cell.radius = Cell.diameter * 0.5;
     _bgRect = RRect.fromLTRBXY(bounds.left - 4, bounds.top - 4,
         bounds.right + 4, bounds.bottom + 4, 16, 16);
     _lineRect = RRect.fromLTRBXY(
@@ -213,14 +214,13 @@ class MyGame extends BaseGame with TapDetector {
     if (!isPlaying) return;
     if (_cells.last == null || _cells.last!.state != CellState.Float) return;
 
-    if (_tutorMode) {
-      if (_cells.last!.y > bounds.top + Cell.diameter * 1.5) {
-        isPlaying = false;
-        var c = Cell.getNextColumn(_fallingsCount);
-        _columnHint!.show(bounds.left + c * Cell.diameter + Cell.radius,
-            c - _nextCell.column);
-      }
+    if (_tutorMode && _cells.last!.y > bounds.top + Cell.diameter * 1.54) {
+      isPlaying = false;
+      var c = Cell.getNextColumn(_fallingsCount);
+      _columnHint!.show(
+          bounds.left + c * Cell.diameter + Cell.radius, c - _nextCell.column);
     }
+
     // Check reach to target
     if (_cells.last!.y < _cells.target!) {
       _speed = (_speed + 0.01).clamp(Cell.minSpeed, Cell.maxSpeed);
@@ -509,12 +509,22 @@ class ColumnHint extends PositionComponent with HasGameRef<MyGame> {
     ..strokeWidth = 2
     ..style = PaintingStyle.stroke;
   int alpha = 0;
+  double _scale = 0.99;
 
+  Svg? _hand;
   Svg? _arrow;
   Vector2 _arrowPos = Vector2.all(0);
-  Vector2 _arrowSize = Vector2.all(48);
+  Vector2 _arrowSize = Vector2.all(32.d);
+  Vector2 _handPos = Vector2.all(0);
+  Vector2 _handSize = Vector2.all(96.d);
 
-  ColumnHint(this.rect) : super();
+  ColumnHint(this.rect) : super() {
+    _create();
+  }
+
+  Future<void> _create() async {
+    _hand = await Svg.load('images/hand.svg');
+  }
 
   void render(Canvas canvas) {
     if (alpha <= 0) return;
@@ -523,7 +533,13 @@ class ColumnHint extends PositionComponent with HasGameRef<MyGame> {
     if (appearanceState == 0)
       alpha -= 15;
     else if (appearanceState == 2) alpha += 15;
-    _arrow!.renderPosition(canvas, _arrowPos, _arrowSize);
+
+    if (_handSize.x < 88.d)
+      _scale = 1.003;
+    else if (_handSize.x > 96.d) _scale = 0.992;
+    _handSize.scale(_scale);
+    if (alpha >= 1000) _hand?.renderPosition(canvas, _handPos, _handSize);
+    _arrow?.renderPosition(canvas, _arrowPos, _arrowSize);
   }
 
   show(double x, int direction) async {
@@ -531,9 +547,11 @@ class ColumnHint extends PositionComponent with HasGameRef<MyGame> {
     _arrow = await Svg.load('images/arrow-$side.svg');
     alpha = 1;
     rect = RRect.fromLTRBXY(
-        x - Cell.radius, rect.top, x + Cell.radius, rect.bottom, 8, 8);
+        x - Cell.radius, rect.top, x + Cell.radius, rect.bottom, 8.d, 8.d);
+    _handPos.x = rect.center.dx - 2.d;
+    _handPos.y = rect.center.dy + 4.d;
     _arrowPos.x = rect.center.dx - _arrowSize.x * 0.5;
-    _arrowPos.y = rect.center.dy - _arrowSize.y * (direction == 0 ? 2.5 : 3);
+    _arrowPos.y = rect.top + Cell.radius * (direction == 0 ? 2.1 : 0.9);
     appearanceState = 2;
   }
 

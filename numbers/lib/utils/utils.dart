@@ -45,6 +45,7 @@ class SVG {
 
 extension Device on double {
   static double ratio = 1;
+  static double aspectRatio = 1;
   static Size size = Size.zero;
   double get d => this * Device.ratio;
 }

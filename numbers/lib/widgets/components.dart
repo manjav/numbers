@@ -33,7 +33,7 @@ class Components {
     return Hero(
         tag: "stats",
         child: SizedBox(
-            width: 50,
+            width: 50.d,
             child: BumpedButton(
                 padding: EdgeInsets.fromLTRB(8, 4, 8, 10),
                 content: GestureDetector(
@@ -54,7 +54,7 @@ class Components {
                   child: Text(text,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyText2!
-                          .copyWith(fontSize: text.length > 5 ? 17 : 22))),
+                          .copyWith(fontSize: text.length > 5 ? 17.d : 22.d))),
               clickable
                   ? Text("+  ",
                       textAlign: TextAlign.center,
@@ -72,20 +72,20 @@ class Components {
     var theme = Theme.of(context);
     return Expanded(
         child: Container(
-            padding: EdgeInsets.fromLTRB(10.d, 6.d, 10.d, 12.d),
+            padding: EdgeInsets.fromLTRB(10.d, 6.d, 10.d, 6.d),
             decoration: ButtonDecor(TColors.whiteFlat.value, 12.d, true, false),
             child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                SVG.show(boost, 72.d),
-                _has(boost) ? SVG.show("accept", 24.d) : SizedBox()
+                SVG.show(boost, 58.d),
+                _has(boost) ? SVG.show("accept", 22.d) : SizedBox()
               ]),
               Text(title,
                   style: theme.textTheme.subtitle2,
                   textAlign: TextAlign.center),
-              SizedBox(height: 12.d),
+              SizedBox(height: 6.d),
               SizedBox(
                   width: 92.d,
-                  height: 40.d,
+                  height: 39.d,
                   child: BumpedButton(
                       cornerRadius: 8.d,
                       isEnable: !_has(boost),
@@ -97,10 +97,10 @@ class Components {
                                 style: theme.textTheme.bodyText2))
                       ]),
                       onTap: () => _onStartTap(context, boost, 100, onSelect))),
-              SizedBox(height: 8.d),
+              SizedBox(height: 4.d),
               SizedBox(
                   width: 92.d,
-                  height: 40.d,
+                  height: 39.d,
                   child: BumpedButton(
                       cornerRadius: 8.d,
                       errorMessage: Ads.errorMessage(theme),

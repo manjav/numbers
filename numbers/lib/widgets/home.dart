@@ -1,7 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
@@ -12,6 +11,7 @@ import 'package:numbers/overlays/stats.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/components.dart';
+import 'package:numbers/utils/gemeservice.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -40,13 +40,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         onWillPop: _onWillPop,
         child: Scaffold(
             body: Stack(children: [
-          GameWidget(game: _game!),
+          _game == null ? SizedBox() : GameWidget(game: _game!),
           Positioned(
               top: _game!.bounds.top - 69.d,
               right: 20.d,
               child: Components.scores(theme, onTap: () {
                 _pause();
-                GamesServices.showLeaderboards();
+                PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ");
               })),
           Positioned(
               top: _game!.bounds.top - 45.d,
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _coins = Positioned(
               top: _game!.bounds.top - 70.d,
               left: 73.d,
-              height: 52 - 5 * _rewardAnimation!.value,
+              height: 52.d - 5 * _rewardAnimation!.value,
               child: Components.coins(context, onTap: () async {
                 MyGame.isPlaying = false;
                 await Rout.push(context, ShopOverlay());
@@ -275,9 +275,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _createGame() {
-    var t = (Device.size.height - ((Cells.height + 1.6) * Cell.diameter)) * 0.5;
-    var bounds = Rect.fromLTRB(MyGame.padding, t,
-        Device.size.width - MyGame.padding, t + Cell.diameter * 7);
+    var padding = 24.d + (Device.size.aspectRatio - 0.5) * 200.d;
+    var width = Device.size.width - padding * 2;
+    Cell.diameter = width / Cells.width;
+    Cell.radius = Cell.diameter * 0.5;
+
+    var t = (Device.size.height - ((Cells.height + 1) * Cell.diameter)) * 0.5;
+    var bounds = Rect.fromLTRB(
+        padding, t, Device.size.width - padding, t + Cell.diameter * 7);
     _game = MyGame(bounds: bounds, onGameEvent: _onGameEventHandler);
   }
 

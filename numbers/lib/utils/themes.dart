@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numbers/utils/utils.dart';
 
 enum TColors { black, white, whiteFlat, yellow, blue, orange, green }
 
@@ -8,7 +9,7 @@ extension TColorsExt on TColors {
       case TColors.black:
         return [
           Color(0xFF2c3134),
-          Color(0x8B000000),
+          Color(0xBB000000),
           Color(0xFF1F2326),
           Color(0xFF23272A),
         ];
@@ -34,11 +35,12 @@ extension TColorsExt on TColors {
 }
 
 class Themes {
-  static _style(Color color, double fontSize,
+  static style(Color color, double fontSize,
       {String? font, List<Shadow>? shadows}) {
     return TextStyle(
         color: color,
         fontSize: fontSize,
+        decoration: TextDecoration.none,
         fontFamily: font ?? "quicksand",
         shadows: shadows ??
             [
@@ -51,19 +53,19 @@ class Themes {
 
   static ThemeData get darkData {
     var textTheme = TextTheme(
-        caption: TextStyle(color: Colors.yellow, fontSize: 16),
-        button: _style(TColors.black.value[0], 24, shadows: []),
-        bodyText1: _style(TColors.black.value[0], 22, shadows: []),
-        bodyText2: _style(TColors.black.value[0], 20, shadows: []),
-        subtitle1: _style(TColors.black.value[0], 16, shadows: []),
-        subtitle2: _style(TColors.black.value[0], 14, shadows: []),
-        headline1: _style(TColors.white.value[3], 56),
-        headline2: _style(TColors.white.value[3], 36),
-        headline3: _style(TColors.white.value[3], 30),
-        headline4: _style(TColors.white.value[3], 24),
-        headline5: _style(TColors.white.value[3], 20),
-        headline6: _style(TColors.white.value[3], 16),
-        overline: _style(TColors.white.value[3], 32, font: "icons"));
+        caption: TextStyle(color: TColors.white.value[2], fontSize: 16.d),
+        button: style(TColors.black.value[0], 24.d, shadows: []),
+        bodyText1: style(TColors.black.value[0], 22.d, shadows: []),
+        bodyText2: style(TColors.black.value[0], 20.d, shadows: []),
+        subtitle1: style(TColors.black.value[0], 16.d, shadows: []),
+        subtitle2: style(TColors.black.value[0], 14.d, shadows: []),
+        headline1: style(TColors.white.value[3], 56.d),
+        headline2: style(TColors.white.value[3], 36.d),
+        headline3: style(TColors.white.value[3], 30.d),
+        headline4: style(TColors.white.value[3], 24.d),
+        headline5: style(TColors.white.value[3], 20.d),
+        headline6: style(TColors.white.value[3], 16.d),
+        overline: style(TColors.white.value[3], 32.d, font: "icons"));
 
     // var iconTheme = IconThemeData(color: primaries[50]);
     return ThemeData(
@@ -89,16 +91,15 @@ class Themes {
       //             fontFamily: "quicksand",
       //             fontSize: 18,
       //             fontWeight: FontWeight.bold)))),
-      // textSelectionTheme: TextSelectionThemeData(
-      //     cursorColor: primaries[500],
-      //     selectionHandleColor: primaries[300],
-      //     selectionColor: primaries[600]),
+      textSelectionTheme: TextSelectionThemeData(
+          cursorColor: TColors.blue.value[0],
+          selectionHandleColor: TColors.blue.value[0],
+          selectionColor: TColors.blue.value[2]),
       snackBarTheme: SnackBarThemeData(
-          contentTextStyle: textTheme.headline4,
+          contentTextStyle: textTheme.headline5,
           // actionTextColor: primaries[500],
-          backgroundColor: TColors.orange.value[2]),
-      // inputDecorationTheme:
-      //     InputDecorationTheme(hintStyle: TextStyle(color: primaries[150])),
+          backgroundColor: TColors.blue.value[2]),
+      inputDecorationTheme: InputDecorationTheme(hintStyle: textTheme.caption),
       fontFamily: "quicksand",
       dialogBackgroundColor: TColors.black.value[1],
       // accentColor: primaries[0],
@@ -109,7 +110,7 @@ class Themes {
       cardColor: TColors.white.value[0],
       // primaryColor: primaries[700],
       // focusColor: primaries[750],
-      // textTheme: textTheme,
+      // canvasColor: TColors.orange.value[2],
       colorScheme: ColorScheme.dark(
           // primary: primaries[700],
           // onPrimary: Colors.white,

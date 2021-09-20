@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/game.dart';
+import 'package:numbers/overlays/rating.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
@@ -19,15 +22,16 @@ class StartOverlay extends StatefulWidget {
 }
 
 class _StartOverlayState extends State<StartOverlay> {
+  Timer? _startTimer;
   @override
   Widget build(BuildContext context) {
     if (Pref.tutorMode.value == 0) {
-      _onStart(delay: 100);
+      _onStart(delay: 1000);
       return SizedBox();
     }
     var theme = Theme.of(context);
     return Overlays.basic(context,
-        height: 348.d,
+        height: 300.d,
         hasClose: false,
         title: "Select Boost Items",
         padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d),
@@ -38,13 +42,14 @@ class _StartOverlayState extends State<StartOverlay> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                 Components.startButton(context,
-                    "Start the game with black 512!", "512", _onUpdate),
+                    "Start the game with block 512!", "512", _onUpdate),
+                SizedBox(width: 2.d),
                 Components.startButton(context,
-                    "Preview the next upcoming black!", "next", _onUpdate)
+                    "Preview the next upcoming block!", "next", _onUpdate)
               ])),
           SizedBox(height: 10.d),
           Container(
-              height: 76.d,
+              height: 64.d,
               child: BumpedButton(
                   colors: TColors.blue.value,
                   onTap: _onStart,
@@ -62,13 +67,17 @@ class _StartOverlayState extends State<StartOverlay> {
   }
 
   _onStart({int delay = 0}) async {
-    if (Pref.visitCount.value > 10) await Ads.show(AdPlace.Interstitial);
-    if (delay > 0) await Future.delayed(Duration(milliseconds: delay));
-    await Rout.push(context, HomePage());
-    Cell.maxRandomValue = 3;
-    MyGame.boostNextMode = 0;
-    MyGame.boostBig = false;
-    _onUpdate();
+    _startTimer?.cancel();
+    var shown = await RateOverlay.showRating(context);
+    if (!shown && Pref.playCount.value > 10)
+      await Ads.show(AdPlace.Interstitial);
+    _startTimer = Timer(Duration(milliseconds: delay), () async {
+      await Rout.push(context, HomePage());
+      Cell.maxRandomValue = 3;
+      MyGame.boostNextMode = 0;
+      MyGame.boostBig = false;
+      _onUpdate();
+    });
   }
 
   _onUpdate() => setState(() {});

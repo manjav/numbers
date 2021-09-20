@@ -106,14 +106,14 @@ class _ButtonDecorationPainter extends BoxPainter {
     this.isEnable = isEnable;
     this.isPressed = isPressed;
     _mainPaint.color =
-        isEnable ? colors[2] : Color.lerp(colors[2], Color(0xFF8a8a8a), 0.85)!;
+        isEnable ? colors[2] : Color.lerp(colors[2], Color(0xFF8a8a8a), 0.80)!;
     _backPaint.color = isEnable ? Color(0xFF212527) : Colors.grey[600]!;
   }
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     var s = 0.8.d;
-    var b = 2.0.d;
+    var b = isEnable ? 2.0.d : 0;
     var pressed = isPressed && isEnable;
     var _cr = cornerRadius;
     var r = RRect.fromLTRBXY(
@@ -131,12 +131,15 @@ class _ButtonDecorationPainter extends BoxPainter {
         r.left + b, r.top + b, r.right - b, r.bottom - b - 5.d, _cr, _cr);
 
     _overPaint = Paint()
-      ..shader = ui.Gradient.linear(Offset(or.left, or.top),
-          Offset(or.left, or.bottom), [colors[0], colors[1]]);
+      ..shader = ui.Gradient.linear(
+          Offset(or.left, or.top), Offset(or.left, or.bottom), [
+        isEnable ? colors[0] : Color.lerp(colors[0], Color(0xFF8a8a8a), 0.70)!,
+        isEnable ? colors[1] : Color.lerp(colors[1], Color(0xFF8a8a8a), 0.70)!
+      ]);
 
     if (isEnable) canvas.drawRRect(sr, _shadowPaint);
-    canvas.drawRRect(r, _backPaint);
+    if (isEnable) canvas.drawRRect(r, _backPaint);
     if (!pressed) canvas.drawRRect(mr, _mainPaint);
-    if (isEnable) canvas.drawRRect(pressed ? mr : or, _overPaint);
+    canvas.drawRRect(pressed ? mr : or, _overPaint);
   }
 }

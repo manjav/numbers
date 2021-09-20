@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:dist="http://schemas.android.com/apk/distribution" package="game.block.puzzle.drop.the.number.merge" android:targetSandboxVersion="2">
 	<dist:module dist:instant="true" />
-	<application android:label="Drop and Merge Number" android:allowBackup="true" android:icon="@mipmap/ic_launcher">
+	<application android:label="Drop and Merge Number" android:allowBackup="false" android:icon="@mipmap/ic_launcher">
 		<activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize"
 			android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
 

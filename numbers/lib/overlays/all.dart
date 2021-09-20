@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/gemeservice.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
@@ -31,33 +31,35 @@ class Overlays {
     EdgeInsets? padding,
     bool hasChrome = true,
     bool hasClose = true,
+    bool closeOnBack = true,
   }) {
     var theme = Theme.of(context);
     Sound.play(sfx ?? "pop");
     return WillPopScope(
         onWillPop: () async {
           onWillPop?.call();
-          return true;
+          return closeOnBack;
         },
         child: Stack(alignment: Alignment.center, children: [
           scoreButton ??
               Positioned(
-                  top: 62.d,
+                  top: 46.d,
                   right: 10.d,
                   child: Components.scores(theme,
-                      onTap: () => GamesServices.showLeaderboards())),
+                      onTap: () =>
+                          PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ"))),
           statsButton ??
               Positioned(
-                  top: 48.d,
+                  top: 32.d,
                   left: 12.d,
                   child: Components.stats(theme,
                       onTap: () => Rout.push(context, StatsOverlay()))),
           coinButton ??
               Positioned(
-                  top: 48.d, left: 66.d, child: Components.coins(context)),
+                  top: 32.d, left: 66.d, child: Components.coins(context)),
           Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Padding(
-                padding: EdgeInsets.fromLTRB(48.d, 64.d, 48.d, 20.d),
+                padding: EdgeInsets.fromLTRB(48.d, 80.d, 48.d, 10.d),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -74,13 +76,13 @@ class Overlays {
                     ])),
             Container(
                 width: width ?? 300.d,
-                height: height ?? 340.d,
-                padding: padding ?? EdgeInsets.fromLTRB(18.d, 12.d, 18.d, 28.d),
+                height: height == null ? 340.d : (height == 0 ? null : height),
+                padding: padding ?? EdgeInsets.fromLTRB(18.d, 12.d, 18.d, 18.d),
                 decoration: hasChrome
                     ? BoxDecoration(
                         color: theme.dialogTheme.backgroundColor,
                         shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(24)))
+                        borderRadius: BorderRadius.all(Radius.circular(24.d)))
                     : null,
                 child: content ?? SizedBox())
           ])
@@ -92,7 +94,8 @@ class Overlays {
     var cost = 100 * pow(2, numRevive).round();
     return basic(context,
         sfx: "lose",
-        title: "Revive",
+        title: Device.aspectRatio < 0.7 ? "Revive" : null,
+        height: 300.d,
         content: Stack(
           alignment: Alignment.topCenter,
           children: [
@@ -113,7 +116,7 @@ class Overlays {
                     stateMachines: ["machine"])),
             Positioned(
                 height: 76.d,
-                width: 124.d,
+                width: 120.d,
                 bottom: 0,
                 left: 0,
                 child: BumpedButton(
@@ -134,7 +137,7 @@ class Overlays {
                     ]))),
             Positioned(
                 height: 76.d,
-                width: 124.d,
+                width: 120.d,
                 bottom: 0,
                 right: 0,
                 child: BumpedButton(
@@ -168,6 +171,8 @@ class Overlays {
     return basic(context,
         sfx: "win",
         hasClose: false,
+        height: 310.d,
+        padding: EdgeInsets.fromLTRB(18.d, 0.d, 18.d, 18.d),
         onWillPop: () => _buttonsClick(context, "record", reward),
         content: Stack(alignment: Alignment.topCenter, children: [
           Center(
@@ -237,33 +242,31 @@ class Overlays {
     var theme = Theme.of(context);
     return basic(context,
         sfx: "win",
-        height: 380.d,
+        height: 330.d,
         hasClose: false,
-        title: "Big Block",
+        padding: EdgeInsets.fromLTRB(18.d, 0.d, 18.d, 18.d),
+        title: Device.aspectRatio < 0.7 ? "Big Block" : null,
         onWillPop: () => _buttonsClick(context, "big", reward),
         content: Stack(alignment: Alignment.topCenter, children: [
           Positioned(
               top: 0,
-              width: 200.d,
-              height: 200.d,
+              width: 180.d,
+              height: 180.d,
               child: RiveAnimation.asset('anims/nums-shine.riv',
                   stateMachines: ["machine"])),
           Positioned(
-              top: 58.d,
+              top: 48.d,
               width: 80.d,
               height: 80.d,
               child: RotationTransition(
-                turns: AlwaysStoppedAnimation(-0.02),
-                child: Widgets.cell(theme, value),
-              )),
+                  turns: AlwaysStoppedAnimation(-0.02),
+                  child: Widgets.cell(theme, value))),
           Positioned(
-              top: 170.d,
-              child: Text("Congratulations.\nYou made ${Cell.getScore(value)}!",
-                  style: theme.textTheme.caption, textAlign: TextAlign.center)),
-          Positioned(
-              top: 225.d,
-              child:
-                  Text("Earn more reward?", style: theme.textTheme.headline6)),
+              top: 140.d,
+              child: Text(
+                  "Congratulations.\nYou made ${Cell.getScore(value)}!\n\nEarn more reward?",
+                  style: theme.textTheme.caption,
+                  textAlign: TextAlign.center)),
           Positioned(
               height: 76.d,
               width: 124.d,
@@ -276,12 +279,12 @@ class Overlays {
                     SVG.show("coin", 36.d),
                     Positioned(
                         top: 5.d,
-                        left: 40.d,
+                        left: 36.d,
                         child: Text(reward.format(),
                             style: theme.textTheme.button)),
                     Positioned(
                         bottom: 7.d,
-                        left: 40.d,
+                        left: 36.d,
                         child: Text("Claim", style: theme.textTheme.subtitle2)),
                   ]))),
           Positioned(
@@ -396,8 +399,8 @@ class Overlays {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                              width: 98,
-                              height: 40,
+                              width: 98.d,
+                              height: 40.d,
                               child: BumpedButton(
                                   cornerRadius: 8.d,
                                   content: Row(children: [
@@ -436,9 +439,10 @@ class Overlays {
     return basic(context,
         hasClose: false,
         coinButton: SizedBox(),
+        statsButton: SizedBox(),
         scoreButton: SizedBox(),
-        padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-        height: 54,
+        padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d),
+        height: 54.d,
         title: "Quit",
         content:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -468,13 +472,13 @@ class Overlays {
 
   static Widget message(BuildContext context, Widget? content) {
     return basic(context,
-        height: 54,
+        height: 54.d,
         sfx: "merge-9",
         hasClose: false,
         coinButton: SizedBox(),
         statsButton: SizedBox(),
         scoreButton: SizedBox(),
-        padding: EdgeInsets.fromLTRB(12, 4, 12, 8),
+        padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 8.d),
         content: content);
   }
 }

@@ -16,10 +16,11 @@ import 'package:numbers/utils/prefs.dart';
 enum CellState { Init, Float, Falling, Fell, Fixed }
 
 class Cell extends PositionComponent with HasGameRef<MyGame> {
-  static final minSpeed = 0.01;
-  static final maxSpeed = 0.8;
-  static final border = 1.8;
-  static final round = 7.0;
+  static double minSpeed = 0.01;
+  static double maxSpeed = 0.8;
+  static double round = 7.0;
+  static double thickness = 4.6;
+  static double border = 1.8;
   static final firstRecord = 2048;
   static final firstBigRecord = 8;
   static int maxRandomValue = 3;
@@ -40,9 +41,10 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
     PaletteEntry(Color(0xFF8E7C58)),
     PaletteEntry(Color(0xFFE2DB21)),
     PaletteEntry(Color(0xFF0070C0)),
-    PaletteEntry(Color(0xFF00C0C0))
+    PaletteEntry(Color(0xFF00C0C0)),
+    PaletteEntry(Color(0xFF004940))
   ];
-  static final scales = [0, 1, 0.9, 0.75, 0.65, 0.55];
+  static final scales = [0, 1, 0.9, 0.75, 0.65, 0.6, 0.55];
   static double diameter = 64.0;
   static double radius = diameter * 0.5;
 
@@ -72,7 +74,7 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   static final RRect _sideRect = RRect.fromLTRBXY(strock - radius,
       strock - radius, radius - strock, radius - strock, round, round);
   static final RRect _overRect = RRect.fromLTRBXY(strock - radius,
-      strock - radius, radius - strock, radius - strock - 4.6, round, round);
+      strock - radius, radius - strock, radius - strock - thickness, round, round);
 
   static final Paint _backPaint = colors[0].paint();
 
