@@ -13,6 +13,7 @@ import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/components.dart';
+import 'package:numbers/widgets/punchbutton.dart';
 import 'package:numbers/widgets/widgets.dart';
 import 'package:rive/rive.dart';
 
@@ -95,6 +96,7 @@ class Overlays {
     return basic(context,
         sfx: "lose",
         title: Device.aspectRatio < 0.7 ? "Revive" : null,
+        width: 310.d,
         height: 300.d,
         content: Stack(
           alignment: Alignment.topCenter,
@@ -116,9 +118,9 @@ class Overlays {
                     stateMachines: ["machine"])),
             Positioned(
                 height: 76.d,
-                width: 120.d,
-                bottom: 0,
-                left: 0,
+                width: 116.d,
+                bottom: 4.d,
+                left: 4.d,
                 child: BumpedButton(
                     onTap: () => _buttonsClick(context, "revive", -cost),
                     cornerRadius: 16.d,
@@ -135,31 +137,28 @@ class Overlays {
                           child:
                               Text("Revive", style: theme.textTheme.subtitle1)),
                     ]))),
-            Positioned(
+            PunchButton(
                 height: 76.d,
-                width: 120.d,
-                bottom: 0,
-                right: 0,
-                child: BumpedButton(
+                width: 130.d,
+                bottom: 4.d,
+                right: 4.d,
                     cornerRadius: 16.d,
                     errorMessage: Ads.errorMessage(theme),
                     isEnable: numRevive < 2 && Ads.isReady(),
-                    onTap: () => _buttonsClick(context, "revive", 0,
-                        adId: AdPlace.Rewarded),
+                onTap: () =>
+                    _buttonsClick(context, "revive", 0, adId: AdPlace.Rewarded),
                     colors: TColors.orange.value,
                     content: Stack(alignment: Alignment.centerLeft, children: [
                       SVG.icon("0", theme),
                       Positioned(
                           top: 5.d,
                           left: 40.d,
-                          child:
-                              Text("Free", style: theme.textTheme.headline4)),
+                      child: Text("Free", style: theme.textTheme.headline4)),
                       Positioned(
                           bottom: 7.d,
                           left: 40.d,
-                          child:
-                              Text("Revive", style: theme.textTheme.headline6)),
-                    ])))
+                      child: Text("Revive", style: theme.textTheme.headline6)),
+                ]))
           ],
         ));
   }
@@ -188,9 +187,9 @@ class Overlays {
                   Text(Prefs.score.format(), style: theme.textTheme.headline2)),
           Positioned(
               height: 76.d,
-              width: 124.d,
-              bottom: 0,
-              left: 0,
+              width: 110.d,
+              bottom: 4.d,
+              left: 4.d,
               child: BumpedButton(
                   onTap: () => _buttonsClick(context, "record", reward),
                   cornerRadius: 16.d,
@@ -206,18 +205,16 @@ class Overlays {
                         left: 40.d,
                         child: Text("Claim", style: theme.textTheme.subtitle2)),
                   ]))),
-          Positioned(
+          PunchButton(
               height: 76.d,
-              width: 124.d,
-              bottom: 0,
-              right: 0,
-              child: BumpedButton(
+              width: 130.d,
+              bottom: 4.d,
+              right: 4.d,
                   cornerRadius: 16.d,
                   isEnable: Ads.isReady(),
                   colors: TColors.orange.value,
                   errorMessage: Ads.errorMessage(theme),
-                  onTap: () => _buttonsClick(
-                      context, "record", rewardCoef * reward,
+              onTap: () => _buttonsClick(context, "record", rewardCoef * reward,
                       adId: AdPlace.Rewarded),
                   content: Stack(alignment: Alignment.centerLeft, children: [
                     SVG.icon("0", theme),
@@ -233,7 +230,7 @@ class Overlays {
                           SVG.show("coin", 22.d),
                           Text("x$rewardCoef", style: theme.textTheme.headline6)
                         ])),
-                  ])))
+              ]))
         ]));
   }
 
@@ -269,9 +266,9 @@ class Overlays {
                   textAlign: TextAlign.center)),
           Positioned(
               height: 76.d,
-              width: 124.d,
-              bottom: 0,
-              left: 0,
+              width: 110.d,
+              bottom: 4.d,
+              left: 4.d,
               child: BumpedButton(
                   onTap: () => _buttonsClick(context, "big", reward),
                   cornerRadius: 16.d,
@@ -287,18 +284,16 @@ class Overlays {
                         left: 36.d,
                         child: Text("Claim", style: theme.textTheme.subtitle2)),
                   ]))),
-          Positioned(
+          PunchButton(
               height: 76.d,
-              width: 124.d,
-              bottom: 0,
-              right: 0,
-              child: BumpedButton(
+              width: 130.d,
+              bottom: 4.d,
+              right: 4.d,
                   cornerRadius: 16.d,
                   isEnable: Ads.isReady(),
                   colors: TColors.orange.value,
                   errorMessage: Ads.errorMessage(theme),
-                  onTap: () => _buttonsClick(
-                      context, "big", reward * rewardCoef,
+              onTap: () => _buttonsClick(context, "big", reward * rewardCoef,
                       adId: AdPlace.Rewarded),
                   content: Stack(alignment: Alignment.centerLeft, children: [
                     SVG.icon("0", theme),
@@ -314,7 +309,7 @@ class Overlays {
                           SVG.show("coin", 22.d),
                           Text("x$rewardCoef", style: theme.textTheme.headline6)
                         ])),
-                  ])))
+              ]))
         ]));
   }
 
