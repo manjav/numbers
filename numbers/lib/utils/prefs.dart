@@ -12,13 +12,11 @@ class Prefs {
     SharedPreferences.getInstance().then((SharedPreferences prefs) async {
       _instance = prefs;
       if (!prefs.containsKey("visitCount")) {
-        await _restore();
-        if (!prefs.containsKey("visitCount")) {
-          Pref.coin.set(500);
-          Pref.removeOne.set(3);
-          Pref.removeColor.set(3);
-          Pref.rateTarget.set(5);
-        }
+        Pref.coin.set(500);
+        Pref.removeOne.set(3);
+        Pref.removeColor.set(3);
+        Pref.rateTarget.set(5);
+        _restore();
       } else {
         _initPlayService();
       }

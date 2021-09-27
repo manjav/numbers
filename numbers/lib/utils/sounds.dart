@@ -7,13 +7,14 @@ class Sound {
   static Map<String, int> map = Map();
   static Soundpool pool = Soundpool.fromOptions();
   static Future<void> init() async {
-    for (var i = 1; i <= 9; i++) add("merge-$i");
+    for (var i = 1; i <= 6; i++) add("merge-$i");
     add("foul");
     add("fall");
     add("lose");
     add("pop");
     add("win");
     add("coin");
+    add("merge-end");
     add("button-down");
     add("button-up");
   }
