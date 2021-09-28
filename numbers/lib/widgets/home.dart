@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,10 @@ import 'package:numbers/overlays/all.dart';
 import 'package:numbers/overlays/pause.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
+import 'package:numbers/utils/gemeservice.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/components.dart';
-import 'package:numbers/utils/gemeservice.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -26,12 +27,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Positioned? _coins;
   AnimationController? _rewardAnimation;
+  ConfettiController? _confettiController;
 
   void initState() {
     super.initState();
     _createGame();
     _rewardAnimation = AnimationController(vsync: this);
     _rewardAnimation!.addListener(() => setState(() {}));
+    _confettiController =
+        ConfettiController(duration: const Duration(milliseconds: 100));
   }
 
   @override
@@ -124,7 +128,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             GestureDetector(
                                 child: SVG.show("close", 32.d),
                                 onTap: _onRemoveBlock)
-                          ])))
+                          ]))),
+          Center(child: Components.confetty(_confettiController!))
         ])));
   }
 
@@ -165,21 +170,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Widget? _widget;
     switch (event) {
       case GameEvent.big:
-        _widget = Overlays.bigValue(context, value);
+        _widget = Overlays.bigValue(context, value, _confettiController!);
         Prefs.increaseBig(value);
         break;
       case GameEvent.boost:
         await _boost("next");
         break;
+      case GameEvent.celebrate:
+        _confettiController!.play();
+        return;
       case GameEvent.completeTutorial:
-        _widget = Overlays.endTutorial(context);
+        _widget = Overlays.endTutorial(context, _confettiController!);
         break;
       case GameEvent.lose:
         await Future.delayed(Duration(seconds: 1));
         _widget = Overlays.revive(context, _game!.numRevives);
         break;
       case GameEvent.record:
-        _widget = Overlays.record(context);
+        _widget = Overlays.record(context, _confettiController!);
         break;
       case GameEvent.remove:
         _onRemoveBlock();
@@ -279,9 +287,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void _createGame() {
     var padding = 24.d + (Device.size.aspectRatio - 0.5) * 200.d;
     var width = Device.size.width - padding * 2;
-    Cell.diameter = width / Cells.width;
-    Cell.radius = Cell.diameter * 0.5;
-
+    Cell.updateSizes(width / Cells.width);
     var t = (Device.size.height - ((Cells.height + 1) * Cell.diameter)) * 0.5;
     var bounds = Rect.fromLTRB(
         padding, t, Device.size.width - padding, t + Cell.diameter * 7);
@@ -297,5 +303,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<bool> _onWillPop() async {
     _pause();
     return true;
+  }
+
+  @override
+  void dispose() {
+    _confettiController!.dispose();
+    super.dispose();
   }
 }

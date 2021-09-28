@@ -16,11 +16,12 @@ import 'package:numbers/utils/prefs.dart';
 enum CellState { Init, Float, Falling, Fell, Fixed }
 
 class Cell extends PositionComponent with HasGameRef<MyGame> {
+  static double diameter = 64.0;
+  static double padding = 1.8;
   static double minSpeed = 0.01;
   static double maxSpeed = 0.8;
-  static double round = 7.0;
+  static double roundness = 7.0;
   static double thickness = 4.6;
-  static double border = 1.8;
   static final firstRecord = 2048;
   static final firstBigRecord = 8;
   static int maxRandomValue = 3;
@@ -45,10 +46,8 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
     PaletteEntry(Color(0xFF004940))
   ];
   static final scales = [0, 1, 0.9, 0.75, 0.65, 0.6, 0.55];
-  static double diameter = 64.0;
-  static double radius = diameter * 0.5;
-
-  static double get strock => border + 2.4;
+  static double get radius => diameter * 0.5;
+  static double get strock => padding * 1.1;
   static int getScore(int value) => pow(2, value) as int;
   static int getNextValue(int step) => Pref.tutorMode.value == 0
       ? [1, 3, 5, 1, 2, 4, 5][step]
@@ -65,16 +64,21 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   Function(Cell)? onInit;
   CellState state = CellState.Init;
   static final RRect _backRect = RRect.fromLTRBXY(
-      border - radius,
-      border - radius,
-      radius - border,
-      radius - border,
-      round * 1.3,
-      round * 1.3);
+      padding - radius,
+      padding - radius,
+      radius - padding,
+      radius - padding,
+      roundness * 1.3,
+      roundness * 1.3);
   static final RRect _sideRect = RRect.fromLTRBXY(strock - radius,
-      strock - radius, radius - strock, radius - strock, round, round);
-  static final RRect _overRect = RRect.fromLTRBXY(strock - radius,
-      strock - radius, radius - strock, radius - strock - thickness, round, round);
+      strock - radius, radius - strock, radius - strock, roundness, roundness);
+  static final RRect _overRect = RRect.fromLTRBXY(
+      strock - radius,
+      strock - radius,
+      radius - strock,
+      radius - strock - thickness,
+      roundness,
+      roundness);
 
   static final Paint _backPaint = colors[0].paint();
 
@@ -161,6 +165,15 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   @override
   String toString() {
     return "Cell c:$column, r:$row, v:$value, s:$state}";
+  }
+
+  static void updateSizes(double _diameter) {
+    diameter = _diameter;
+    minSpeed = _diameter * 0.01;
+    maxSpeed = _diameter * 0.8;
+    padding = _diameter * 0.04;
+    roundness = _diameter * 0.15;
+    thickness = _diameter * 0.1;
   }
 }
 

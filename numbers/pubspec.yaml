@@ -21,6 +21,7 @@ dependencies:
   firebase_messaging: ^10.0.4
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
+  confetti: ^0.6.0
   in_app_purchase: ^1.0.6
   in_app_review: ^2.0.2
   install_prompt: ^0.0.1
@@ -43,7 +44,6 @@ flutter:
   assets:
     - anims/
     - assets/images/
-  #   - texts/
     - assets/sounds/
 
   fonts:

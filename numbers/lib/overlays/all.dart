@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:install_prompt/install_prompt.dart';
@@ -143,21 +145,21 @@ class Overlays {
                 width: 130.d,
                 bottom: 4.d,
                 right: 4.d,
-                    cornerRadius: 16.d,
-                    errorMessage: Ads.errorMessage(theme),
-                    isEnable: numRevive < 2 && Ads.isReady(),
+                cornerRadius: 16.d,
+                errorMessage: Ads.errorMessage(theme),
+                isEnable: numRevive < 2 && Ads.isReady(),
                 onTap: () =>
                     _buttonsClick(context, "revive", 0, adId: AdPlace.Rewarded),
-                    colors: TColors.orange.value,
-                    content: Stack(alignment: Alignment.centerLeft, children: [
-                      SVG.icon("0", theme),
-                      Positioned(
-                          top: 5.d,
-                          left: 40.d,
+                colors: TColors.orange.value,
+                content: Stack(alignment: Alignment.centerLeft, children: [
+                  SVG.icon("0", theme),
+                  Positioned(
+                      top: 5.d,
+                      left: 40.d,
                       child: Text("Free", style: theme.textTheme.headline4)),
-                      Positioned(
-                          bottom: 7.d,
-                          left: 40.d,
+                  Positioned(
+                      bottom: 7.d,
+                      left: 40.d,
                       child: Text("Revive", style: theme.textTheme.headline6)),
                 ]))
           ],
@@ -165,9 +167,10 @@ class Overlays {
   }
 
   static int rewardCoef = 2;
-  static record(BuildContext context) {
+  static record(BuildContext context, ConfettiController confettiController) {
     var reward = 100;
     var theme = Theme.of(context);
+    Timer(Duration(milliseconds: 500), () => confettiController.play());
     return basic(context,
         sfx: "win",
         hasClose: false,
@@ -175,10 +178,6 @@ class Overlays {
         padding: EdgeInsets.fromLTRB(18.d, 0.d, 18.d, 18.d),
         onWillPop: () => _buttonsClick(context, "record", reward),
         content: Stack(alignment: Alignment.topCenter, children: [
-          Center(
-              heightFactor: 0.52,
-              child: RiveAnimation.asset('anims/nums-record.riv',
-                  stateMachines: ["machine"])),
           Positioned(
               top: 152.d,
               child: Text("New Record", style: theme.textTheme.caption)),
@@ -211,33 +210,42 @@ class Overlays {
               width: 130.d,
               bottom: 4.d,
               right: 4.d,
-                  cornerRadius: 16.d,
-                  isEnable: Ads.isReady(),
-                  colors: TColors.orange.value,
-                  errorMessage: Ads.errorMessage(theme),
+              cornerRadius: 16.d,
+              isEnable: Ads.isReady(),
+              colors: TColors.orange.value,
+              errorMessage: Ads.errorMessage(theme),
               onTap: () => _buttonsClick(context, "record", rewardCoef * reward,
-                      adId: AdPlace.Rewarded),
-                  content: Stack(alignment: Alignment.centerLeft, children: [
-                    SVG.icon("0", theme),
-                    Positioned(
-                        top: 5.d,
-                        left: 44.d,
-                        child: Text((rewardCoef * reward).format(),
-                            style: theme.textTheme.headline4)),
-                    Positioned(
-                        bottom: 7.d,
-                        left: 44.d,
-                        child: Row(children: [
-                          SVG.show("coin", 22.d),
-                          Text("x$rewardCoef", style: theme.textTheme.headline6)
-                        ])),
-              ]))
+                  adId: AdPlace.Rewarded),
+              content: Stack(alignment: Alignment.centerLeft, children: [
+                SVG.icon("0", theme),
+                Positioned(
+                    top: 5.d,
+                    left: 44.d,
+                    child: Text((rewardCoef * reward).format(),
+                        style: theme.textTheme.headline4)),
+                Positioned(
+                    bottom: 7.d,
+                    left: 44.d,
+                    child: Row(children: [
+                      SVG.show("coin", 22.d),
+                      Text("x$rewardCoef", style: theme.textTheme.headline6)
+                    ])),
+              ])),
+          Center(
+              heightFactor: 0.52,
+              child: Components.confetty(confettiController)),
+          Center(
+              heightFactor: 0.52,
+              child: RiveAnimation.asset('anims/nums-record.riv',
+                  stateMachines: ["machine"])),
         ]));
   }
 
-  static bigValue(BuildContext context, int value) {
+  static bigValue(
+      BuildContext context, int value, ConfettiController confettiController) {
     var reward = value * 20;
     var theme = Theme.of(context);
+    Timer(Duration(milliseconds: 500), () => confettiController.play());
     return basic(context,
         sfx: "win",
         height: 330.d,
@@ -246,19 +254,6 @@ class Overlays {
         title: Device.aspectRatio < 0.7 ? "Big Block" : null,
         onWillPop: () => _buttonsClick(context, "big", reward),
         content: Stack(alignment: Alignment.topCenter, children: [
-          Positioned(
-              top: 0,
-              width: 180.d,
-              height: 180.d,
-              child: RiveAnimation.asset('anims/nums-shine.riv',
-                  stateMachines: ["machine"])),
-          Positioned(
-              top: 48.d,
-              width: 80.d,
-              height: 80.d,
-              child: RotationTransition(
-                  turns: AlwaysStoppedAnimation(-0.02),
-                  child: Widgets.cell(theme, value))),
           Positioned(
               top: 140.d,
               child: Text(
@@ -290,32 +285,50 @@ class Overlays {
               width: 130.d,
               bottom: 4.d,
               right: 4.d,
-                  cornerRadius: 16.d,
-                  isEnable: Ads.isReady(),
-                  colors: TColors.orange.value,
-                  errorMessage: Ads.errorMessage(theme),
+              cornerRadius: 16.d,
+              isEnable: Ads.isReady(),
+              colors: TColors.orange.value,
+              errorMessage: Ads.errorMessage(theme),
               onTap: () => _buttonsClick(context, "big", reward * rewardCoef,
-                      adId: AdPlace.Rewarded),
-                  content: Stack(alignment: Alignment.centerLeft, children: [
-                    SVG.icon("0", theme),
-                    Positioned(
-                        top: 5.d,
-                        left: 44.d,
-                        child: Text((reward * rewardCoef).format(),
-                            style: theme.textTheme.headline4)),
-                    Positioned(
-                        bottom: 7.d,
-                        left: 44.d,
-                        child: Row(children: [
-                          SVG.show("coin", 22.d),
-                          Text("x$rewardCoef", style: theme.textTheme.headline6)
-                        ])),
-              ]))
+                  adId: AdPlace.Rewarded),
+              content: Stack(alignment: Alignment.centerLeft, children: [
+                SVG.icon("0", theme),
+                Positioned(
+                    top: 5.d,
+                    left: 44.d,
+                    child: Text((reward * rewardCoef).format(),
+                        style: theme.textTheme.headline4)),
+                Positioned(
+                    bottom: 7.d,
+                    left: 44.d,
+                    child: Row(children: [
+                      SVG.show("coin", 22.d),
+                      Text("x$rewardCoef", style: theme.textTheme.headline6)
+                    ])),
+              ])),
+          Center(
+              heightFactor: 0.52,
+              child: Components.confetty(confettiController)),
+          Positioned(
+              top: 0,
+              width: 180.d,
+              height: 180.d,
+              child: RiveAnimation.asset('anims/nums-shine.riv',
+                  stateMachines: ["machine"])),
+          Positioned(
+              top: 48.d,
+              width: 80.d,
+              height: 80.d,
+              child: RotationTransition(
+                  turns: AlwaysStoppedAnimation(-0.02),
+                  child: Widgets.cell(theme, value)))
         ]));
   }
 
-  static Widget? endTutorial(BuildContext context) {
+  static Widget? endTutorial(
+      BuildContext context, ConfettiController confettiController) {
     var theme = Theme.of(context);
+    Timer(Duration(milliseconds: 1), () => confettiController.play());
     return basic(context,
         sfx: "win",
         title: "Good Job!",
@@ -357,6 +370,7 @@ class Overlays {
                         SVG.icon("4", theme),
                         Text("Ok", style: theme.textTheme.headline5)
                       ]))),
+          Center(child: Components.confetty(confettiController))
         ]));
   }
 
@@ -441,13 +455,14 @@ class Overlays {
         padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d),
         height: 54.d,
         title: "Quit",
-        content:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text("Are you sure?", style: theme.textTheme.headline5),
-          GestureDetector(
-              child: SVG.show("accept", 28.d),
-              onTap: () => _buttonsClick(context, "quit", 0))
-        ]));
+        content: GestureDetector(
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Are you sure?", style: theme.textTheme.headline5),
+                  SVG.show("accept", 28.d)
+                ]),
+            onTap: () => _buttonsClick(context, "quit", 0)));
   }
 
   static _buttonsClick(BuildContext context, String type, int coin,
