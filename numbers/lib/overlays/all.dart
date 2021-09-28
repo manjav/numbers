@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
@@ -430,6 +431,7 @@ class Overlays {
   }
 
   static Widget quit(BuildContext context) {
+    InstallPrompt.showInstallPrompt();
     var theme = Theme.of(context);
     return basic(context,
         hasClose: false,

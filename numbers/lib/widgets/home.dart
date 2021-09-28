@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
@@ -202,6 +203,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (event == GameEvent.lose) {
         if (result == null) {
           Navigator.of(context).pop();
+          InstallPrompt.showInstallPrompt();
           return;
         }
         _game!.revive();

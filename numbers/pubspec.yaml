@@ -23,6 +23,7 @@ dependencies:
   flutter_svg: ^0.22.0
   in_app_purchase: ^1.0.6
   in_app_review: ^2.0.2
+  install_prompt: ^0.0.1
   intl: ^0.17.0
   play_games: ^0.5.5
   shared_preferences: ^2.0.6
