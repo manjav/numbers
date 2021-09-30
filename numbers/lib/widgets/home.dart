@@ -170,6 +170,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Widget? _widget;
     switch (event) {
       case GameEvent.big:
+        await Future.delayed(Duration(milliseconds: 250));
         _widget = Overlays.bigValue(context, value, _confettiController!);
         Prefs.increaseBig(value);
         break;
@@ -185,9 +186,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       case GameEvent.lose:
         await Future.delayed(Duration(seconds: 1));
         _widget = Overlays.revive(context, _game!.numRevives);
-        break;
-      case GameEvent.record:
-        _widget = Overlays.record(context, _confettiController!);
         break;
       case GameEvent.remove:
         _onRemoveBlock();
@@ -210,6 +208,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       var result = await Rout.push(context, _widget);
       if (event == GameEvent.lose) {
         if (result == null) {
+          if (value > 0) {
+            await Rout.push(
+                context, Overlays.record(context, _confettiController!));
+            await Future.delayed(Duration(milliseconds: 150));
+          }
           Navigator.of(context).pop();
           InstallPrompt.showInstallPrompt();
           return;

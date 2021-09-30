@@ -24,7 +24,6 @@ enum GameEvent {
   celebrate,
   completeTutorial,
   lose,
-  record,
   remove,
   reward,
   rewarded,
@@ -42,8 +41,8 @@ class MyGame extends BaseGame with TapDetector {
   int numRevives = 0;
   String? removingMode;
 
-  bool _recordChanged = false;
   bool _tutorMode = false;
+  int _newRecord = 0;
   int _numRewardCells = 0;
   int _mergesCount = 0;
   int _valueRecord = 0;
@@ -76,13 +75,7 @@ class MyGame extends BaseGame with TapDetector {
     if (Pref.record.value >= Prefs.score) return;
     PlayGames.submitScoreById("CgkIw9yXzt4XEAIQAQ", Prefs.score);
     Pref.record.set(Prefs.score);
-    if (Prefs.score > Cell.firstRecord) {
-      if (!_recordChanged) {
-        isPlaying = false;
-        onGameEvent?.call(GameEvent.record, Prefs.score);
-        _recordChanged = true;
-      }
-    }
+    _newRecord = Prefs.score;
   }
 
   @override
@@ -180,7 +173,7 @@ class MyGame extends BaseGame with TapDetector {
       Sound.play("foul");
       Sound.vibrate(100);
       debugPrint("game over!");
-      onGameEvent?.call(GameEvent.lose, 0);
+      onGameEvent?.call(GameEvent.lose, _newRecord);
       return;
     }
     if (_tutorMode)
