@@ -68,7 +68,7 @@ class _StartOverlayState extends State<StartOverlay> {
 
   _onStart() async {
     var shown = await RateOverlay.showRating(context);
-    if (!shown && Pref.playCount.value > 7)
+    if (!shown && Pref.playCount.value > 3)
       await Ads.show(AdPlace.Interstitial);
     await Rout.push(context, HomePage());
     Cell.maxRandomValue = 3;
