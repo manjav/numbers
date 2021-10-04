@@ -17,7 +17,7 @@ class _PauseOverlayState extends State<PauseOverlay> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return Overlays.basic(context,
+    return Overlays.basic(context, "pause",
         height: 180.d,
         title: "Pause",
         hasClose: false,

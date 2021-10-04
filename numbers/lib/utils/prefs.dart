@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:gameanalytics_sdk/gameanalytics.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/gemeservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +17,7 @@ class Prefs {
       if (!prefs.containsKey("visitCount")) {
         await _restore();
         if (!prefs.containsKey("visitCount")) {
-          Pref.coin.set(500);
+          Pref.coin.set(500, itemType: "game", itemId: "initial");
           Pref.removeOne.set(3);
           Pref.removeColor.set(3);
           Pref.rateTarget.set(5);
@@ -145,12 +147,20 @@ extension PrefExt on Pref {
     return Prefs._instance!.getInt(name) ?? 0;
   }
 
-  int set(int value, [bool backup = true]) {
+  int set(int value, {bool backup = true, String? itemType, String? itemId}) {
     Prefs._set(name, value, backup);
+
+    if (this == Pref.coin) {
+      var type =
+          value > 0 ? GAResourceFlowType.Source : GAResourceFlowType.Sink;
+      Analytics.resource(type, name, value, itemType!, itemId!);
+    }
     return value;
   }
 
-  int increase(int value) {
-    return set(this.value + value);
+  int increase(int value,
+      {bool backup = true, String? itemType, String? itemId}) {
+    return set(this.value + value,
+        backup: backup, itemType: itemType, itemId: itemId);
   }
 }

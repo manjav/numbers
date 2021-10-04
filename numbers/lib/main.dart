@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/notification.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -22,10 +23,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
-
+  MyApp();
   @override
   AppState createState() => AppState();
   static AppState? of(BuildContext context) =>
@@ -38,23 +36,28 @@ class AppState extends State<MyApp> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    var analytics = FirebaseAnalytics();
     return MaterialApp(
-        navigatorObservers: <NavigatorObserver>[MyApp.observer],
+        navigatorObservers: <NavigatorObserver>[FirebaseAnalyticsObserver(analytics: analytics)],
         theme: _themeData,
         builder: (BuildContext context, Widget? child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
             child: child!),
-        home: MainPage());
+        home:
+            MainPage(analytics: analytics));
   }
 
-  void updateTheme() {
+  updateTheme() async {
+    await Future.delayed(const Duration(milliseconds: 1));
     _themeData = Themes.darkData;
     setState(() {});
   }
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({Key? key}) : super(key: key);
+  final FirebaseAnalytics analytics;
+  MainPage({Key? key, required this.analytics})
+      : super(key: key);
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -63,16 +66,21 @@ class _MainPageState extends State<MainPage> {
   int _loadingState = 0;
   @override
   Widget build(BuildContext context) {
-    Device.size = MediaQuery.of(context).size;
-    Device.ratio = Device.size.width / 360;
-    Device.aspectRatio = Device.size.width / Device.size.height;
-    print("${Device.size} ${MediaQuery.of(context).devicePixelRatio}");
+    if (Device.size == Size.zero) {
+      Device.size = MediaQuery.of(context).size;
+      Device.ratio = Device.size.width / 360;
+      Device.aspectRatio = Device.size.width / Device.size.height;
+      print("${Device.size} ${MediaQuery.of(context).devicePixelRatio}");
+      MyApp.of(context)!.updateTheme();
+      return SizedBox();
+    }
+
     if (_loadingState == 0) {
       Ads.init();
       Sound.init();
       Notifier.init();
+      Analytics.init(widget.analytics);
       Prefs.init(() {
-        MyApp.of(context)!.updateTheme();
         _loadingState = 1;
         setState(() {});
       });

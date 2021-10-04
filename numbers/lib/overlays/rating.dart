@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:numbers/main.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'all.dart';
 
@@ -32,13 +33,21 @@ class RateOverlay extends StatefulWidget {
       // }
 
       final InAppReview inAppReview = InAppReview.instance;
-      if (await inAppReview.isAvailable() ) {
+      if (await inAppReview.isAvailable()) {
         if (Pref.ratedBefore.value == 0) {
           inAppReview.requestReview();
           Pref.ratedBefore.set(1);
           return true;
         }
         inAppReview.openStoreListing();
+      } else {
+        const url =
+            'https://play.google.com/store/apps/details?id=game.block.puzzle.drop.the.number.merge';
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
       }
       return true;
     }
@@ -46,7 +55,12 @@ class RateOverlay extends StatefulWidget {
     // Repeat rating request
     if (Pref.rate.value >= 5 || Pref.playCount.value < Pref.rateTarget.value)
       return false; // Already 5 rating or pending to reach target play count
-    int rating = await Rout.push(context, RateOverlay());
+    int rating = 0;
+    try {
+      rating = await Rout.push(context, RateOverlay());
+    } catch (e) {
+      return false;
+    }
     Pref.rate.set(rating);
     Pref.rateTarget.increase(10);
 
@@ -62,7 +76,7 @@ class RateOverlay extends StatefulWidget {
                       style: Theme.of(context).textTheme.headline5))),
           barrierDismissible: true);
     }
-    MyApp.analytics.logEvent(name: 'rate', parameters: <String, dynamic>{
+    Analytics.log('rate', <String, dynamic>{
       'numRuns': Pref.visitCount.value,
       'rating': rating,
       'comment': comment
@@ -72,19 +86,19 @@ class RateOverlay extends StatefulWidget {
   }
 
   final initialRating;
-  RateOverlay({this.initialRating = 5});
+  RateOverlay({this.initialRating = 1});
   @override
   _RateOverlayState createState() => _RateOverlayState();
 }
 
 class _RateOverlayState extends State<RateOverlay> {
-  int _response = 5;
+  int _response = 1;
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return WillPopScope(
         onWillPop: () async => false,
-        child: Overlays.basic(context,
+        child: Overlays.basic(context, "rating",
             height: 280.d,
             hasClose: false,
             title: "Rate Us",
@@ -147,7 +161,7 @@ class ReviewDialogState extends State<ReviewDialog> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-        body: Overlays.basic(context,
+        body: Overlays.basic(context, "review",
             height: 0,
             width: 320.d,
             title: "Review",

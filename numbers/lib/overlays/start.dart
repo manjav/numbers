@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
@@ -22,15 +20,17 @@ class StartOverlay extends StatefulWidget {
 }
 
 class _StartOverlayState extends State<StartOverlay> {
-  Timer? _startTimer;
+  @override
+  void initState() {
+    if (Pref.tutorMode.value == 0) _onStart();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (Pref.tutorMode.value == 0) {
-      _onStart(delay: 1000);
-      return SizedBox();
-    }
+    if (Pref.tutorMode.value == 0) return SizedBox();
     var theme = Theme.of(context);
-    return Overlays.basic(context,
+    return Overlays.basic(context, "start",
         height: 300.d,
         hasClose: false,
         title: "Select Boost Items",
@@ -66,18 +66,15 @@ class _StartOverlayState extends State<StartOverlay> {
         ]));
   }
 
-  _onStart({int delay = 0}) async {
-    _startTimer?.cancel();
+  _onStart() async {
     var shown = await RateOverlay.showRating(context);
-    if (!shown && Pref.playCount.value > 10)
+    if (!shown && Pref.playCount.value > 7)
       await Ads.show(AdPlace.Interstitial);
-    _startTimer = Timer(Duration(milliseconds: delay), () async {
-      await Rout.push(context, HomePage());
-      Cell.maxRandomValue = 3;
-      MyGame.boostNextMode = 0;
-      MyGame.boostBig = false;
-      _onUpdate();
-    });
+    await Rout.push(context, HomePage());
+    Cell.maxRandomValue = 3;
+    MyGame.boostNextMode = 0;
+    MyGame.boostBig = false;
+    _onUpdate();
   }
 
   _onUpdate() => setState(() {});

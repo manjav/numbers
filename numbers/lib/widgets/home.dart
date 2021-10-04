@@ -10,6 +10,7 @@ import 'package:numbers/overlays/all.dart';
 import 'package:numbers/overlays/pause.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/gemeservice.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/utils.dart';
@@ -213,6 +214,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 context, Overlays.record(context, _confettiController!));
             await Future.delayed(Duration(milliseconds: 150));
           }
+
+          Analytics.endProgress("main", Pref.playCount.value, Pref.record.value,
+              _game!.numRevives);
+
           Navigator.of(context).pop();
           InstallPrompt.showInstallPrompt();
           return;
@@ -288,6 +293,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _createGame() {
+    Analytics.setScreen("game");
     var padding = 24.d + (Device.size.aspectRatio - 0.5) * 200.d;
     var width = Device.size.width - padding * 2;
     Cell.updateSizes(width / Cells.width);

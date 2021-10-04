@@ -8,6 +8,7 @@ import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/gemeservice.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -22,7 +23,8 @@ import 'package:rive/rive.dart';
 
 class Overlays {
   static Widget basic(
-    BuildContext context, {
+    BuildContext context,
+    String tag, {
     String? sfx,
     String? title,
     double? width,
@@ -39,7 +41,9 @@ class Overlays {
   }) {
     var theme = Theme.of(context);
     Sound.play(sfx ?? "pop");
+    Analytics.setScreen(tag);
     return WillPopScope(
+        key: Key(tag),
         onWillPop: () async {
           onWillPop?.call();
           return closeOnBack;
@@ -96,7 +100,7 @@ class Overlays {
   static revive(BuildContext context, int numRevive) {
     var theme = Theme.of(context);
     var cost = 100 * pow(2, numRevive).round();
-    return basic(context,
+    return basic(context, "revive",
         sfx: "lose",
         title: Device.aspectRatio < 0.7 ? "Revive" : null,
         width: 310.d,
@@ -171,7 +175,7 @@ class Overlays {
     var reward = 100;
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 500), () => confettiController.play());
-    return basic(context,
+    return basic(context, "record",
         sfx: "win",
         hasClose: false,
         height: 310.d,
@@ -244,7 +248,7 @@ class Overlays {
     var reward = value * 20;
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 500), () => confettiController.play());
-    return basic(context,
+    return basic(context, "bigValue",
         sfx: "win",
         height: 330.d,
         hasClose: false,
@@ -325,7 +329,7 @@ class Overlays {
       BuildContext context, ConfettiController confettiController) {
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 1), () => confettiController.play());
-    return basic(context,
+    return basic(context, "endTutorial",
         sfx: "win",
         title: "Good Job!",
         height: 200.d,
@@ -412,7 +416,7 @@ class Overlays {
                                   content: Row(children: [
                                     SVG.show("coin", 24.d),
                                     Expanded(
-                                        child: Text("100",
+                                        child: Text("$cost",
                                             textAlign: TextAlign.center,
                                             style: theme.textTheme.bodyText2))
                                   ]),
@@ -443,7 +447,7 @@ class Overlays {
   static Widget quit(BuildContext context) {
     InstallPrompt.showInstallPrompt();
     var theme = Theme.of(context);
-    return basic(context,
+    return basic(context, "quit",
         hasClose: false,
         coinButton: SizedBox(),
         statsButton: SizedBox(),
@@ -474,12 +478,12 @@ class Overlays {
         return;
       }
     }
-    if (coin != 0) Pref.coin.increase(coin);
+    if (coin != 0) Pref.coin.increase(coin, itemType: "confirm", itemId: type);
     Navigator.of(context).pop(type);
   }
 
   static Widget message(BuildContext context, Widget? content) {
-    return basic(context,
+    return basic(context, "message",
         height: 54.d,
         sfx: "merge-9",
         hasClose: false,

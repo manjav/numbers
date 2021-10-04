@@ -4,6 +4,8 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gameanalytics_sdk/gameanalytics.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:unity_ads_plugin/unity_ads.dart';
 
@@ -14,14 +16,22 @@ class Ads {
 
   static String platform = "Android";
   static init() async {
+    
+    debugPrint("Ads init =====> ${DateTime.now().millisecondsSinceEpoch}");
     UnityAds.init(
         gameId: "4230791",
         listener: (UnityAdState state, data) {
-          if (state == UnityAdState.ready)
+          AdPlace place = _getPlacement(data['placementId']);
+          if (state == UnityAdState.ready) {
+            Analytics.ad(GAAdAction.Loaded, place.type, place.name);
             _placementIds.add(data['placementId']);
-          else if (state == UnityAdState.complete ||
-              state == UnityAdState.skipped) _lastAdState = state;
-          debugPrint("Ads state =================>> $state : $data");
+          } else if (state == UnityAdState.complete ||
+              state == UnityAdState.skipped) {
+            Analytics.ad(GAAdAction.RewardReceived, place.type, place.name);
+            _lastAdState = state;
+          }
+          debugPrint(
+              "Ads state =====> $state : $data ${DateTime.now().millisecondsSinceEpoch}");
         });
 
     for (var id in [AdPlace.Rewarded]) {
@@ -34,14 +44,16 @@ class Ads {
       _placementIds.contains(id == null ? AdPlace.Rewarded.name : id.name);
 
   static Future<bool> show([AdPlace? id]) async {
-    var placementId = id ?? AdPlace.Rewarded;
-    if (!isReady(placementId)) {
-      debugPrint("ads ${placementId.name} is not ready.");
+    var placement = id ?? AdPlace.Rewarded;
+    if (!isReady(placement)) {
+      debugPrint("ads ${placement.name} is not ready.");
+      Analytics.ad(GAAdAction.FailedShow, placement.type, placement.name);
       return false;
     }
+    Analytics.ad(GAAdAction.Show, placement.type, placement.name);
     _lastAdState = UnityAdState.started;
-    _placementIds.remove(placementId.name);
-    UnityAds.showVideoAd(placementId: placementId.name);
+    _placementIds.remove(placement.name);
+    UnityAds.showVideoAd(placementId: placement.name);
     const d = Duration(milliseconds: 500);
     while (_lastAdState == UnityAdState.started) await Future.delayed(d);
     return _lastAdState == UnityAdState.complete;
@@ -53,6 +65,19 @@ class Ads {
       SizedBox(width: 8.d),
       Text("Ad is not available!", style: theme.textTheme.headline4)
     ]);
+  }
+
+  static AdPlace _getPlacement(String id) {
+    switch (id) {
+      case "Interstitial_Android":
+      case "Interstitial_iOS":
+        return AdPlace.Interstitial;
+      case "Banner_Android":
+      case "Banner_iOS":
+        return AdPlace.Banner;
+      default:
+        return AdPlace.Rewarded;
+    }
   }
 }
 
@@ -67,6 +92,17 @@ extension AdExt on AdPlace {
         return "Interstitial_${Ads.platform}";
       case AdPlace.Banner:
         return "Banner_${Ads.platform}";
+    }
+  }
+
+  int get type {
+    switch (this) {
+      case AdPlace.Rewarded:
+        return GAAdType.RewardedVideo;
+      case AdPlace.Interstitial:
+        return GAAdType.Interstitial;
+      case AdPlace.Banner:
+        return GAAdType.Banner;
     }
   }
 }

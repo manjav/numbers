@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:numbers/core/achieves.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
+import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -84,6 +85,8 @@ class MyGame extends BaseGame with TapDetector {
 
     _tutorMode = Pref.tutorMode.value == 0;
     Pref.playCount.increase(1);
+    Analytics.startProgress("main", Pref.playCount.value,
+        "big $boostBig next $boostNextMode");
 
     _linePaint.color = TColors.black.value[0];
     _bgRect = RRect.fromLTRBXY(bounds.left - 4, bounds.top - 4,
@@ -459,7 +462,7 @@ class MyGame extends BaseGame with TapDetector {
         effects: [start, ScaleEffect(size: Vector2(1, 1), duration: 0.3), end],
         onComplete: () {
           remove(r);
-          Pref.coin.increase(value);
+          Pref.coin.increase(value, itemType: "game", itemId: "random");
           onGameEvent?.call(GameEvent.rewarded, 0);
         }));
     add(r);

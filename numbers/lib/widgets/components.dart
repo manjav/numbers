@@ -117,7 +117,7 @@ class Components {
                                 style: theme.textTheme.headline5))
                       ]),
                       onTap: () => _onStartTap(context, boost, 0, onSelect))),
-              SizedBox(height: 4.d)
+              SizedBox(height: 6.d)
             ])));
   }
 
@@ -132,7 +132,7 @@ class Components {
       var complete = await Ads.show();
       if (!complete) return;
     }
-    Pref.coin.increase(-cost);
+    Pref.coin.increase(-cost, itemType: "start", itemId: boost);
 
     if (boost == "next") MyGame.boostNextMode = 1;
     if (boost == "512") MyGame.boostBig = true;

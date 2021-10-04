@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   appsflyer_sdk: ^6.2.4+4-nullsafety
+  confetti: ^0.6.0
   cupertino_icons: ^1.0.3
   device_info: ^2.0.2
   flame: ^1.0.0-rc13
@@ -21,7 +22,7 @@ dependencies:
   firebase_messaging: ^10.0.4
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
-  confetti: ^0.6.0
+  gameanalytics_sdk: ^1.0.6
   in_app_purchase: ^1.0.6
   in_app_review: ^2.0.2
   install_prompt: ^0.0.1
@@ -31,6 +32,7 @@ dependencies:
   soundpool: ^2.1.0
   rive: ^0.7.22
   unity_ads_plugin: ^0.2.2
+  url_launcher: ^6.0.12
   vibration: ^1.7.4-nullsafety.0
 
 dev_dependencies:
