@@ -38,13 +38,12 @@ class AppState extends State<MyApp> {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     var analytics = FirebaseAnalytics();
     return MaterialApp(
-        navigatorObservers: <NavigatorObserver>[FirebaseAnalyticsObserver(analytics: analytics)],
+        navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
         theme: _themeData,
         builder: (BuildContext context, Widget? child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
             child: child!),
-        home:
-            MainPage(analytics: analytics));
+        home: MainPage(analytics: analytics));
   }
 
   updateTheme() async {
@@ -56,8 +55,7 @@ class AppState extends State<MyApp> {
 
 class MainPage extends StatefulWidget {
   final FirebaseAnalytics analytics;
-  MainPage({Key? key, required this.analytics})
-      : super(key: key);
+  MainPage({Key? key, required this.analytics}) : super(key: key);
   @override
   _MainPageState createState() => _MainPageState();
 }

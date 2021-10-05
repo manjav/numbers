@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
 import 'package:numbers/utils/Analytics.dart';
+import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:unity_ads_plugin/unity_ads.dart';
 
@@ -16,7 +17,6 @@ class Ads {
 
   static String platform = "Android";
   static init() async {
-    
     debugPrint("Ads init =====> ${DateTime.now().millisecondsSinceEpoch}");
     UnityAds.init(
         gameId: "4230791",
@@ -45,6 +45,8 @@ class Ads {
 
   static Future<bool> show([AdPlace? id]) async {
     var placement = id ?? AdPlace.Rewarded;
+    if (placement.type == GAAdType.Interstitial && Pref.noAds.value > 0)
+      return true; // No ads mode
     if (!isReady(placement)) {
       debugPrint("ads ${placement.name} is not ready.");
       Analytics.ad(GAAdAction.FailedShow, placement.type, placement.name);
