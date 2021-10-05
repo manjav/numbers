@@ -218,8 +218,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Analytics.endProgress("main", Pref.playCount.value, Pref.record.value,
               _game!.numRevives);
 
+          var _result = await Rout.push(
+              context,
+              Overlays.confirm(context,
+                  "Install the game on your device to make sure you’ll always have your progress saved and safe!",
+                  acceptText: "Install", declineText: "Not yet"));
+          if (_result) InstallPrompt.showInstallPrompt();
           Navigator.of(context).pop();
-          InstallPrompt.showInstallPrompt();
           return;
         }
         _game!.revive();

@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/utils/Analytics.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/notification.dart';
@@ -101,7 +102,14 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<bool> _onWillPop() async {
-    var result = await Rout.push(context, Overlays.quit(context),
+    var result = await Rout.push(
+        context,
+        Overlays.confirm(context,
+            "Install the game on your device to make sure you’ll always have your progress saved and safe!",
+            acceptText: "Install", declineText: "Not yet"));
+    if (result) InstallPrompt.showInstallPrompt();
+
+    result = await Rout.push(context, Overlays.quit(context, showAvatar:!result),
         barrierDismissible: true);
     return result != null;
   }

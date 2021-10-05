@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
