@@ -31,6 +31,7 @@ class Overlays {
     Widget? content,
     Widget? scoreButton,
     Widget? coinButton,
+    Widget? closeButton,
     Widget? statsButton,
     Function? onWillPop,
     EdgeInsets? padding,
@@ -69,17 +70,19 @@ class Overlays {
                 padding: EdgeInsets.fromLTRB(48.d, 80.d, 48.d, 10.d),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       title != null
                           ? Text(title, style: theme.textTheme.headline4)
                           : SizedBox(),
                       if (hasClose)
-                        GestureDetector(
-                            child: SVG.show("close", 28.d),
-                            onTap: () {
-                              onWillPop?.call();
-                              Navigator.of(context).pop();
-                            })
+                        closeButton ??
+                            GestureDetector(
+                                child: SVG.show("close", 28.d),
+                                onTap: () {
+                                  onWillPop?.call();
+                                  Navigator.of(context).pop();
+                                })
                     ])),
             Container(
                 width: width ?? 300.d,
@@ -443,17 +446,16 @@ class Overlays {
     ]);
   }
 
-  static Widget quit(BuildContext context) {
-    InstallPrompt.showInstallPrompt();
+  static Widget quit(BuildContext context, {bool showAvatar = true}) {
     var theme = Theme.of(context);
     return basic(context, "quit",
-        hasClose: false,
+        hasClose: showAvatar,
         coinButton: SizedBox(),
         statsButton: SizedBox(),
-        scoreButton: Positioned(
-            right: 10.d,
-            width: 120.d,
-            height: 120.d,
+        scoreButton: SizedBox(),
+        closeButton: SizedBox(
+            width: 100.d,
+            height: 100.d,
             child: RiveAnimation.asset('anims/nums-character.riv',
                 stateMachines: ["unhappy"])),
         padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d),
@@ -487,8 +489,8 @@ class Overlays {
               height: 120.d,
               child: RiveAnimation.asset('anims/nums-character.riv',
                   stateMachines: ["happy"])),
-          SizedBox(height: 8.d),
-          Text(message, style: theme.textTheme.headline5),
+          SizedBox(height: 12.d),
+          Text(message, style: theme.textTheme.headline6),
           SizedBox(height: 16.d),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             declineText == null
