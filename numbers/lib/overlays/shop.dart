@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:numbers/utils/Analytics.dart';
+import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';

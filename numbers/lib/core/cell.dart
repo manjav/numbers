@@ -45,6 +45,7 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
     PaletteEntry(Color(0xFF004940))
   ];
   static final scales = [0, 1, 0.9, 0.75, 0.65, 0.6, 0.55];
+  static int maxDailyCoins = 100;
   static double get radius => diameter * 0.5;
   static double get strock => padding * 1.1;
   static int getScore(int value) => pow(2, value) as int;

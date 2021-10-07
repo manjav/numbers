@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
-import 'package:numbers/utils/Analytics.dart';
+import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/gemeservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +26,7 @@ class Prefs {
         _initPlayService();
         allowsBackup = true;
       }
+      Pref.coinPiggy.set(0);
       Pref.visitCount.increase(1);
       onInit();
     });
@@ -97,6 +98,7 @@ class Prefs {
 
 enum Pref {
   coin,
+  coinPiggy,
   isMute,
   isVibrateOff,
   noAds,
@@ -116,6 +118,8 @@ extension PrefExt on Pref {
     switch (this) {
       case Pref.coin:
         return "coin";
+      case Pref.coinPiggy:
+        return "coinPiggy";
       case Pref.isMute:
         return "isMute";
       case Pref.isVibrateOff:
@@ -149,9 +153,10 @@ extension PrefExt on Pref {
 
   int set(int value, {bool backup = true, String? itemType, String? itemId}) {
     if (this == Pref.coin) {
-      var type =
-          value > this.value ? GAResourceFlowType.Source : GAResourceFlowType.Sink;
-      Analytics.resource(type, name, value, itemType!, itemId!);
+      var type = value > this.value
+          ? GAResourceFlowType.Source
+          : GAResourceFlowType.Sink;
+      Analytics.resource(type, name, value.abs(), itemType!, itemId!);
     }
     Prefs._set(name, value, backup);
     return value;

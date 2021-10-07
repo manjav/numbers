@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:numbers/core/achieves.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
-import 'package:numbers/utils/Analytics.dart';
+import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -23,6 +23,7 @@ enum GameEvent {
   big,
   boost,
   celebrate,
+  openPiggy,
   completeTutorial,
   lose,
   remove,
@@ -43,6 +44,7 @@ class MyGame extends BaseGame with TapDetector {
   String? removingMode;
 
   bool _tutorMode = false;
+  int _reward = 0;
   int _newRecord = 0;
   int _numRewardCells = 0;
   int _mergesCount = 0;
@@ -85,8 +87,8 @@ class MyGame extends BaseGame with TapDetector {
 
     _tutorMode = Pref.tutorMode.value == 0;
     Pref.playCount.increase(1);
-    Analytics.startProgress("main", Pref.playCount.value,
-        "big $boostBig next $boostNextMode");
+    Analytics.startProgress(
+        "main", Pref.playCount.value, "big $boostBig next $boostNextMode");
 
     _linePaint.color = TColors.black.value[0];
     _bgRect = RRect.fromLTRBXY(bounds.left - 4, bounds.top - 4,
@@ -182,11 +184,10 @@ class MyGame extends BaseGame with TapDetector {
     if (_tutorMode)
       _nextCell.init(_nextCell.column, 0, Cell.getNextValue(_fallingsCount),
           hiddenMode: boostNextMode + 1);
-    var reward = _numRewardCells > 0 || random.nextDouble() > 0.02 || _tutorMode
-        ? 0
-        : random.nextInt(_nextCell.value * 10);
-    if (reward > 0) _numRewardCells++;
-    var cell = Cell(_nextCell.column, row, _nextCell.value, reward: reward);
+
+    if (_reward > 0) _numRewardCells++;
+    var cell = Cell(_nextCell.column, row, _nextCell.value, reward: _reward);
+    _reward = 0;
     cell.x = bounds.left + cell.column * Cell.diameter + Cell.radius;
     cell.y = _nextCell.y + Cell.diameter - 20;
     _cells.map[cell.column][row] = _cells.last = cell;
@@ -449,7 +450,7 @@ class MyGame extends BaseGame with TapDetector {
     });
   }
 
-  void showReward(int value, Vector2 destination) {
+  void showReward(int value, Vector2 destination, GameEvent event) {
     Sound.play("coin");
     var r = Reward(value, size.x * 0.5, size.y * 0.6);
     var start = ScaleEffect(
@@ -462,8 +463,7 @@ class MyGame extends BaseGame with TapDetector {
         effects: [start, ScaleEffect(size: Vector2(1, 1), duration: 0.3), end],
         onComplete: () {
           remove(r);
-          Pref.coin.increase(value, itemType: "game", itemId: "random");
-          onGameEvent?.call(GameEvent.rewarded, 0);
+          onGameEvent?.call(event, value);
         }));
     add(r);
   }
@@ -471,6 +471,9 @@ class MyGame extends BaseGame with TapDetector {
   Future<void> _celebrate() async {
     var limit = 3;
     if (_mergesCount < limit) return;
+    _reward = _numRewardCells > 0 || _tutorMode
+        ? 0
+        : random.nextInt(3) + _mergesCount * 2;
     var sprite = await Sprite.load(
         'celebration-${(_mergesCount - limit).clamp(0, 3)}.png');
     var celebration = SpriteComponent(
@@ -490,7 +493,6 @@ class MyGame extends BaseGame with TapDetector {
         effects: [start, idle1, idle2, end],
         onComplete: () {
           remove(celebration);
-          onGameEvent?.call(GameEvent.rewarded, 0);
         }));
     add(celebration);
     await Future.delayed(Duration(milliseconds: 200));

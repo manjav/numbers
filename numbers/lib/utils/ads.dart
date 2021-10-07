@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
-import 'package:numbers/utils/Analytics.dart';
+import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:unity_ads_plugin/unity_ads.dart';

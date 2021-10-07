@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:numbers/utils/Analytics.dart';
+import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';

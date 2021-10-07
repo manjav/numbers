@@ -45,20 +45,18 @@ class Analytics {
     });
   }
 
-  static Future<void> ad(int action, int adType, String placementID,
+  static Future<void> ad(int action, int type, String placementID,
       [String sdkName = "unityads"]) async {
-    _firebaseAnalytics.logEvent(
-      name: 'ad_${action.toString()}',
-      parameters: <String, dynamic>{
-        'adType': adType.toString(),
-        'placementID': placementID,
-        'sdkName': sdkName,
-      },
-    );
+    _firebaseAnalytics.logEvent(name: "ads", parameters: <String, dynamic>{
+      'adAction': getAdActionName(action),
+      'adType': getAdTypeName(type),
+      'adPlacement': placementID,
+      'adSdkName': sdkName,
+    });
 
     GameAnalytics.addAdEvent({
       "adAction": action,
-      "adType": adType,
+      "adType": type,
       "adSdkName": sdkName,
       "adPlacement": placementID
     });
@@ -66,6 +64,15 @@ class Analytics {
 
   static Future<void> resource(int type, String currency, int amount,
       String itemType, String itemId) async {
+    _firebaseAnalytics
+        .logEvent(name: "resource_change", parameters: <String, dynamic>{
+      "flowType": getResourceType(type),
+      "currency": currency, //"Gems",
+      "amount": amount,
+      "itemType": itemType, //"IAP",
+      "itemId": itemId //"Coins400"
+    });
+
     GameAnalytics.addResourceEvent({
       "flowType": type,
       "currency": currency, //"Gems",
@@ -128,4 +135,47 @@ class Analytics {
   //   await analytics.setAnalyticsCollectionEnabled(true);
   //   setMessage('setAnalyticsCollectionEnabled succeeded');
   // }
+
+  static String getAdActionName(int action) {
+    switch (action) {
+      case GAAdAction.Clicked:
+        return "Clicked";
+      case GAAdAction.Show:
+        return "Show";
+      case GAAdAction.FailedShow:
+        return "FailedShow";
+      case GAAdAction.RewardReceived:
+        return "RewardReceived";
+      case GAAdAction.Request:
+        return "Request";
+      default:
+        return "Loaded";
+    }
+  }
+
+  static String getAdTypeName(int type) {
+    switch (type) {
+      case GAAdType.Video:
+        return "Video";
+      case GAAdType.RewardedVideo:
+        return "RewardedVideo";
+      case GAAdType.Playable:
+        return "Playable";
+      case GAAdType.Interstitial:
+        return "Interstitial";
+      case GAAdType.OfferWall:
+        return "OfferWall";
+      default:
+        return "Banner";
+    }
+  }
+
+  static String getResourceType(int type) {
+    switch (type) {
+      case GAResourceFlowType.Sink:
+        return "Sink";
+      default:
+        return "Source";
+    }
+  }
 }

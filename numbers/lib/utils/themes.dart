@@ -70,6 +70,9 @@ class Themes {
     // var iconTheme = IconThemeData(color: primaries[50]);
     return ThemeData(
       textTheme: textTheme,
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+          linearTrackColor: TColors.white.value[0],
+          color: TColors.orange.value[0]),
       // primarySwatch: darkMaterial,
       // iconTheme: iconTheme,
       // appBarTheme: AppBarTheme(
