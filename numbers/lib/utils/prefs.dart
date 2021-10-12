@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
-import 'package:numbers/utils/analytics.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/gemeservice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

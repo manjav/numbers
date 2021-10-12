@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:numbers/core/achieves.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
-import 'package:numbers/utils/analytics.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -50,6 +50,7 @@ class MyGame extends BaseGame with TapDetector {
   int _mergesCount = 0;
   int _valueRecord = 0;
   int _fallingsCount = 0;
+  int _lastFallingColumn = 0;
   double _speed = Cell.minSpeed;
   Cell _nextCell = Cell(0, 0, 0);
   Cells _cells = Cells();
@@ -283,6 +284,7 @@ class MyGame extends BaseGame with TapDetector {
         _cells.translate(_cells.last!, col, row);
         _cells.last!.x = _x;
       }
+      _lastFallingColumn = _nextCell.column;
 
       Sound.play("fall");
       ++_fallingsCount;
@@ -306,7 +308,7 @@ class MyGame extends BaseGame with TapDetector {
       var dy =
           bounds.top + Cell.diameter * (Cells.height - c.row) + Cell.radius;
       var coef = ((dy - c.y) / (Cell.diameter * Cells.height)) * 0.2;
-
+      var hasDistance = dy - c.y > 0;
       var s1 = CombinedEffect(effects: [
         MoveEffect(
             path: [Vector2(c.x, dy + Cell.radius * coef)], duration: time),
@@ -317,18 +319,17 @@ class MyGame extends BaseGame with TapDetector {
         ScaleEffect(size: Vector2(1, 1), duration: time)
       ]);
       c.addEffect(SequenceEffect(
-          effects: [s1, s2], onComplete: () => fallingComplete(c, dy)));
-    }, state: CellState.Float);
+          effects: [s1, s2],
+          onComplete: () => fallingComplete(c, dy, hasDistance)));
+    }, state: CellState.Float, startFrom: _lastFallingColumn);
   }
 
-  void fallingComplete(Cell cell, double dy) {
+  void fallingComplete(Cell cell, double dy, bool hasDistance) {
+    if (hasDistance) _lastFallingColumn = cell.column;
     cell.size = Vector2(1, 1);
     cell.y = dy;
     cell.state = CellState.Fell;
-    _fell();
-  }
 
-  void _fell() {
     // All cells falling completed
     var hasFloat = false;
     _cells.loop((i, j, c) {
@@ -345,8 +346,8 @@ class MyGame extends BaseGame with TapDetector {
 
   bool _findMatchs() {
     var numMerges = 0;
-    var cp = _nextCell.column;
-    var cm = _nextCell.column - 1;
+    var cp = _lastFallingColumn;
+    var cm = _lastFallingColumn - 1;
     while (cp < Cells.width || cm > -1) {
       if (cp < Cells.width) {
         numMerges += _foundMatch(cp);

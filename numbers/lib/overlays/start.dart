@@ -23,6 +23,7 @@ class _StartOverlayState extends State<StartOverlay> {
   @override
   void initState() {
     if (Pref.tutorMode.value == 0) _onStart();
+    Ads.onAdsReady = _onAdsReady;
     super.initState();
   }
 
@@ -78,4 +79,12 @@ class _StartOverlayState extends State<StartOverlay> {
   }
 
   _onUpdate() => setState(() {});
+
+  _onAdsReady() => setState(() {});
+
+  @override
+  void dispose() {
+    super.dispose();
+    Ads.onAdsReady = null;
+  }
 }

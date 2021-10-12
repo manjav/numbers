@@ -86,4 +86,10 @@ class _PunchButtonState extends State<PunchButton>
             onTap: widget.onTap,
             padding: widget.padding));
   }
+
+  @override
+  void dispose() {
+    animation!.dispose();
+    super.dispose();
+  }
 }

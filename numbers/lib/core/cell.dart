@@ -49,6 +49,8 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   static double get radius => diameter * 0.5;
   static double get strock => padding * 1.1;
   static int getScore(int value) => pow(2, value) as int;
+  // static int getNextValue(int step) => [1, 2, 3, 3, 2, 2, 1, 1][step];
+  // static int getNextColumn(int step) => [0, 1, 1, 2, 4, 4, 4, 4][step];
   static int getNextValue(int step) => Pref.tutorMode.value == 0
       ? [1, 3, 5, 1, 2, 4, 5][step]
       : MyGame.random.nextInt(maxRandomValue) + 1;

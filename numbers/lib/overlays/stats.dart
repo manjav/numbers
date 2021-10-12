@@ -26,7 +26,7 @@ class _StatsOverlayState extends State<StatsOverlay> {
         statsButton: SizedBox(),
         padding: EdgeInsets.all(12.d),
         coinButton:
-            Positioned(top: 32.d, left: 12.d, child: Components.coins(context)),
+            Positioned(top: 32.d, left: 12.d, child: Components.coins(context, "stats")),
         content: Column(children: [
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             SVG.show("record", 24.d),

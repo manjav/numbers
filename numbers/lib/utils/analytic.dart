@@ -5,7 +5,7 @@ import 'dart:async';
 class Analytics {
   static late FirebaseAnalytics _firebaseAnalytics;
 
-  static Future<void> init(FirebaseAnalytics analytics) async {
+  static void init(FirebaseAnalytics analytics) {
     _firebaseAnalytics = analytics;
 
     GameAnalytics.setEnabledInfoLog(false);
@@ -101,17 +101,25 @@ class Analytics {
     });
   }
 
-  static Future<void> log(String name, Map<String, dynamic> parameters) async {
+  static Future<void> design(String name,
+      {Map<String, dynamic>? parameters}) async {
     _firebaseAnalytics.logEvent(name: name, parameters: parameters);
+
+    var value = parameters == null ? "" : parameters.values.first;
+    GameAnalytics.addDesignEvent({"eventId": name, "value": value});
   }
 
   static Future<void> share(String contentType, String itemId) async {
     await _firebaseAnalytics.logShare(
         contentType: contentType, itemId: itemId, method: "");
+
+    GameAnalytics.addDesignEvent({"eventId": "share:$contentType:$itemId"});
   }
 
   static Future<void> setScreen(String screenName) async {
     await _firebaseAnalytics.setCurrentScreen(screenName: screenName);
+
+    GameAnalytics.addDesignEvent({"eventId": "screen:$screenName"});
   }
 
   // static Future<void> setUserId(String id) async {

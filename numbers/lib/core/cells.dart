@@ -15,14 +15,29 @@ class Cells {
     return map[column][row];
   }
 
-  void loop(Function(int, int, Cell) callback, {CellState? state, int? value}) {
-    for (var i = 0; i < width; i++) {
-      for (var j = 0; j < height; j++) {
-        var c = get(i, j);
-        if (c != null &&
-            (state == null || state == c.state) &&
-            (value == null || value == c.value)) callback.call(i, j, map[i][j]);
+  void loop(Function(int, int, Cell) callback,
+      {int startFrom = 0, CellState? state, int? value}) {
+    var positive = startFrom;
+    var negative = startFrom - 1;
+    while (positive < Cells.width || negative > -1) {
+      if (positive < Cells.width) {
+        _verticalLoop(positive, callback, state: state, value: value);
+        ++positive;
       }
+      if (negative > -1) {
+        _verticalLoop(negative, callback, state: state, value: value);
+        --negative;
+      }
+    }
+  }
+
+  void _verticalLoop(int i, Function(int, int, Cell) callback,
+      {CellState? state, int? value}) {
+    for (var j = height - 1; j >= 0; --j) {
+      var c = get(i, j);
+      if (c != null &&
+          (state == null || state == c.state) &&
+          (value == null || value == c.value)) callback.call(i, j, map[i][j]);
     }
   }
 

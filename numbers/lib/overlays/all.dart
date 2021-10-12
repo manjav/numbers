@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/overlays/stats.dart';
-import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/gemeservice.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -53,18 +53,21 @@ class Overlays {
               Positioned(
                   top: 46.d,
                   right: 10.d,
-                  child: Components.scores(theme,
-                      onTap: () =>
-                          PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ"))),
+                  child: Components.scores(theme, onTap: () {
+                    Analytics.design('guiClick:record:$tag');
+                    PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ");
+                  })),
           statsButton ??
               Positioned(
                   top: 32.d,
                   left: 12.d,
-                  child: Components.stats(theme,
-                      onTap: () => Rout.push(context, StatsOverlay()))),
+                  child: Components.stats(theme, onTap: () {
+                    Analytics.design('guiClick:stats:$tag');
+                    Rout.push(context, StatsOverlay());
+                  })),
           coinButton ??
               Positioned(
-                  top: 32.d, left: 66.d, child: Components.coins(context)),
+                  top: 32.d, left: 66.d, child: Components.coins(context, tag)),
           Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Padding(
                 padding: EdgeInsets.fromLTRB(48.d, 80.d, 48.d, 10.d),

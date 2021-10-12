@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:numbers/core/game.dart';
 import 'package:numbers/overlays/shop.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
@@ -43,7 +44,7 @@ class Components {
                     onTap: onTap, child: SVG.show("profile", 48.d)))));
   }
 
-  static Widget coins(BuildContext context,
+  static Widget coins(BuildContext context, String source,
       {Function()? onTap, bool clickable = true}) {
     if (Pref.tutorMode.value == 0) return SizedBox();
     var theme = Theme.of(context);
@@ -64,10 +65,15 @@ class Components {
                       style: theme.textTheme.button)
                   : SizedBox()
             ]),
-            onTap: onTap ??
-                () {
-                  if (clickable) Rout.push(context, ShopOverlay());
-                }));
+            onTap: () {
+              if (clickable) {
+                Analytics.design('guiClick:shop:$source');
+                if (onTap != null)
+                  onTap();
+                else
+                  Rout.push(context, ShopOverlay());
+              }
+            }));
   }
 
   static Widget startButton(

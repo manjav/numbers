@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:numbers/utils/analytics.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
@@ -91,7 +91,7 @@ class _ShopOverlayState extends State<ShopOverlay> {
           coinButton: Positioned(
               top: 32.d,
               left: 12.d,
-              child: Components.coins(context, clickable: false)),
+              child: Components.coins(context, "shop", clickable: false)),
           padding: EdgeInsets.all(8.d),
           width: 310.d,
           height: _getHeight(),
