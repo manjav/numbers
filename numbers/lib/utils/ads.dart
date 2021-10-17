@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/prefs.dart';
-import 'package:numbers/utils/utils.dart';
 import 'package:unity_ads_plugin/unity_ads.dart';
 
 class Ads {
@@ -54,21 +53,14 @@ class Ads {
       Analytics.ad(GAAdAction.FailedShow, placement.type, placement.name);
       return false;
     }
-    Analytics.ad(GAAdAction.Show, placement.type, placement.name);
+    Analytics.ad(GAAdAction.Show, placement.type,
+        placement.name); // where is this from?????
     _lastAdState = UnityAdState.started;
     _placementIds.remove(placement.name);
     UnityAds.showVideoAd(placementId: placement.name);
     const d = Duration(milliseconds: 500);
     while (_lastAdState == UnityAdState.started) await Future.delayed(d);
     return _lastAdState == UnityAdState.complete;
-  }
-
-  static Widget errorMessage(ThemeData theme) {
-    return Row(children: [
-      SVG.icon("0", theme),
-      SizedBox(width: 8.d),
-      Text("Ad is not available!", style: theme.textTheme.headline4)
-    ]);
   }
 
   static AdPlace _getPlacement(String id) {

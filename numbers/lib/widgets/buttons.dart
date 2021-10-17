@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:numbers/overlays/all.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
@@ -46,8 +45,7 @@ class _BumpedButtonState extends State<BumpedButton> {
             Sound.play("button-up");
             widget.onTap?.call();
           } else if (widget.errorMessage != null) {
-            Rout.push(context, Overlays.message(context, widget.errorMessage),
-                barrierDismissible: true);
+            Rout.push(context, widget.errorMessage!, barrierDismissible: true);
           }
           _isPressed = false;
           setState(() {});

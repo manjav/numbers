@@ -6,13 +6,21 @@ import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
-import 'package:numbers/overlays/all.dart';
-import 'package:numbers/overlays/pause.dart';
-import 'package:numbers/overlays/shop.dart';
-import 'package:numbers/overlays/stats.dart';
+import 'package:numbers/dialogs/big.dart';
+import 'package:numbers/dialogs/callout.dart';
+import 'package:numbers/dialogs/confirm.dart';
+import 'package:numbers/dialogs/confirms.dart';
+import 'package:numbers/dialogs/piggy.dart';
+import 'package:numbers/dialogs/record.dart';
+import 'package:numbers/dialogs/revive.dart';
+import 'package:numbers/dialogs/pause.dart';
+import 'package:numbers/dialogs/shop.dart';
+import 'package:numbers/dialogs/stats.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/gemeservice.dart';
+import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
+import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
@@ -50,7 +58,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var rewardAvailble = Pref.coinPiggy.value >= Cell.maxDailyCoins;
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
@@ -80,7 +87,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Components.stats(theme, onTap: () {
                 _pause("stats");
                 Analytics.design('guiClick:stats:home');
-                Rout.push(context, StatsOverlay());
+                Rout.push(context, StatsDialog());
               })),
           _coins = Positioned(
               top: _game!.bounds.top - 70.d,
@@ -88,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               height: 52.d,
               child: Components.coins(context, "home", onTap: () async {
                 MyGame.isPlaying = false;
-                await Rout.push(context, ShopOverlay());
+                await Rout.push(context, ShopDialog());
                 MyGame.isPlaying = true;
                 setState(() {});
               })),
@@ -97,7 +104,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   top: _game!.bounds.top - 68.d,
                   right: 22.d,
                   left: 28.d,
-                  child: Text("How to play?",
+                  child: Text("home_tutor".l(),
                       style: theme.textTheme.headline4,
                       textAlign: TextAlign.center))
               : SizedBox(),
@@ -119,16 +126,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       Column(children: [
                         SizedBox(height: 5 * _rewardAnimation!.value),
                         Expanded(
-                            child: _button(theme, 20.d, "piggy",
-                                () => _boost(rewardAvailble ? "piggy" : ""),
+                            child: _button(
+                                theme, 20.d, "piggy", () => _boost("piggy"),
                                 width: 96.d,
                                 badge: _slider(
                                     theme,
                                     _rewardLineAnimation!.value.round(),
                                     Cell.maxDailyCoins),
-                                colors: rewardAvailble
-                                    ? TColors.orange.value
-                                    : null))
+                                colors:
+                                    Pref.coinPiggy.value >= Cell.maxDailyCoins
+                                        ? TColors.orange.value
+                                        : null))
                       ]),
                       SizedBox(width: 4.d),
                       _button(
@@ -161,7 +169,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Select ${_game!.removingMode} to remove!"),
+                            Text("home_rm_${_game!.removingMode!}".l()),
                             GestureDetector(
                                 child: SVG.show("close", 32.d),
                                 onTap: _onRemoveBlock)
@@ -200,13 +208,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         left: 0,
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8.d),
-            child: Text(value == 0 ? "free" : "$value",
+            child: Text(value == 0 ? "free_l".l() : "$value",
                 style: theme.textTheme.headline6),
             decoration: _badgeDecoration()));
   }
 
   Widget _slider(ThemeData theme, int value, int maxValue) {
-    var label = value >= maxValue ? "Collect" : "$value / $maxValue";
+    var label = value >= maxValue ? "collect_l".l() : "$value / $maxValue";
     return Positioned(
         height: 32.d,
         bottom: 0,
@@ -248,7 +256,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     switch (event) {
       case GameEvent.big:
         await Future.delayed(Duration(milliseconds: 250));
-        _widget = Overlays.bigValue(context, value, _confettiController!);
+        _widget = BigBlockDialog(value, _confettiController!);
         Prefs.increaseBig(value);
         break;
       case GameEvent.boost:
@@ -258,17 +266,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         _confettiController!.play();
         return;
       case GameEvent.completeTutorial:
-        _widget = Overlays.endTutorial(context, _confettiController!);
+        _widget = ConfirmDialog(_confettiController!);
         break;
       case GameEvent.lose:
         await Future.delayed(Duration(seconds: 1));
-        _widget = Overlays.revive(context, _game!.numRevives);
+        _widget = ReviveDialog(_game!.numRevives);
         break;
       case GameEvent.openPiggy:
         Pref.coinPiggy.set(0);
         Pref.coin.increase(value, itemType: "game", itemId: "random");
         _rewardLineAnimation!
             .animateTo(0, duration: const Duration(milliseconds: 400));
+        Sound.play("win");
+        setState(() {});
         return;
       case GameEvent.remove:
         _onRemoveBlock();
@@ -299,8 +309,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (event == GameEvent.lose) {
         if (result == null) {
           if (value > 0) {
-            await Rout.push(
-                context, Overlays.record(context, _confettiController!));
+            await Rout.push(context, RecordDialog(_confettiController!));
             await Future.delayed(Duration(milliseconds: 150));
           }
 
@@ -309,9 +318,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
           var _result = await Rout.push(
               context,
-              Overlays.confirm(context,
+              Toast(
                   "Install the game on your device to make sure you’ll always have your progress saved and safe!",
-                  acceptText: "Install", declineText: "Not yet"));
+                  acceptText: "Install",
+                  declineText: "Not yet"));
           if (_result) InstallPrompt.showInstallPrompt();
           Navigator.of(context).pop();
           return;
@@ -333,7 +343,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     MyGame.isPlaying = false;
     Analytics.design('guiClick:pause:$source');
     if (!showMenu) return;
-    var result = await Rout.push(context, PauseOverlay());
+    var result = await Rout.push(context, PauseDialog());
     _onPauseButtonsClick(result ?? "resume");
   }
 
@@ -350,48 +360,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   _boost(String type) async {
-    if (type == "") return;
     MyGame.isPlaying = false;
+    if (type == "piggy") {
+      var result = await Rout.push(context, PiggyDialog());
+      if (result != null && result != "") {
+        MyGame.isPlaying = true;
+        _game!.showReward(Cell.maxDailyCoins,
+            Vector2(_coins!.top!, _coins!.left! + 8.d), GameEvent.openPiggy);
+      }
+      MyGame.isPlaying = true;
+      return;
+    }
 
     if (type == "one" && Pref.removeOne.value > 0 ||
         type == "color" && Pref.removeColor.value > 0) {
       setState(() => _game!.removingMode = type);
       return;
     }
-    var title = "";
-    var hasCoinButton = true;
     EdgeInsets padding = EdgeInsets.only(right: 16, bottom: 80);
-    switch (type) {
-      case "next":
-        title = "Show next upcomming block!";
-        padding = EdgeInsets.only(left: 32, top: _game!.bounds.top + 68);
-        break;
-      case "one":
-        title = "Remove one block!";
-        break;
-      case "color":
-        title = "Select color for remove!";
-        break;
-      case "piggy":
-        hasCoinButton = false;
-        title = "Get Piggy Bank reward!";
-        break;
-    }
+    if (type == "next")
+      padding = EdgeInsets.only(left: 32, top: _game!.bounds.top + 68);
+
     var result = await Rout.push(
-        context,
-        Overlays.callout(context, title, type,
-            padding: padding, hasCoinButton: hasCoinButton),
-        barrierColor: Colors.transparent,
-        barrierDismissible: true);
+        context, Callout("clt_${type}_text".l(), type, padding: padding),
+        barrierColor: Colors.transparent, barrierDismissible: true);
     if (result != null) {
       if (type == "next") {
         _game!.boostNext();
-        return;
-      }
-      if (type == "piggy") {
-        MyGame.isPlaying = true;
-        _game!.showReward(Cell.maxDailyCoins,
-            Vector2(_coins!.top!, _coins!.left! + 8.d), GameEvent.openPiggy);
         return;
       }
       if (type == "one") Pref.removeOne.set(1);

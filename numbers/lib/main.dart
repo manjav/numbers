@@ -6,16 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:install_prompt/install_prompt.dart';
+import 'package:numbers/dialogs/confirm.dart';
+import 'package:numbers/dialogs/quit.dart';
+import 'package:numbers/dialogs/start.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/analytic.dart';
+import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/notification.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
-
-import 'overlays/all.dart';
-import 'overlays/start.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,8 +80,9 @@ class _MainPageState extends State<MainPage> {
       Sound.init();
       Notifier.init();
       Analytics.init(widget.analytics);
-      Prefs.init(() {
+      Prefs.init(() async {
         _loadingState = 1;
+        await Localization.init();
         setState(() {});
       });
       InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
@@ -97,19 +99,18 @@ class _MainPageState extends State<MainPage> {
     }
     return WillPopScope(
         onWillPop: _onWillPop,
-        child:
-            Scaffold(body: _loadingState == 0 ? SizedBox() : StartOverlay()));
+        child: Scaffold(body: _loadingState == 0 ? SizedBox() : StartDialog()));
   }
 
   Future<bool> _onWillPop() async {
     var result = await Rout.push(
         context,
-        Overlays.confirm(context,
+        Toast(
             "Install the game on your device to make sure you’ll always have your progress saved and safe!",
-            acceptText: "Install", declineText: "Not yet"));
+            acceptText: "Install",
+            declineText: "Not yet"));
     if (result) InstallPrompt.showInstallPrompt();
-
-    result = await Rout.push(context, Overlays.quit(context, showAvatar:!result),
+    result = await Rout.push(context, QuitDialog(showAvatar: !result),
         barrierDismissible: true);
     return result != null;
   }
