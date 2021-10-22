@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _rewardAnimation!.addListener(() => setState(() {}));
     _rewardLineAnimation = AnimationController(
         vsync: this,
-        upperBound: Cell.maxDailyCoins * 1.0,
+        upperBound: PiggyDialog.capacity * 1.0,
         value: Pref.coinPiggy.value * 1.0);
     _rewardLineAnimation!.addListener(() => setState(() {}));
     _confettiController =
@@ -132,9 +132,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 badge: _slider(
                                     theme,
                                     _rewardLineAnimation!.value.round(),
-                                    Cell.maxDailyCoins),
+                                    PiggyDialog.capacity),
                                 colors:
-                                    Pref.coinPiggy.value >= Cell.maxDailyCoins
+                                    Pref.coinPiggy.value >= PiggyDialog.capacity
                                         ? TColors.orange.value
                                         : null))
                       ]),
@@ -291,13 +291,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         return;
       case GameEvent.rewarded:
         var dailyCoins = Pref.coinPiggy.value + value;
-        Pref.coinPiggy.set(dailyCoins.clamp(0, Cell.maxDailyCoins));
+        Pref.coinPiggy.set(dailyCoins.clamp(0, PiggyDialog.capacity));
         _rewardAnimation!.value = 1;
         _rewardAnimation!.animateTo(0,
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeOutSine);
         _rewardLineAnimation!.animateTo(Pref.coinPiggy.value * 1.0,
             duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
+        ++PiggyDialog.autoAppearance;
+        if (dailyCoins >= PiggyDialog.capacity &&
+            PiggyDialog.autoAppearance % 4 == 1) await _boost("piggy");
         return;
       case GameEvent.score:
         setState(() {});
@@ -365,7 +368,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       var result = await Rout.push(context, PiggyDialog());
       if (result != null && result != "") {
         MyGame.isPlaying = true;
-        _game!.showReward(Cell.maxDailyCoins,
+        _game!.showReward(PiggyDialog.capacity,
             Vector2(_coins!.top!, _coins!.left! + 8.d), GameEvent.openPiggy);
       }
       MyGame.isPlaying = true;

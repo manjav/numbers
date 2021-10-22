@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:numbers/core/cell.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -13,6 +12,8 @@ import 'toast.dart';
 
 // ignore: must_be_immutable
 class PiggyDialog extends AbstractDialog {
+  static int capacity = 20;
+  static int autoAppearance = 0;
   PiggyDialog()
       : super(DialogMode.piggy,
             height: 272.d, title: "piggy_l".l(), padding: EdgeInsets.all(18.d));
@@ -24,12 +25,19 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    widget.closeButton = GestureDetector(
+        child:
+            Column(children: [SVG.show("close", 14.d), SizedBox(height: 8.d)]),
+        onTap: () {
+          widget.onWillPop?.call();
+          Navigator.of(context).pop();
+        });
     widget.child = Stack(alignment: Alignment.topCenter, children: [
       SVG.show("piggy", 144.d),
       Positioned(
           top: 112.d,
           child: Text("piggy_message".l(), style: theme.textTheme.caption)),
-      _slider(theme, Pref.coinPiggy.value, Cell.maxDailyCoins)
+      _slider(theme, Pref.coinPiggy.value, PiggyDialog.capacity)
     ]);
     return super.build(context);
   }
@@ -43,17 +51,27 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
           bottom: 4.d,
           // right: 4.d,
           cornerRadius: 16.d,
-          padding: EdgeInsets.all(14.d),
+          padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d),
           isEnable: rewardAvailble && Ads.isReady(),
           colors: TColors.orange.value,
           errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
-          onTap: () =>
-              buttonsClick(context, "piggy", 0, adId: AdPlace.Rewarded),
-          content: Row(children: [
+          onTap: () {
+            PiggyDialog.autoAppearance = 0;
+            buttonsClick(context, "piggy", 0, adId: AdPlace.Rewarded);
+          },
+          content:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             SVG.icon("0", theme),
-            Expanded(child: SizedBox()),
-            SVG.show("coin", 32.d),
-            Text("x$maxValue", style: theme.textTheme.headline4)
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("free_l".l(), style: theme.textTheme.headline5),
+                  Row(children: [
+                    SVG.show("coin", 28.d),
+                    Text("+100", style: theme.textTheme.headline6)
+                  ])
+                ])
           ]));
     }
     var label = "$value / $maxValue";

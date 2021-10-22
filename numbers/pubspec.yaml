@@ -15,13 +15,13 @@ dependencies:
   confetti: ^0.6.0
   cupertino_icons: ^1.0.3
   device_info: ^2.0.2
-  flame: ^1.0.0-rc13
-  flame_svg: ^1.0.0-rc3
+  flame: 1.0.0-releasecandidate.12
+  flame_svg: 1.0.0-rc4
   firebase_analytics: ^8.2.0
   firebase_core: ^1.4.0
   firebase_messaging: ^10.0.4
   flutter_rating_bar: ^4.0.0
-  flutter_svg: ^0.22.0
+  flutter_svg: 0.22.0
   gameanalytics_sdk: ^1.0.6
   in_app_purchase: ^1.0.6
   in_app_review: ^2.0.2

@@ -1,9 +1,16 @@
+import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
 import 'dart:async';
 
 class Analytics {
   static late FirebaseAnalytics _firebaseAnalytics;
+
+  static AppsflyerSdk appsflyerSdk = AppsflyerSdk({
+    "afDevKey": "YBThmUqaiHZYpiSwZ3GQz4",
+    "afAppId": "game.block.puzzle.drop.the.number.merge",
+    "isDebug": false
+  });
 
   static void init(FirebaseAnalytics analytics) {
     _firebaseAnalytics = analytics;
@@ -21,6 +28,11 @@ class Analytics {
     GameAnalytics.configureAutoDetectAppVersion(true);
     GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
         "275843fe2b762882e938a16d6b095d7661670ee9");
+
+    appsflyerSdk.initSdk(
+        registerConversionDataCallback: true,
+        registerOnAppOpenAttributionCallback: true,
+        registerOnDeepLinkingCallback: true);
   }
 
   static Future<void> purchase(String currency, double amount, String itemId,
@@ -47,12 +59,13 @@ class Analytics {
 
   static Future<void> ad(int action, int type, String placementID,
       [String sdkName = "unityads"]) async {
-    _firebaseAnalytics.logEvent(name: "ads", parameters: <String, dynamic>{
+    var map = <String, dynamic>{
       'adAction': getAdActionName(action),
       'adType': getAdTypeName(type),
       'adPlacement': placementID,
       'adSdkName': sdkName,
-    });
+    };
+    _firebaseAnalytics.logEvent(name: "ads", parameters: map);
 
     GameAnalytics.addAdEvent({
       "adAction": action,
@@ -60,6 +73,8 @@ class Analytics {
       "adSdkName": sdkName,
       "adPlacement": placementID
     });
+
+    appsflyerSdk.logEvent("ads", map);
   }
 
   static Future<void> resource(int type, String currency, int amount,
