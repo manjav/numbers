@@ -300,7 +300,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
         ++PiggyDialog.autoAppearance;
         if (dailyCoins >= PiggyDialog.capacity &&
-            PiggyDialog.autoAppearance % 4 == 1) await _boost("piggy");
+            PiggyDialog.autoAppearance % 4 == 1)
+          await _boost("piggy", playApplaud: true);
         return;
       case GameEvent.score:
         setState(() {});
@@ -362,10 +363,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  _boost(String type) async {
+  _boost(String type, {bool? playApplaud}) async {
     MyGame.isPlaying = false;
     if (type == "piggy") {
-      var result = await Rout.push(context, PiggyDialog());
+      var result =
+          await Rout.push(context, PiggyDialog(playApplaud: playApplaud));
       if (result != null && result != "") {
         MyGame.isPlaying = true;
         _game!.showReward(PiggyDialog.capacity,

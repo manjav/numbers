@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
+import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/punchbutton.dart';
@@ -14,7 +17,8 @@ import 'toast.dart';
 class PiggyDialog extends AbstractDialog {
   static int capacity = 20;
   static int autoAppearance = 0;
-  PiggyDialog()
+  bool? playApplaud;
+  PiggyDialog({this.playApplaud})
       : super(DialogMode.piggy,
             height: 272.d, title: "piggy_l".l(), padding: EdgeInsets.all(18.d));
   @override
@@ -25,6 +29,11 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var message =
+        Pref.coinPiggy.value >= PiggyDialog.capacity ? "collect" : "fill";
+
+    if (widget.playApplaud ?? false)
+      Timer(Duration(milliseconds: 600), () => Sound.play("win"));
     widget.closeButton = GestureDetector(
         child:
             Column(children: [SVG.show("close", 14.d), SizedBox(height: 8.d)]),
@@ -36,7 +45,7 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
       SVG.show("piggy", 144.d),
       Positioned(
           top: 112.d,
-          child: Text("piggy_message".l(), style: theme.textTheme.caption)),
+          child: Text("piggy_$message".l(), style: theme.textTheme.caption)),
       _slider(theme, Pref.coinPiggy.value, PiggyDialog.capacity)
     ]);
     return super.build(context);
