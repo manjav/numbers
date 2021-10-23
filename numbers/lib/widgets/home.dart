@@ -298,10 +298,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             curve: Curves.easeOutSine);
         _rewardLineAnimation!.animateTo(Pref.coinPiggy.value * 1.0,
             duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
-        ++PiggyDialog.autoAppearance;
-        if (dailyCoins >= PiggyDialog.capacity &&
-            PiggyDialog.autoAppearance % 4 == 1)
-          await _boost("piggy", playApplaud: true);
+        if (dailyCoins >= PiggyDialog.capacity) {
+          ++PiggyDialog.autoAppearance;
+          if (PiggyDialog.autoAppearance % 2 == 1)
+            await _boost("piggy", playApplaud: true);
+        }
         return;
       case GameEvent.score:
         setState(() {});
