@@ -107,13 +107,15 @@ class Analytics {
   }
 
   static void endProgress(String name, int round, int score, int revives) {
-    GameAnalytics.addProgressionEvent({
+    var map = {
       "progressionStatus": GAProgressionStatus.Complete,
       "progression01": name,
       "progression02": "round $round",
       "score": score,
       "revives": revives
-    });
+    };
+    GameAnalytics.addProgressionEvent(map);
+    if (round % 3 == 0) appsflyerSdk.logEvent("end_round", map);
   }
 
   static Future<void> design(String name,
