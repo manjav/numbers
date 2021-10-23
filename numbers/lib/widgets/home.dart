@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   MyGame? _game;
   int loadingState = 0;
 
-  Positioned? _coins;
   AnimationController? _rewardAnimation;
   AnimationController? _rewardLineAnimation;
   ConfettiController? _confettiController;
@@ -374,8 +373,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           await Rout.push(context, PiggyDialog(playApplaud: playApplaud));
       if (result != null && result != "") {
         MyGame.isPlaying = true;
-        _game!.showReward(PiggyDialog.capacity,
-            Vector2(_coins!.top!, _coins!.left! + 8.d), GameEvent.openPiggy);
+        _game!.showReward(
+            PiggyDialog.capacity,
+            Vector2(_game!.bounds.top, Device.size.width * 0.5),
+            GameEvent.openPiggy);
       }
       MyGame.isPlaying = true;
       return;
