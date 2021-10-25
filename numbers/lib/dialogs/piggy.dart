@@ -15,12 +15,12 @@ import 'toast.dart';
 
 // ignore: must_be_immutable
 class PiggyDialog extends AbstractDialog {
-  static int capacity = 50;
+  static int capacity = 300;
   static int autoAppearance = 0;
   bool? playApplaud;
   PiggyDialog({this.playApplaud})
       : super(DialogMode.piggy,
-            height: 272.d, title: "piggy_l".l(), padding: EdgeInsets.all(18.d));
+            height: 300.d, title: "piggy_l".l(), padding: EdgeInsets.all(18.d));
   @override
   _PiggyDialogState createState() => _PiggyDialogState();
 }
@@ -35,8 +35,7 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
     if (widget.playApplaud ?? false)
       Timer(Duration(milliseconds: 600), () => Sound.play("win"));
     widget.closeButton = GestureDetector(
-        child:
-            Column(children: [SVG.show("close", 14.d), SizedBox(height: 8.d)]),
+        child: SVG.show("close", 14.d),
         onTap: () {
           widget.onWillPop?.call();
           Navigator.of(context).pop();
@@ -45,7 +44,9 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
       SVG.show("piggy", 144.d),
       Positioned(
           top: 112.d,
-          child: Text("piggy_$message".l(), style: theme.textTheme.caption)),
+          width: 260.d,
+          child: Text("piggy_$message".l([PiggyDialog.capacity.toString()]),
+              textAlign: TextAlign.center, style: theme.textTheme.caption)),
       _slider(theme, Pref.coinPiggy.value, PiggyDialog.capacity)
     ]);
     return super.build(context);
@@ -58,9 +59,8 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
           height: 76.d,
           width: 160.d,
           bottom: 4.d,
-          // right: 4.d,
           cornerRadius: 16.d,
-          padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d),
+          padding: EdgeInsets.fromLTRB(8.d, 0, 8.d, 8.d),
           isEnable: rewardAvailble && Ads.isReady(),
           colors: TColors.orange.value,
           errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
@@ -75,10 +75,11 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("free_l".l(), style: theme.textTheme.headline5),
+                  Text("free_l".l(), style: theme.textTheme.headline4),
                   Row(children: [
-                    SVG.show("coin", 28.d),
-                    Text("+100", style: theme.textTheme.headline6)
+                    SVG.show("coin", 32.d),
+                    Text("+${PiggyDialog.capacity}",
+                        style: theme.textTheme.headline5)
                   ])
                 ])
           ]));

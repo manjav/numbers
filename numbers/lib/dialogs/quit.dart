@@ -26,9 +26,10 @@ class _QuitDialogState extends AbstractDialogState<QuitDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    widget.closeButton = SizedBox(
-        width: 100.d,
-        height: 100.d,
+    widget.closeButton = Container(
+        width: 80.d,
+        height: 80.d,
+        padding: EdgeInsets.fromLTRB(8.d, 0, 0, 16.d),
         child: RiveAnimation.asset('anims/nums-character.riv',
             stateMachines: ["unhappy"]));
     widget.child = GestureDetector(

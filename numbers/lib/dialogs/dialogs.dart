@@ -53,6 +53,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    var width = widget.width ?? 300.d;
     var hasChrome = widget.hasChrome ?? true;
     var hasClose = widget.showCloseButton ?? true;
 
@@ -87,11 +88,12 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
                   left: 66.d,
                   child: Components.coins(context, widget.mode.name)),
           Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Padding(
-                padding: EdgeInsets.fromLTRB(48.d, 80.d, 48.d, 10.d),
+            SizedBox(
+                width: width - 36.d,
+                height: 72.d,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       widget.title != null
                           ? Text(widget.title!,
@@ -107,7 +109,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
                                 })
                     ])),
             Container(
-                width: widget.width ?? 300.d,
+                width: width,
                 height: widget.height == null
                     ? 340.d
                     : (widget.height == 0 ? null : widget.height),

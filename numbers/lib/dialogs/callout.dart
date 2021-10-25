@@ -12,11 +12,16 @@ import 'dialogs.dart';
 
 // ignore: must_be_immutable
 class Callout extends AbstractDialog {
+  static double chromeWidth = 220.d;
+  static double chromeHeight = 84.d;
   final String text;
   final String type;
   final EdgeInsets? padding;
   final bool? hasCoinButton;
-  Callout(this.text, this.type, {this.padding, this.hasCoinButton})
+  final double? width;
+  final double? height;
+  Callout(this.text, this.type,
+      {this.padding, this.width, this.height, this.hasCoinButton})
       : super(
           DialogMode.callout,
         );
@@ -39,8 +44,8 @@ class _CalloutState extends AbstractDialogState<Callout> {
           right: pd != null && pd.right != 0 ? pd.right : null,
           bottom: pd != null && pd.bottom != 0 ? pd.bottom : null,
           child: Container(
-              width: 220.d,
-              height: 84.d,
+              width: widget.width ?? Callout.chromeWidth,
+              height: widget.height ?? Callout.chromeHeight,
               padding: EdgeInsets.all(8.d),
               decoration: BoxDecoration(
                   boxShadow: [

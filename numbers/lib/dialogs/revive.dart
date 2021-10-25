@@ -19,10 +19,7 @@ class ReviveDialog extends AbstractDialog {
   final int numRevive;
   ReviveDialog(this.numRevive)
       : super(DialogMode.revive,
-            sfx: "lose",
-            title: Device.aspectRatio < 0.7 ? "revive_l".l() : null,
-            width: 310.d,
-            height: 300.d);
+            sfx: "lose", title: "revive_l".l(), width: 310.d);
   @override
   _ReviveDialogState createState() => _ReviveDialogState();
 }

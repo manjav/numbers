@@ -14,7 +14,7 @@ class StatsDialog extends AbstractDialog {
   StatsDialog()
       : super(
           DialogMode.stats,
-          height: 260.d,
+          height: 270.d,
           title: "stats_l".l(),
           statsButton: SizedBox(),
           padding: EdgeInsets.all(12.d),
@@ -34,9 +34,10 @@ class _StatsDialogState extends AbstractDialogState<StatsDialog> {
         SVG.show("record", 24.d),
         Text(" ${Pref.record.value.format()}", style: theme.textTheme.headline5)
       ]),
-      SizedBox(height: 4.d),
+      SizedBox(height: 8.d),
       Text("stats_plays".l([Pref.playCount.value.toString()]),
           style: theme.textTheme.headline6),
+      SizedBox(height: 8.d),
       SizedBox(
         width: 270.d,
         height: 164.d,

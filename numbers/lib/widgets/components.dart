@@ -83,13 +83,14 @@ class Components {
     var theme = Theme.of(context);
     return Expanded(
         child: Container(
-            padding: EdgeInsets.fromLTRB(10.d, 6.d, 10.d, 6.d),
+            padding: EdgeInsets.all(8.d),
             decoration: ButtonDecor(TColors.whiteFlat.value, 12.d, true, false),
             child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 SVG.show(boost, 58.d),
                 _has(boost) ? SVG.show("accept", 22.d) : SizedBox()
               ]),
+              SizedBox(height: 6.d),
               Text(title,
                   style: theme.textTheme.subtitle2,
                   textAlign: TextAlign.center),
@@ -155,7 +156,7 @@ class Components {
     return ConfettiWidget(
         gravity: 0.5,
         maxBlastForce: 50,
-        numberOfParticles: 30,
+        numberOfParticles: 20,
         emissionFrequency: 0.05,
         confettiController: controller,
         blastDirectionality: BlastDirectionality.explosive,

@@ -23,7 +23,7 @@ class ConfirmDialog extends AbstractDialog {
             coinButton: SizedBox(),
             statsButton: SizedBox(),
             scoreButton: SizedBox(),
-            padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 8.d));
+            padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d));
   @override
   _ConfirmDialogState createState() => _ConfirmDialogState();
 }
@@ -39,7 +39,7 @@ class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
           child: Text("tutor_message".l(), style: theme.textTheme.caption)),
       Positioned(
           height: 76.d,
-          width: 140.d,
+          width: 150.d,
           bottom: 0,
           left: 0,
           child: BumpedButton(
@@ -54,7 +54,7 @@ class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
                   ]))),
       Positioned(
           height: 76.d,
-          width: 140.d,
+          width: 150.d,
           bottom: 0,
           right: 0,
           child: BumpedButton(

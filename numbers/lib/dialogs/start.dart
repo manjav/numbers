@@ -18,7 +18,7 @@ import 'dialogs.dart';
 class StartDialog extends AbstractDialog {
   StartDialog()
       : super(DialogMode.start,
-            height: 300.d,
+            height: 320.d,
             showCloseButton: false,
             title: "start_title".l(),
             padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d));
@@ -48,7 +48,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
       ])),
       SizedBox(height: 10.d),
       Container(
-          height: 64.d,
+          height: 70.d,
           child: BumpedButton(
               colors: TColors.blue.value,
               onTap: _onStart,
