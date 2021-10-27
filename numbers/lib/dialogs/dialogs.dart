@@ -9,6 +9,7 @@ import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/components.dart';
+import 'package:unity_ads_plugin/ad/unity_banner_ad.dart';
 
 // ignore: must_be_immutable
 class AbstractDialog extends StatefulWidget {
@@ -50,80 +51,35 @@ class AbstractDialog extends StatefulWidget {
 }
 
 class AbstractDialogState<T extends AbstractDialog> extends State<T> {
+  List<Widget> stepChildren = <Widget>[];
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var width = widget.width ?? 300.d;
-    var hasChrome = widget.hasChrome ?? true;
-    var hasClose = widget.showCloseButton ?? true;
 
     Sound.play(widget.sfx ?? "pop");
     Analytics.setScreen(widget.mode.name);
+
+    var children = <Widget>[];
+    children.add(rankButtonFactory(theme));
+    children.add(statsButtonFactory(theme));
+    children.add(coinsButtonFactory(theme));
+
+    var rows = <Widget>[];
+    rows.add(headerFactory(theme, width));
+    rows.add(chromeFactory(theme, width));
+    children.add(
+        Column(mainAxisAlignment: MainAxisAlignment.center, children: rows));
+    children.addAll(stepChildren);
+
     return WillPopScope(
         key: Key(widget.mode.name),
         onWillPop: () async {
           widget.onWillPop?.call();
           return widget.closeOnBack ?? true;
         },
-        child: Stack(alignment: Alignment.center, children: [
-          widget.scoreButton ??
-              Positioned(
-                  top: 46.d,
-                  right: 10.d,
-                  child: Components.scores(theme, onTap: () {
-                    Analytics.design('guiClick:record:${widget.mode.name}');
-                    PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ");
-                  })),
-          widget.statsButton ??
-              Positioned(
-                  top: 32.d,
-                  left: 12.d,
-                  child: Components.stats(theme, onTap: () {
-                    Analytics.design('guiClick:stats:${widget.mode.name}');
-                    Rout.push(context, StatsDialog());
-                  })),
-          widget.coinButton ??
-              Positioned(
-                  top: 32.d,
-                  left: 66.d,
-                  child: Components.coins(context, widget.mode.name)),
-          Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            SizedBox(
-                width: width - 36.d,
-                height: 72.d,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      widget.title != null
-                          ? Text(widget.title!,
-                              style: theme.textTheme.headline4)
-                          : SizedBox(),
-                      if (hasClose)
-                        widget.closeButton ??
-                            GestureDetector(
-                                child: SVG.show("close", 28.d),
-                                onTap: () {
-                                  widget.onWillPop?.call();
-                                  Navigator.of(context).pop();
-                                })
-                    ])),
-            Container(
-                width: width,
-                height: widget.height == null
-                    ? 340.d
-                    : (widget.height == 0 ? null : widget.height),
-                padding: widget.padding ??
-                    EdgeInsets.fromLTRB(18.d, 12.d, 18.d, 18.d),
-                decoration: hasChrome
-                    ? BoxDecoration(
-                        color: theme.dialogTheme.backgroundColor,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.all(Radius.circular(24.d)))
-                    : null,
-                child: widget.child ?? SizedBox())
-          ])
-        ]));
+        child: Stack(alignment: Alignment.center, children: children));
   }
 
   buttonsClick(BuildContext context, String type, int coin,
@@ -135,12 +91,87 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     if (adId != null) {
       var complete = await Ads.show(adId);
       if (!complete) {
-        // Navigator.of(context).pop(null);
         return;
       }
     }
     if (coin != 0) Pref.coin.increase(coin, itemType: "confirm", itemId: type);
     Navigator.of(context).pop(type);
+  }
+
+  Widget bannerAdsFactory() {
+    if (Pref.playCount.value < AdPlace.Banner.threshold) return SizedBox();
+    return Positioned(
+        bottom: 0, child: UnityBannerAd(placementId: AdPlace.Banner.name));
+  }
+
+  Widget rankButtonFactory(ThemeData theme) {
+    return widget.scoreButton ??
+        Positioned(
+            top: 46.d,
+            right: 10.d,
+            child: Components.scores(theme, onTap: () {
+              Analytics.design('guiClick:record:${widget.mode.name}');
+              PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ");
+            }));
+  }
+
+  Widget statsButtonFactory(ThemeData theme) {
+    return widget.statsButton ??
+        Positioned(
+            top: 32.d,
+            left: 12.d,
+            child: Components.stats(theme, onTap: () {
+              Analytics.design('guiClick:stats:${widget.mode.name}');
+              Rout.push(context, StatsDialog());
+            }));
+  }
+
+  Widget coinsButtonFactory(ThemeData theme) {
+    return widget.coinButton ??
+        Positioned(
+            top: 32.d,
+            left: 66.d,
+            child: Components.coins(context, widget.mode.name));
+  }
+
+  Widget headerFactory(ThemeData theme, double width) {
+    var hasClose = widget.showCloseButton ?? true;
+    return SizedBox(
+        width: width - 36.d,
+        height: 72.d,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              widget.title != null
+                  ? Text(widget.title!, style: theme.textTheme.headline4)
+                  : SizedBox(),
+              if (hasClose)
+                widget.closeButton ??
+                    GestureDetector(
+                        child: SVG.show("close", 28.d),
+                        onTap: () {
+                          widget.onWillPop?.call();
+                          Navigator.of(context).pop();
+                        })
+            ]));
+  }
+
+  Widget chromeFactory(ThemeData theme, double width) {
+    var hasChrome = widget.hasChrome ?? true;
+    return Container(
+        width: width,
+        height: widget.height == null
+            ? 340.d
+            : (widget.height == 0 ? null : widget.height),
+        padding: widget.padding ?? EdgeInsets.fromLTRB(18.d, 12.d, 18.d, 18.d),
+        decoration: hasChrome
+            ? BoxDecoration(
+                color: theme.dialogTheme.backgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(24.d)))
+            : null,
+        child: widget.child ?? SizedBox());
   }
 }
 

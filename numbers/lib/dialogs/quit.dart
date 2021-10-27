@@ -13,7 +13,6 @@ class QuitDialog extends AbstractDialog {
       : super(DialogMode.quit,
             height: 54.d,
             title: "quit_l".l(),
-            showCloseButton: showAvatar ?? true,
             coinButton: SizedBox(),
             statsButton: SizedBox(),
             scoreButton: SizedBox(),
@@ -26,12 +25,6 @@ class _QuitDialogState extends AbstractDialogState<QuitDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    widget.closeButton = Container(
-        width: 80.d,
-        height: 80.d,
-        padding: EdgeInsets.fromLTRB(8.d, 0, 0, 16.d),
-        child: RiveAnimation.asset('anims/nums-character.riv',
-            stateMachines: ["unhappy"]));
     widget.child = GestureDetector(
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -42,5 +35,28 @@ class _QuitDialogState extends AbstractDialogState<QuitDialog> {
         ]),
         onTap: () => buttonsClick(context, "quit", 0));
     return super.build(context);
+  }
+
+  @override
+  Widget headerFactory(ThemeData theme, double width) {
+    var showAvatar = widget.showAvatar ?? true;
+    return Container(
+        padding: EdgeInsets.only(left: 20.d),
+        width: width,
+        height: 120.d,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Text(widget.title!, style: theme.textTheme.headline4),
+            SizedBox(height: 22.d)
+          ]),
+          showAvatar
+              ? SizedBox(
+                  width: 120.d,
+                  height: 120.d,
+                  child: RiveAnimation.asset('anims/nums-character.riv',
+                      stateMachines: ["unhappyState"]))
+              : SizedBox()
+        ]));
   }
 }

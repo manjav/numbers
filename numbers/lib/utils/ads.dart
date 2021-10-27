@@ -14,7 +14,6 @@ class Ads {
 
   static Function? onAdsReady;
   static UnityAdState? _lastAdState;
-
   static String platform = "Android";
   static init() async {
     debugPrint("Ads init =====> ${DateTime.now().millisecondsSinceEpoch}");
@@ -100,5 +99,11 @@ extension AdExt on AdPlace {
       case AdPlace.Banner:
         return GAAdType.Banner;
     }
+  }
+
+  int get threshold {
+    if (this == AdPlace.Interstitial) return 7;
+    if (this == AdPlace.Banner) return 10;
+    return 0;
   }
 }

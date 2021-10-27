@@ -27,6 +27,8 @@ class _StatsDialogState extends AbstractDialogState<StatsDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+    stepChildren.clear();
+    stepChildren.add(bannerAdsFactory());
     widget.coinButton = Positioned(
         top: 32.d, left: 12.d, child: Components.coins(context, "stats"));
     widget.child = Column(children: [

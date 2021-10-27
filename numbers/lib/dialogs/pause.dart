@@ -13,7 +13,6 @@ class PauseDialog extends AbstractDialog {
   PauseDialog()
       : super(
           DialogMode.pause,
-          height: 180.d,
           hasChrome: false,
           title: "pause_l".l(),
           showCloseButton: false,
@@ -27,67 +26,68 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    widget.child = Stack(alignment: Alignment.topCenter, children: [
-      Positioned(
+    widget.child =
+        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      bannerAdsFactory(),
+      SizedBox(height: 16.d),
+      SizedBox(
           height: 76.d,
-          width: 146.d,
-          top: 0,
-          left: 0,
-          child: BumpedButton(
-              onTap: () => Navigator.of(context).pop("reset"),
-              colors: TColors.green.value,
-              cornerRadius: 16.d,
-              content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SVG.icon("5", theme),
-                    Text("pause_l".l(), style: theme.textTheme.headline5)
-                  ]))),
-      Positioned(
-          height: 76.d,
-          width: 146.d,
-          top: 0,
-          right: 0,
-          child: BumpedButton(
-              onTap: () => Navigator.of(context).pop("resume"),
-              colors: TColors.blue.value,
-              cornerRadius: 16.d,
-              content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SVG.icon("4", theme),
-                    Text("continue_l".l(), style: theme.textTheme.headline5)
-                  ]))),
-      Positioned(
-          height: 76.d,
-          width: 76.d,
-          top: 90.d,
-          left: 66.d,
-          child: BumpedButton(
-              onTap: () {
-                Pref.isVibrateOff.set(Pref.isVibrateOff.value == 0 ? 1 : 0);
-                setState(() {});
-              },
-              colors: TColors.orange.value,
-              cornerRadius: 16.d,
-              content: Center(
-                  child: SVG.icon("${Pref.isVibrateOff.value + 6}", theme,
-                      scale: 1.2)))),
-      Positioned(
-          height: 76.d,
-          width: 76.d,
-          top: 90.d,
-          right: 66.d,
-          child: BumpedButton(
-              onTap: () {
-                Pref.isMute.set(Pref.isMute.value == 0 ? 1 : 0);
-                setState(() {});
-              },
-              colors: TColors.yellow.value,
-              cornerRadius: 16.d,
-              content: Center(
-                  child: SVG.icon("${Pref.isMute.value + 1}", theme,
-                      scale: 1.2)))),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                BumpedButton(
+                    onTap: () => Navigator.of(context).pop("reset"),
+                    colors: TColors.green.value,
+                    cornerRadius: 16.d,
+                    content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SVG.icon("5", theme),
+                          Text("pause_l".l(), style: theme.textTheme.headline5)
+                        ])),
+                BumpedButton(
+                    onTap: () => Navigator.of(context).pop("resume"),
+                    colors: TColors.blue.value,
+                    cornerRadius: 16.d,
+                    content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SVG.icon("4", theme),
+                          Text("continue_l".l(),
+                              style: theme.textTheme.headline5)
+                        ]))
+              ])),
+      SizedBox(height: 12.d),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        SizedBox(
+            width: 76.d,
+            height: 76.d,
+            child: BumpedButton(
+                onTap: () {
+                  Pref.isVibrateOff.set(Pref.isVibrateOff.value == 0 ? 1 : 0);
+                  setState(() {});
+                },
+                colors: TColors.orange.value,
+                cornerRadius: 16.d,
+                content: Center(
+                    child: SVG.icon("${Pref.isVibrateOff.value + 6}", theme,
+                        scale: 1.2)))),
+        SizedBox(width: 12.d),
+        SizedBox(
+            width: 76.d,
+            height: 76.d,
+            child: BumpedButton(
+                onTap: () {
+                  Pref.isMute.set(Pref.isMute.value == 0 ? 1 : 0);
+                  setState(() {});
+                },
+                colors: TColors.yellow.value,
+                cornerRadius: 16.d,
+                content: Center(
+                    child: SVG.icon("${Pref.isMute.value + 1}", theme,
+                        scale: 1.2))))
+      ])
     ]);
     return super.build(context);
   }

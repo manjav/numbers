@@ -187,6 +187,6 @@ class _ReviewDialogState extends AbstractDialogState<ReviewDialog> {
                   child: Text("send_l".l(), style: theme.textTheme.headline5)),
               onTap: () => Navigator.pop(context, _commentController.text))
         ]);
-    return Scaffold(body: super.build(context));
+    return Scaffold(body: Center(child: super.build(context)));
   }
 }

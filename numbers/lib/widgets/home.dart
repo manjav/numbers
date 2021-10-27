@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-            body: Stack(children: [
+            body: Stack(alignment: Alignment.bottomCenter, children: [
           _game == null ? SizedBox() : GameWidget(game: _game!),
           Positioned(
               top: _game!.bounds.top - 69.d,
@@ -74,15 +74,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               left: _game!.bounds.left - 22.d,
               right: _game!.bounds.left,
               child: _getFooter(theme)),
-          Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: UnityBannerAd(
-                  placementId: AdPlace.Banner.name,
-                  listener: (state, args) {
-                    print('== Banner Listener: $state => $args');
-                  })),
+          Pref.playCount.value < AdPlace.Banner.threshold
+              ? SizedBox()
+              : Positioned(
+                  bottom: 0,
+                  child: UnityBannerAd(
+                      placementId: AdPlace.Banner.name,
+                      listener: (state, args) {
+                        print('== Banner Listener: $state => $args');
+                      })),
           Center(child: Components.confetty(_confettiController!))
         ])));
   }

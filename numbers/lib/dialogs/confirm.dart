@@ -33,7 +33,7 @@ class _ToastState extends AbstractDialogState<Toast> {
           width: 120.d,
           height: 120.d,
           child: RiveAnimation.asset('anims/nums-character.riv',
-              stateMachines: ["happy"])),
+              stateMachines: ["happyState"])),
       SizedBox(height: 12.d),
       Text(widget.text, style: theme.textTheme.headline6),
       SizedBox(height: 16.d),

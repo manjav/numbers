@@ -18,7 +18,7 @@ class Analytics {
     GameAnalytics.setEnabledInfoLog(false);
     GameAnalytics.setEnabledVerboseLog(false);
 
-    // GameAnalytics.configureAvailableCustomDimensions01(["ninja", "samurai"]);
+    GameAnalytics.configureAvailableCustomDimensions01(["installed", "instant"]);
     // GameAnalytics.configureAvailableCustomDimensions02(["whale", "dolphin"]);
     // GameAnalytics.configureAvailableCustomDimensions03(["horde", "alliance"]);
     GameAnalytics.configureAvailableResourceCurrencies(["coin"]);
