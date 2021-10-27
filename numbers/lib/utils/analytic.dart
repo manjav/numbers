@@ -18,13 +18,15 @@ class Analytics {
     GameAnalytics.setEnabledInfoLog(false);
     GameAnalytics.setEnabledVerboseLog(false);
 
-    GameAnalytics.configureAvailableCustomDimensions01(["installed", "instant"]);
+    GameAnalytics.configureAvailableCustomDimensions01(
+        ["installed", "instant"]);
     // GameAnalytics.configureAvailableCustomDimensions02(["whale", "dolphin"]);
     // GameAnalytics.configureAvailableCustomDimensions03(["horde", "alliance"]);
     GameAnalytics.configureAvailableResourceCurrencies(["coin"]);
     GameAnalytics.configureAvailableResourceItemTypes(
         ["game", "confirm", "shop", "start"]);
 
+    GameAnalytics.setCustomDimension01("installed");
     GameAnalytics.configureAutoDetectAppVersion(true);
     GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
         "275843fe2b762882e938a16d6b095d7661670ee9");
