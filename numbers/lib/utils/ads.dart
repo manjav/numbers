@@ -102,8 +102,8 @@ extension AdExt on AdPlace {
   }
 
   int get threshold {
-    if (this == AdPlace.Interstitial) return 7;
-    if (this == AdPlace.Banner) return 10;
+    if (this == AdPlace.Interstitial) return 3;
+    if (this == AdPlace.Banner) return 5;
     return 0;
   }
 }
