@@ -47,6 +47,7 @@ class Prefs {
   }
 
   static Future<void> _restore() async {
+    if (!PlayGames.isEnable) return;
     await _initPlayService();
     try {
       var save = await PlayGames.openSnapshot('prefs');
@@ -65,6 +66,7 @@ class Prefs {
 
   static Timer? _wakeupTimer;
   static _backup() async {
+    if (!PlayGames.isEnable) return;
     _wakeupTimer?.cancel();
     if (!allowsBackup) return;
     _wakeupTimer = Timer(Duration(seconds: 5), () async {
@@ -86,6 +88,7 @@ class Prefs {
   }
 
   static _initPlayService() async {
+    if (!PlayGames.isEnable) return;
     SigninResult result = await PlayGames.signIn(scopeSnapshot: true);
     if (result.success) {
       // await PlayGames.setPopupOptions();

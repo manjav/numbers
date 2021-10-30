@@ -3,6 +3,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
 import 'dart:async';
 
+import 'package:numbers/utils/gemeservice.dart';
+
 class Analytics {
   static late FirebaseAnalytics _firebaseAnalytics;
 
@@ -12,7 +14,7 @@ class Analytics {
     "isDebug": false
   });
 
-  static void init(FirebaseAnalytics analytics) {
+  static Future<void> init(FirebaseAnalytics analytics) async {
     _firebaseAnalytics = analytics;
 
     GameAnalytics.setEnabledInfoLog(false);
@@ -30,6 +32,8 @@ class Analytics {
     GameAnalytics.configureAutoDetectAppVersion(true);
     GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
         "275843fe2b762882e938a16d6b095d7661670ee9");
+    var testingVariantId = await GameAnalytics.getABTestingVariantId();
+    PlayGames.isEnable = testingVariantId == "1";
 
     appsflyerSdk.initSdk(
         registerConversionDataCallback: true,

@@ -10,6 +10,7 @@ import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 import 'dialogs.dart';
 
@@ -18,32 +19,32 @@ class RatingDialog extends AbstractDialog {
   // Send to store
   static Future<bool> _requestReview() async {
     if (Pref.rate.value != 5) return false;
-      Pref.rate.set(6);
-      // if (Configs.instance.buildConfig!.target == "cafebazaar") {
-      //   if (Platform.isAndroid) {
-      //     AndroidIntent intent = AndroidIntent(
-      //         data: 'bazaar://details?id=com.gerantech.muslim.holy.quran',
-      //         action: 'android.intent.action.EDIT',
-      //         package: 'com.farsitel.bazaar');
-      //     await intent.launch();
-      //   }
-      //   return;
-      // }
+    Pref.rate.set(6);
+    // if (Configs.instance.buildConfig!.target == "cafebazaar") {
+    //   if (Platform.isAndroid) {
+    //     AndroidIntent intent = AndroidIntent(
+    //         data: 'bazaar://details?id=com.gerantech.muslim.holy.quran',
+    //         action: 'android.intent.action.EDIT',
+    //         package: 'com.farsitel.bazaar');
+    //     await intent.launch();
+    //   }
+    //   return;
+    // }
 
-      final InAppReview inAppReview = InAppReview.instance;
-      if (await inAppReview.isAvailable()) {
-        if (Pref.ratedBefore.value == 0) {
-          inAppReview.requestReview();
-          Pref.ratedBefore.set(1);
-          return true;
-        }
-        inAppReview.openStoreListing();
-      } else {
-        var url = "app_url".l();
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+    final InAppReview inAppReview = InAppReview.instance;
+    if (await inAppReview.isAvailable()) {
+      if (Pref.ratedBefore.value == 0) {
+        inAppReview.requestReview();
+        Pref.ratedBefore.set(1);
+        return true;
       }
-      return true;
+      inAppReview.openStoreListing();
+    } else {
+      var url = "app_url".l();
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
     }
+    return true;
+  }
 
   static Future<bool> showRating(BuildContext context) async {
     // Pref.rate.set(0);
@@ -69,10 +70,9 @@ class RatingDialog extends AbstractDialog {
       if (rating < 5) {
         comment = await Rout.push(context, ReviewDialog());
         var url =
-            "https://numbers.sarand.net/review/?rate=$rating&comment=$comment";
-        await canLaunch(url)
-            ? await launch(url)
-            : throw 'Could not launch $url';
+            "https://numbers.sarand.net/review/?rate=$rating&comment=$comment&visits=${Pref.visitCount.value}";
+        var response = await http.get(Uri.parse(url));
+        if (response.statusCode != 200) debugPrint('Failure status code 😱');
       } else {
         await _requestReview();
       }
@@ -80,7 +80,7 @@ class RatingDialog extends AbstractDialog {
     }
     Analytics.design('rate', parameters: <String, dynamic>{
       'rating': rating,
-      'numRuns': Pref.visitCount.value,
+      'visits': Pref.visitCount.value,
       'comment': comment
     });
     debugPrint(
@@ -89,7 +89,6 @@ class RatingDialog extends AbstractDialog {
   }
 
   final initialRating;
-
   RatingDialog({this.initialRating = 1})
       : super(
           DialogMode.rating,

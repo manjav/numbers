@@ -1,3 +1,4 @@
+import 'package:device_info/device_info.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +17,9 @@ import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
+
+import 'package:http/http.dart' as http;
+import 'dialogs/start.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,18 +78,7 @@ class _MainPageState extends State<MainPage> {
       return SizedBox();
     }
 
-    if (_loadingState == 0) {
-      Ads.init();
-      Sound.init();
-      Notifier.init();
-      Analytics.init(widget.analytics);
-      Prefs.init(() async {
-        _loadingState = 1;
-        await Localization.init();
-        setState(() {});
-      });
-      InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
-    }
+    _initServices();
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
@@ -108,5 +101,26 @@ class _MainPageState extends State<MainPage> {
     result = await Rout.push(context, QuitDialog(showAvatar: !result),
         barrierDismissible: true);
     return result != null;
+  }
+
+  _initServices() async {
+    if (_loadingState > 0) return;
+
+    Ads.init();
+    Sound.init();
+    Notifier.init();
+    await Analytics.init(widget.analytics);
+    Prefs.init(() async {
+      await Localization.init();
+      _loadingState = 1;
+      setState(() {});
+    });
+    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+
+    var a = await DeviceInfoPlugin().androidInfo;
+    var url =
+        "https://numbers.sarand.net/device/?i=${a.androidId}&m=${a.model}&v=${a.version.sdkInt}";
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode != 200) debugPrint('Failure status code 😱');
   }
 }

@@ -119,6 +119,8 @@ Future<Image> _fetchToMemory(Map<dynamic, dynamic> result) {
 }
 
 class PlayGames {
+  static bool isEnable = false;
+
   static Future<bool?> unlockAchievementById(String id) async {
     return await _channel.invokeMethod('unlockAchievementById', {'id': id});
   }
@@ -153,6 +155,7 @@ class PlayGames {
   }
 
   static Future<bool?> showLeaderboard(String leaderboardId) async {
+    if (!isEnable) return false;
     final Map<dynamic, dynamic> map = await _channel
         .invokeMethod('showLeaderboard', {'leaderboardId': leaderboardId});
     return map['closed'];
