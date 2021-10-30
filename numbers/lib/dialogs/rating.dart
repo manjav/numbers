@@ -51,8 +51,7 @@ class RatingDialog extends AbstractDialog {
     // Pref.rateTarget.set(5);
     print(
         "Rating rate: ${Pref.rate.value}, playCount: ${Pref.playCount.value}, rateTarget: ${Pref.rateTarget.value}");
-    var reviewd = await _requestReview();
-    if (reviewd) return true;
+
     // Repeat rating request
     if (Pref.rate.value >= 5 || Pref.playCount.value < Pref.rateTarget.value)
       return false; // Already 5 rating or pending to reach target play count
@@ -74,6 +73,8 @@ class RatingDialog extends AbstractDialog {
         await canLaunch(url)
             ? await launch(url)
             : throw 'Could not launch $url';
+      } else {
+        await _requestReview();
       }
       await Rout.push(context, Toast("thanks_l".l()), barrierDismissible: true);
     }
