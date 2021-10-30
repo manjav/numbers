@@ -26,7 +26,7 @@ class Analytics {
     GameAnalytics.configureAvailableResourceItemTypes(
         ["game", "confirm", "shop", "start"]);
 
-    GameAnalytics.setCustomDimension01("installed");
+    GameAnalytics.setCustomDimension01("instant");
     GameAnalytics.configureAutoDetectAppVersion(true);
     GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
         "275843fe2b762882e938a16d6b095d7661670ee9");
