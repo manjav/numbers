@@ -4,6 +4,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/dialogs/confirm.dart';
@@ -17,8 +18,8 @@ import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-import 'package:http/http.dart' as http;
 import 'dialogs/start.dart';
 
 Future<void> main() async {
@@ -82,7 +83,7 @@ class _MainPageState extends State<MainPage> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-            body: _loadingState == 0
+            body: _loadingState < 2
                 ? SizedBox()
                 : SizedBox(
                     width: Device.size.width,
@@ -105,21 +106,26 @@ class _MainPageState extends State<MainPage> {
 
   _initServices() async {
     if (_loadingState > 0) return;
+    _loadingState = 1;
+    _sendData();
 
     Ads.init();
     Sound.init();
     Notifier.init();
-    await Analytics.init(widget.analytics);
+    Analytics.init(widget.analytics);
     Prefs.init(() async {
       await Localization.init();
-      _loadingState = 1;
+      InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+      _loadingState = 2;
       setState(() {});
     });
-    InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+  }
 
+  _sendData() async {
+    var p = await PackageInfo.fromPlatform();
     var a = await DeviceInfoPlugin().androidInfo;
     var url =
-        "https://numbers.sarand.net/device/?i=${a.androidId}&m=${a.model}&v=${a.version.sdkInt}";
+        "https://numbers.sarand.net/device/?i=${a.androidId}&m=${a.model}&v=${a.version.sdkInt}&n=${p.buildNumber}";
     var response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) debugPrint('Failure status code 😱');
   }

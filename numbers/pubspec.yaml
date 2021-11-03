@@ -28,6 +28,7 @@ dependencies:
   in_app_review: ^2.0.2
   install_prompt: ^0.0.1
   intl: ^0.17.0
+  package_info_plus: ^1.0.6
   play_games: ^0.5.5
   shared_preferences: ^2.0.6
   soundpool: ^2.1.0

@@ -32,8 +32,8 @@ class RecordDialog extends AbstractDialog {
 class _RecordDialogState extends AbstractDialogState<RecordDialog> {
   @override
   Widget build(BuildContext context) {
-    var reward = 50;
-    var rewardCoef = 3;
+    var reward = 10;
+    var rewardCoef = 10;
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 500), () {
       widget.confettiController.play();

@@ -36,8 +36,8 @@ class BigBlockDialog extends AbstractDialog {
 class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {
   @override
   Widget build(BuildContext context) {
-    var rewardCoef = 3;
-    var reward = widget.value * 10;
+    var rewardCoef = 10;
+    var reward = (widget.value-8) * 10;
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 500), () {
       widget.confettiController.play();

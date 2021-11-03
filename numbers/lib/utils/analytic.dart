@@ -14,7 +14,7 @@ class Analytics {
     "isDebug": false
   });
 
-  static Future<void> init(FirebaseAnalytics analytics) async {
+  static init(FirebaseAnalytics analytics) {
     _firebaseAnalytics = analytics;
 
     GameAnalytics.setEnabledInfoLog(false);
@@ -28,12 +28,15 @@ class Analytics {
     GameAnalytics.configureAvailableResourceItemTypes(
         ["game", "confirm", "shop", "start"]);
 
-    GameAnalytics.setCustomDimension01("instant");
+    var type = "instant";
+    GameAnalytics.setCustomDimension01(type);
+    appsflyerSdk.logEvent("type_$type", {});
+
     GameAnalytics.configureAutoDetectAppVersion(true);
     GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
         "275843fe2b762882e938a16d6b095d7661670ee9");
-    var testVariant = await GameAnalytics.getABTestingVariantId();
-    PlayGames.isEnable = testVariant == "1" || testVariant == "";
+    // var testingVariantId = await GameAnalytics.getABTestingVariantId();
+    // PlayGames.isEnable = testingVariantId == "1";
 
     appsflyerSdk.initSdk(
         registerConversionDataCallback: true,
@@ -81,6 +84,7 @@ class Analytics {
     });
 
     appsflyerSdk.logEvent("ads", map);
+    appsflyerSdk.logEvent("ad_$placementID", map);
   }
 
   static Future<void> resource(int type, String currency, int amount,
