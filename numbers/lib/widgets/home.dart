@@ -336,10 +336,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         break;
       case GameEvent.openPiggy:
       case GameEvent.freeCoins:
-        if (event == GameEvent.openPiggy) Pref.coinPiggy.set(0);
+        if (event == GameEvent.openPiggy) {
+          Pref.coinPiggy.set(0);
+          _rewardLineAnimation!
+              .animateTo(0, duration: const Duration(milliseconds: 400));
+        }
         Pref.coin.increase(value, itemType: "game", itemId: "random");
-        _rewardLineAnimation!
-            .animateTo(0, duration: const Duration(milliseconds: 400));
         Sound.play("win");
         setState(() {});
         return;
