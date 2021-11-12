@@ -39,7 +39,7 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
       widget.confettiController.play();
       Sound.play("win");
     });
-    widget.onWillPop = () => buttonsClick(context, "record", reward);
+    widget.onWillPop = () => buttonsClick(context, "record", reward, false);
     widget.child = Stack(alignment: Alignment.topCenter, children: [
       Positioned(
           top: 152.d,
@@ -53,7 +53,7 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
           bottom: 4.d,
           left: 4.d,
           child: BumpedButton(
-              onTap: () => buttonsClick(context, "record", reward),
+              onTap: () => buttonsClick(context, "record", reward, false),
               cornerRadius: 16.d,
               content: Stack(alignment: Alignment.centerLeft, children: [
                 SVG.show("coin", 36.d),
@@ -77,8 +77,8 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
           isEnable: Ads.isReady(),
           colors: TColors.orange.value,
           errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
-          onTap: () => buttonsClick(context, "record", rewardCoef * reward,
-              adId: AdPlace.Rewarded),
+          onTap: () =>
+              buttonsClick(context, "record", rewardCoef * reward, true),
           content: Stack(alignment: Alignment.centerLeft, children: [
             SVG.icon("0", theme),
             Positioned(

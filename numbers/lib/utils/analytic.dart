@@ -3,8 +3,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
 import 'dart:async';
 
-import 'package:numbers/utils/gemeservice.dart';
-
 class Analytics {
   static late FirebaseAnalytics _firebaseAnalytics;
 
@@ -66,8 +64,8 @@ class Analytics {
     });
   }
 
-  static Future<void> ad(int action, int type, String placementID,
-      [String sdkName = "unityads"]) async {
+  static Future<void> ad(
+      int action, int type, String placementID, String sdkName) async {
     var map = <String, dynamic>{
       'adAction': getAdActionName(action),
       'adType': getAdTypeName(type),

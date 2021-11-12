@@ -138,7 +138,7 @@ class Components {
         return;
       }
     } else {
-      var complete = await Ads.show();
+      var complete = await Ads.showRewarded();
       if (!complete) return;
     }
     Pref.coin.increase(-cost, itemType: "start", itemId: boost);

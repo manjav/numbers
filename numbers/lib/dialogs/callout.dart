@@ -80,7 +80,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                                     theme.textTheme.bodyText2))
                                       ]),
                                       onTap: () => buttonsClick(
-                                          context, widget.type, -cost))
+                                          context, widget.type, -cost, false))
                                   : SizedBox()),
                           SizedBox(
                               width: 98.d,
@@ -99,8 +99,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                             style: theme.textTheme.headline5))
                                   ]),
                                   onTap: () => buttonsClick(
-                                      context, widget.type, 0,
-                                      adId: AdPlace.Rewarded)))
+                                      context, widget.type, 0, true)))
                         ])
                   ])))
     ]);

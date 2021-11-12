@@ -33,7 +33,7 @@ class _QuitDialogState extends AbstractDialogState<QuitDialog> {
                   Text("quit_message".l(), style: theme.textTheme.headline5)),
           SVG.show("accept", 28.d)
         ]),
-        onTap: () => buttonsClick(context, "quit", 0));
+        onTap: () => buttonsClick(context, "quit", 0, false));
     return super.build(context);
   }
 

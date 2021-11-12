@@ -18,7 +18,7 @@ import 'dialogs.dart';
 class StartDialog extends AbstractDialog {
   StartDialog()
       : super(DialogMode.start,
-            height: 320.d,
+            height: 330.d,
             showCloseButton: false,
             title: "start_title".l(),
             padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d));
@@ -30,7 +30,6 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   @override
   void initState() {
     if (Pref.tutorMode.value == 0) _onStart();
-    Ads.onAdsReady = _onAdsReady;
     super.initState();
   }
 
@@ -50,7 +49,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
       ])),
       SizedBox(height: 10.d),
       Container(
-          height: 70.d,
+          height: 80.d,
           child: BumpedButton(
               colors: TColors.blue.value,
               onTap: _onStart,
@@ -70,7 +69,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   _onStart() async {
     var shown = await RatingDialog.showRating(context);
     if (!shown && Pref.playCount.value > AdPlace.Interstitial.threshold)
-      await Ads.show(AdPlace.Interstitial);
+      await Ads.showInterstitial();
     await Rout.push(context, HomePage());
     Cell.maxRandomValue = 3;
     MyGame.boostNextMode = 0;
@@ -79,12 +78,4 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   }
 
   _onUpdate() => setState(() {});
-
-  _onAdsReady() => setState(() {});
-
-  @override
-  void dispose() {
-    super.dispose();
-    Ads.onAdsReady = null;
-  }
 }

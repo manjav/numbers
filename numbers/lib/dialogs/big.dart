@@ -37,13 +37,13 @@ class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {
   @override
   Widget build(BuildContext context) {
     var rewardCoef = 10;
-    var reward = (widget.value-8) * 10;
+    var reward = (widget.value - 8) * 10;
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 500), () {
       widget.confettiController.play();
       Sound.play("win");
     });
-    widget.onWillPop = () => buttonsClick(context, "big", reward);
+    widget.onWillPop = () => buttonsClick(context, "big", reward, false);
 
     widget.child = Stack(alignment: Alignment.topCenter, children: [
       Positioned(
@@ -56,7 +56,7 @@ class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {
           bottom: 4.d,
           left: 4.d,
           child: BumpedButton(
-              onTap: () => buttonsClick(context, "big", reward),
+              onTap: () => buttonsClick(context, "big", reward, false),
               cornerRadius: 16.d,
               content: Stack(alignment: Alignment.centerLeft, children: [
                 SVG.show("coin", 36.d),
@@ -79,10 +79,8 @@ class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {
           cornerRadius: 16.d,
           isEnable: Ads.isReady(),
           colors: TColors.orange.value,
-          errorMessage:
-              Toast("ads_unavailable".l(), monoIcon: "0"),
-          onTap: () => buttonsClick(context, "big", reward * rewardCoef,
-              adId: AdPlace.Rewarded),
+          errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
+          onTap: () => buttonsClick(context, "big", reward * rewardCoef, true),
           content: Stack(alignment: Alignment.centerLeft, children: [
             SVG.icon("0", theme),
             Positioned(

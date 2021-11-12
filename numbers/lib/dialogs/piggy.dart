@@ -66,7 +66,7 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
           errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
           onTap: () {
             PiggyDialog.autoAppearance = 0;
-            buttonsClick(context, "piggy", 0, adId: AdPlace.Rewarded);
+            buttonsClick(context, "piggy", 0, true);
           },
           content:
               Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [

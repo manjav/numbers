@@ -52,7 +52,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
             bottom: 4.d,
             left: 4.d,
             child: BumpedButton(
-                onTap: () => buttonsClick(context, "revive", -cost),
+                onTap: () => buttonsClick(context, "revive", -cost, false),
                 cornerRadius: 16.d,
                 content: Stack(alignment: Alignment.centerLeft, children: [
                   SVG.show("coin", 36.d),
@@ -75,8 +75,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
             cornerRadius: 16.d,
             errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
             isEnable: widget.numRevive < 2 && Ads.isReady(),
-            onTap: () =>
-                buttonsClick(context, "revive", 0, adId: AdPlace.Rewarded),
+            onTap: () => buttonsClick(context, "revive", 0, true),
             colors: TColors.orange.value,
             content: Stack(alignment: Alignment.centerLeft, children: [
               SVG.icon("0", theme),

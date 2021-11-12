@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.26+26
+version: 0.0.30+30
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -11,7 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  appsflyer_sdk: ^6.2.4+4-nullsafety
+  admob_flutter: ^2.0.0-nullsafety.1
+  appsflyer_sdk: ^6.4.0+1
   confetti: ^0.6.0
   cupertino_icons: ^1.0.3
   device_info: ^2.0.2
@@ -19,9 +20,10 @@ dependencies:
   flame_svg: 1.0.0-rc4
   firebase_analytics: ^8.2.0
   firebase_core: ^1.4.0
-  firebase_messaging: ^10.0.4
+  firebase_messaging: ^11.1.0
   flutter_rating_bar: ^4.0.0
   flutter_svg: 0.22.0
+  games_services: ^2.0.1
   gameanalytics_sdk: ^1.0.6
   http: ^0.13.4
   in_app_purchase: ^1.0.6
@@ -29,7 +31,6 @@ dependencies:
   install_prompt: ^0.0.1
   intl: ^0.17.0
   package_info_plus: ^1.0.6
-  play_games: ^0.5.5
   shared_preferences: ^2.0.6
   soundpool: ^2.1.0
   rive: ^0.7.33

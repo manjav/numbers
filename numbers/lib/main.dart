@@ -1,10 +1,9 @@
-import 'package:device_info/device_info.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+import 'package:games_services/games_services.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/dialogs/confirm.dart';
@@ -18,7 +17,6 @@ import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import 'dialogs/start.dart';
 
@@ -107,11 +105,11 @@ class _MainPageState extends State<MainPage> {
   _initServices() async {
     if (_loadingState > 0) return;
     _loadingState = 1;
-    _sendData();
 
     Ads.init();
     Sound.init();
     Notifier.init();
+    GamesServices.signIn();
     Analytics.init(widget.analytics);
     Prefs.init(() async {
       await Localization.init();
@@ -119,14 +117,5 @@ class _MainPageState extends State<MainPage> {
       _loadingState = 2;
       setState(() {});
     });
-  }
-
-  _sendData() async {
-    var p = await PackageInfo.fromPlatform();
-    var a = await DeviceInfoPlugin().androidInfo;
-    var url =
-        "https://numbers.sarand.net/device/?i=${a.androidId}&m=${a.model}&v=${a.version.sdkInt}&n=${p.buildNumber}";
-    var response = await http.get(Uri.parse(url));
-    if (response.statusCode != 200) debugPrint('Failure status code 😱');
   }
 }

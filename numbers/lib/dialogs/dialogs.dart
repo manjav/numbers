@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:numbers/dialogs/shop.dart';
 import 'package:numbers/dialogs/stats.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/analytic.dart';
-import 'package:numbers/utils/gemeservice.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/components.dart';
-import 'package:unity_ads_plugin/ad/unity_banner_ad.dart';
 
 // ignore: must_be_immutable
 class AbstractDialog extends StatefulWidget {
@@ -52,14 +51,18 @@ class AbstractDialog extends StatefulWidget {
 
 class AbstractDialogState<T extends AbstractDialog> extends State<T> {
   List<Widget> stepChildren = <Widget>[];
+  @override
+  void initState() {
+    Ads.onUpdate = _onAdsUpdate;
+    Sound.play(widget.sfx ?? "pop");
+    Analytics.setScreen(widget.mode.name);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var width = widget.width ?? 300.d;
-
-    Sound.play(widget.sfx ?? "pop");
-    Analytics.setScreen(widget.mode.name);
 
     var children = <Widget>[];
     children.add(rankButtonFactory(theme));
@@ -82,14 +85,13 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
         child: Stack(alignment: Alignment.center, children: children));
   }
 
-  buttonsClick(BuildContext context, String type, int coin,
-      {AdPlace? adId}) async {
+  buttonsClick(BuildContext context, String type, int coin, bool showAd) async {
     if (coin < 0 && Pref.coin.value < -coin) {
       Rout.push(context, ShopDialog());
       return;
     }
-    if (adId != null) {
-      var complete = await Ads.show(adId);
+    if (showAd) {
+      var complete = await Ads.showRewarded();
       if (!complete) {
         return;
       }
@@ -99,9 +101,12 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
   }
 
   Widget bannerAdsFactory() {
-    if (Pref.playCount.value < AdPlace.Banner.threshold) return SizedBox();
+    if (!Ads.isReady(AdPlace.Banner)) return SizedBox();
     return Positioned(
-        bottom: 0, child: UnityBannerAd(placementId: AdPlace.Banner.name));
+        bottom: 8.d,
+        child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(16.d)),
+            child: Ads.getBanner()));
   }
 
   Widget rankButtonFactory(ThemeData theme) {
@@ -111,7 +116,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
             right: 10.d,
             child: Components.scores(theme, onTap: () {
               Analytics.design('guiClick:record:${widget.mode.name}');
-              PlayGames.showLeaderboard("CgkIw9yXzt4XEAIQAQ");
+              GamesServices.showLeaderboards();
             }));
   }
 
@@ -172,6 +177,17 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
                 borderRadius: BorderRadius.all(Radius.circular(24.d)))
             : null,
         child: widget.child ?? SizedBox());
+  }
+
+  _onAdsUpdate(AdPlace placement, AdState state) {
+    if (placement == AdPlace.Rewarded && state != AdState.Closed)
+      setState(() {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Ads.onUpdate = null;
   }
 }
 

@@ -9,26 +9,27 @@ import 'package:flame/palette.dart';
 import 'package:flame_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:numbers/core/achieves.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/utils/analytic.dart';
-import 'package:numbers/utils/utils.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
-import 'package:numbers/utils/gemeservice.dart';
+import 'package:numbers/utils/utils.dart';
 
 enum GameEvent {
   big,
   boost,
   celebrate,
-  openPiggy,
   completeTutorial,
+  freeCoins,
   lose,
   remove,
   reward,
   rewarded,
+  openPiggy,
   score
 }
 
@@ -77,7 +78,12 @@ class MyGame extends BaseGame with TapDetector {
     var _new = Prefs.score += Cell.getScore(value);
     onGameEvent?.call(GameEvent.score, _new);
     if (Pref.record.value >= Prefs.score) return;
-    PlayGames.submitScoreById("CgkIw9yXzt4XEAIQAQ", Prefs.score);
+    GamesServices.submitScore(
+        score: Score(
+            androidLeaderboardID: 'CgkIw9yXzt4XEAIQAQ',
+            iOSLeaderboardID: 'ios_leaderboard_id',
+            value: Prefs.score));
+
     Pref.record.set(Prefs.score);
     _newRecord = Prefs.score;
   }

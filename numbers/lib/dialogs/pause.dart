@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
@@ -13,10 +14,11 @@ class PauseDialog extends AbstractDialog {
   PauseDialog()
       : super(
           DialogMode.pause,
+          height: 0,
           hasChrome: false,
           title: "pause_l".l(),
           showCloseButton: false,
-          padding: EdgeInsets.only(top: 10.d),
+          padding: EdgeInsets.all(0),
         );
   @override
   _PauseDialogState createState() => _PauseDialogState();
@@ -29,7 +31,7 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
     widget.child =
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       bannerAdsFactory(),
-      SizedBox(height: 16.d),
+      SizedBox(height: Ads.isReady(AdPlace.Banner) ? 16.d : 0),
       SizedBox(
           height: 76.d,
           child: Row(
@@ -90,5 +92,13 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
       ])
     ]);
     return super.build(context);
+  }
+
+  @override
+  Widget bannerAdsFactory() {
+    if (!Ads.isReady(AdPlace.Banner)) return SizedBox();
+    return ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(16.d)),
+        child: Ads.getBanner());
   }
 }
