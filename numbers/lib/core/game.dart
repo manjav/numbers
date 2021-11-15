@@ -481,7 +481,7 @@ class MyGame extends BaseGame with TapDetector {
     if (_mergesCount < limit) return;
     _reward = _numRewardCells > 0 || _tutorMode
         ? 0
-        : 10 * (random.nextInt(5) + _mergesCount * 15);
+        : 10 * (random.nextInt(5) + _mergesCount * 5);
     var sprite = await Sprite.load(
         'celebration-${(_mergesCount - limit).clamp(0, 3)}.png');
     var celebration = SpriteComponent(

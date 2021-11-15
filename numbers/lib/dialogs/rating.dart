@@ -16,6 +16,47 @@ import 'dialogs.dart';
 
 // ignore: must_be_immutable
 class RatingDialog extends AbstractDialog {
+  static Future<bool> showRating(BuildContext context) async {
+    print(
+        "Rate:${Pref.rate.value}, plays:${Pref.playCount.value}, target:${Pref.rateTarget.value}");
+    // Repeat rating request
+    if (Pref.rate.value >= 5 || Pref.playCount.value < Pref.rateTarget.value)
+      return false; // Already 5 rating or pending to reach target play count
+    int rating = 0;
+    try {
+      rating = await Rout.push(context, RatingDialog());
+    } catch (e) {
+      return false;
+    }
+    Pref.rate.set(rating);
+    Pref.rateTarget.increase(10);
+
+    String comment = "";
+    if (rating > 0) {
+      if (rating < 5) {
+        var r = await Rout.push(context, ReviewDialog());
+        if (r != null) {
+          comment = r;
+          var url =
+              "https://numbers.sarand.net/review/?rate=$rating&comment=$comment&visits=${Pref.visitCount.value}";
+          var response = await http.get(Uri.parse(url));
+          if (response.statusCode != 200) debugPrint('Failure status code 😱');
+        }
+      } else {
+        await _requestReview();
+      }
+      await Rout.push(context, Toast("thanks_l".l()), barrierDismissible: true);
+    }
+    Analytics.design('rate', parameters: <String, dynamic>{
+      'rating': rating,
+      'visits': Pref.visitCount.value,
+      'comment': comment
+    });
+    debugPrint(
+        "Rating rate: ${Pref.rate.value} rating: $rating comment: $comment");
+    return true;
+  }
+
   // Send to store
   static Future<bool> _requestReview() async {
     if (Pref.rate.value != 5) return false;
@@ -43,49 +84,6 @@ class RatingDialog extends AbstractDialog {
       var url = "app_url".l();
       await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
     }
-    return true;
-  }
-
-  static Future<bool> showRating(BuildContext context) async {
-    // Pref.rate.set(0);
-    // Pref.ratedBefore.set(0);
-    // Pref.rateTarget.set(5);
-    print(
-        "Rating rate: ${Pref.rate.value}, playCount: ${Pref.playCount.value}, rateTarget: ${Pref.rateTarget.value}");
-
-    // Repeat rating request
-    if (Pref.rate.value >= 5 || Pref.playCount.value < Pref.rateTarget.value)
-      return false; // Already 5 rating or pending to reach target play count
-    int rating = 0;
-    try {
-      rating = await Rout.push(context, RatingDialog());
-    } catch (e) {
-      return false;
-    }
-    Pref.rate.set(rating);
-    Pref.rateTarget.increase(10);
-
-    String comment = "";
-    if (rating > 0) {
-      if (rating < 5) {
-        var r = await Rout.push(context, ReviewDialog());
-        if (r != null) {
-          comment = r;
-          var url =
-              "https://numbers.sarand.net/review/?rate=$rating&comment=$comment&visits=${Pref.visitCount.value}";
-          var response = await http.get(Uri.parse(url));
-          if (response.statusCode != 200) debugPrint('Failure status code 😱');
-        }
-      }
-      await Rout.push(context, Toast("thanks_l".l()), barrierDismissible: true);
-    }
-    Analytics.design('rate', parameters: <String, dynamic>{
-      'rating': rating,
-      'visits': Pref.visitCount.value,
-      'comment': comment
-    });
-    debugPrint(
-        "Rating rate: ${Pref.rate.value} rating: $rating comment: $comment");
     return true;
   }
 
