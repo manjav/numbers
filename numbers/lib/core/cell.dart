@@ -12,6 +12,7 @@ import 'package:flutter/painting.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
 import 'package:numbers/utils/prefs.dart';
+import 'package:numbers/utils/utils.dart';
 
 enum CellState { Init, Float, Falling, Fell, Fixed }
 
@@ -23,7 +24,8 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   static double roundness = 7.0;
   static double thickness = 4.6;
   static final firstBigRecord = 8;
-  static int maxRandomValue = 3;
+  static int maxRandomValue = 4;
+  static int lastRandomValue = 9;
   static final colors = [
     PaletteEntry(Color(0xFF191C1D)),
     PaletteEntry(Color(0xFF9600FF)),
@@ -50,11 +52,13 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   static int getScore(int value) => pow(2, value) as int;
   // static int getNextValue(int step) => [1, 2, 3, 3, 2, 2, 1, 1][step];
   // static int getNextColumn(int step) => [0, 1, 1, 2, 4, 4, 4, 4][step];
-  static int getNextValue(int step) => Pref.tutorMode.value == 0
-      ? [1, 3, 5, 1, 2, 4, 5][step]
-      : MyGame.random.nextInt(maxRandomValue) + 1;
-  static int getNextColumn(int step) => Pref.tutorMode.value == 0
-      ? [2, 0, 3, 2, 1, 1, 2][step]
+  static int getNextValue(int seed) {
+    if (Pref.tutorMode.value == 0) return [1, 3, 5, 1, 2, 4, 5][seed];
+    var min = seed.min(1).max((maxRandomValue * 0.4).ceil());
+    return min + MyGame.random.nextInt(maxRandomValue - min);
+  }
+  static int getNextColumn(int seed) => Pref.tutorMode.value == 0
+      ? [2, 0, 3, 2, 1, 1, 2][seed]
       : MyGame.random.nextInt(Cells.width);
 
   static final _center = Vector2(0, -3);

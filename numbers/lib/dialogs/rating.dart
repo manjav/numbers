@@ -68,13 +68,14 @@ class RatingDialog extends AbstractDialog {
     String comment = "";
     if (rating > 0) {
       if (rating < 5) {
-        comment = await Rout.push(context, ReviewDialog());
-        var url =
-            "https://numbers.sarand.net/review/?rate=$rating&comment=$comment&visits=${Pref.visitCount.value}";
-        var response = await http.get(Uri.parse(url));
-        if (response.statusCode != 200) debugPrint('Failure status code 😱');
-      } else {
-        await _requestReview();
+        var r = await Rout.push(context, ReviewDialog());
+        if (r != null) {
+          comment = r;
+          var url =
+              "https://numbers.sarand.net/review/?rate=$rating&comment=$comment&visits=${Pref.visitCount.value}";
+          var response = await http.get(Uri.parse(url));
+          if (response.statusCode != 200) debugPrint('Failure status code 😱');
+        }
       }
       await Rout.push(context, Toast("thanks_l".l()), barrierDismissible: true);
     }

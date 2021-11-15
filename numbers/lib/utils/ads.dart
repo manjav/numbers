@@ -71,11 +71,13 @@ class Ads {
 
   static bool isReady([AdPlace? id]) {
     var _id = id ?? AdPlace.Rewarded;
+    if (id != AdPlace.Rewarded && Pref.noAds.value > 0) return false;
     return _placements.containsKey(_id) && _placements[_id] == AdState.Loaded;
   }
 
   static Widget getBanner({AdmobBannerSize? size}) {
-    if (Pref.playCount.value < AdPlace.Banner.threshold) return SizedBox();
+    if (Pref.noAds.value > 0 || Pref.playCount.value < AdPlace.Banner.threshold)
+      return SizedBox();
     if (isSupportAdMob)
       return AdmobBanner(
         adSize: size ?? AdmobBannerSize.LARGE_BANNER,

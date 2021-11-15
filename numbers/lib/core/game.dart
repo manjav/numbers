@@ -201,9 +201,11 @@ class MyGame extends BaseGame with TapDetector {
     _cells.target =
         bounds.top + Cell.diameter * (Cells.height - row) + Cell.radius;
     add(cell);
-    if (!_tutorMode)
-      _nextCell.init(_nextCell.column, 0, Cell.getNextValue(_fallingsCount),
+    if (!_tutorMode) {
+      var seed = _tutorMode ? _fallingsCount : _cells.getMinValue();
+      _nextCell.init(_nextCell.column, 0, Cell.getNextValue(seed),
           hiddenMode: boostNextMode + 1);
+    }
     _speed = Cell.minSpeed;
   }
 
@@ -416,10 +418,9 @@ class MyGame extends BaseGame with TapDetector {
     }
 
     // More chance for spawm new cells
-    if (Cell.maxRandomValue < 7) {
-      var distance = (1.5 * sqrt(Cell.maxRandomValue)).ceil();
-      if (Cell.maxRandomValue < cell.value - distance)
-        Cell.maxRandomValue = cell.value - distance;
+    var index = cell.value - (Cell.maxRandomValue * 0.7).ceil();
+    if (index > -1 && index < Cell.lastRandomValue) {
+      Cell.maxRandomValue = index.min(Cell.maxRandomValue);
     }
 
     _fallAll();
@@ -480,7 +481,7 @@ class MyGame extends BaseGame with TapDetector {
     if (_mergesCount < limit) return;
     _reward = _numRewardCells > 0 || _tutorMode
         ? 0
-        : random.nextInt(20) + _mergesCount * 10;
+        : 10 * (random.nextInt(5) + _mergesCount * 15);
     var sprite = await Sprite.load(
         'celebration-${(_mergesCount - limit).clamp(0, 3)}.png');
     var celebration = SpriteComponent(

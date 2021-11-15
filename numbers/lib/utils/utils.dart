@@ -27,6 +27,9 @@ extension IntExt on int {
   String format() {
     return _formatter.format(this);
   }
+
+  int min(int min) => this < min ? min : this;
+  int max(int max) => this > max ? max : this;
 }
 
 class SVG {

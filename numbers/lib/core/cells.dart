@@ -1,4 +1,5 @@
 import 'package:numbers/core/cell.dart';
+import 'package:numbers/utils/utils.dart';
 
 class Cells {
   static int width = 5;
@@ -13,6 +14,14 @@ class Cells {
   Cell? get(int column, int row) {
     if (column < 0 || column >= width || row < 0 || row >= height) return null;
     return map[column][row];
+  }
+
+  int getMinValue() {
+    int value = 1000;
+    for (var i = 0; i < width; i++)
+      for (var j = 0; j < height; j++)
+        value = (map[i][j] == null ? 1000 : get(i,j)!.value).max(value);
+    return value;
   }
 
   void loop(Function(int, int, Cell) callback,

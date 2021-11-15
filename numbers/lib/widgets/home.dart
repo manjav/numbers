@@ -211,18 +211,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         bottom: 0.d,
         height: 120.d,
         child: GestureDetector(
-            onTap: () async {
-              MyGame.isPlaying = false;
-              var result = await Rout.push(context, FreeCoinsDialog());
-              if (result != null && result != "") {
-                MyGame.isPlaying = true;
-                _game!.showReward(
-                    FreeCoinsDialog.reward,
-                    Vector2(_game!.bounds.top, Device.size.width * 0.5),
-                    GameEvent.freeCoins);
-              }
-              MyGame.isPlaying = true;
-            },
+            onTap: _showFreeCoinsDialog,
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SizedBox(
@@ -326,6 +315,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         break;
       case GameEvent.celebrate:
         _confettiController!.play();
+        if (FreeCoinsDialog.allSuperMatchAppears && Ads.isReady()) {
+          await Future.delayed(Duration(milliseconds: 1300));
+          _showFreeCoinsDialog();
+        }
         return;
       case GameEvent.completeTutorial:
         _widget = ConfirmDialog(_confettiController!);
@@ -481,6 +474,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var bounds = Rect.fromLTRB(
         padding, top, Device.size.width - padding, Device.size.height - bottom);
     _game = MyGame(bounds: bounds, onGameEvent: _onGameEventHandler);
+  }
+
+  _showFreeCoinsDialog() async {
+    MyGame.isPlaying = false;
+    var result = await Rout.push(context, FreeCoinsDialog());
+    if (result != null && result != "") {
+      MyGame.isPlaying = true;
+      _game!.showReward(
+          FreeCoinsDialog.reward,
+          Vector2(_game!.bounds.top, Device.size.width * 0.5),
+          GameEvent.freeCoins);
+    }
+    MyGame.isPlaying = true;
   }
 
   void _onRemoveBlock() {

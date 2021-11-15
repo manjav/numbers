@@ -15,6 +15,7 @@ import 'toast.dart';
 
 // ignore: must_be_immutable
 class FreeCoinsDialog extends AbstractDialog {
+  static bool allSuperMatchAppears = false;
   static int autoAppearance = 3;
   static int reward = 200;
   bool? playApplaud;

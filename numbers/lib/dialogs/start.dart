@@ -27,6 +27,8 @@ class StartDialog extends AbstractDialog {
 }
 
 class _StartDialogState extends AbstractDialogState<StartDialog> {
+  String _startButtonLabel = "start_l".l();
+
   @override
   void initState() {
     if (Pref.tutorMode.value == 0) _onStart();
@@ -52,13 +54,14 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
           height: 80.d,
           child: BumpedButton(
               colors: TColors.blue.value,
+              isEnable: _startButtonLabel == "start_l".l(),
               onTap: _onStart,
               cornerRadius: 16.d,
               content:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 SVG.icon("4", theme),
                 SizedBox(width: 12.d),
-                Text("start_l".l(),
+                Text(_startButtonLabel,
                     style: theme.textTheme.headline5,
                     textAlign: TextAlign.center)
               ])))
@@ -67,13 +70,16 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   }
 
   _onStart() async {
+    _startButtonLabel = "wait_l".l();
+    _onUpdate();
     var shown = await RatingDialog.showRating(context);
     if (!shown && Pref.playCount.value > AdPlace.Interstitial.threshold)
       await Ads.showInterstitial();
     await Rout.push(context, HomePage());
-    Cell.maxRandomValue = 3;
+    Cell.maxRandomValue = 4;
     MyGame.boostNextMode = 0;
     MyGame.boostBig = false;
+    _startButtonLabel = "start_l".l();
     _onUpdate();
   }
 
