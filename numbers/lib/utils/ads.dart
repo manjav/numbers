@@ -173,14 +173,12 @@ class Ads {
     switch (event) {
       case AdmobAdEvent.loaded:
         return GAAdAction.Loaded;
-      case AdmobAdEvent.started:
+      case AdmobAdEvent.opened:
         return GAAdAction.Show;
       case AdmobAdEvent.rewarded:
         return GAAdAction.RewardReceived;
-      case AdmobAdEvent.clicked:
+      case AdmobAdEvent.leftApplication:
         return GAAdAction.Clicked;
-      case AdmobAdEvent.failedToLoad:
-        return GAAdAction.FailedShow;
       default:
         return 0;
     }
