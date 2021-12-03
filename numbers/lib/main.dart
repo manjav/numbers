@@ -3,8 +3,8 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:games_services/games_services.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/dialogs/confirm.dart';
 import 'package:numbers/dialogs/quit.dart';
@@ -64,7 +64,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   int _loadingState = 0;
   @override
   Widget build(BuildContext context) {
@@ -113,9 +113,21 @@ class _MainPageState extends State<MainPage> {
     Analytics.init(widget.analytics);
     Prefs.init(() async {
       await Localization.init();
-      InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
       _loadingState = 2;
       setState(() {});
     });
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) Ads.pausedApp();
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
   }
 }

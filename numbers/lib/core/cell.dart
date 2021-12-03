@@ -16,7 +16,7 @@ import 'package:numbers/utils/utils.dart';
 
 enum CellState { Init, Float, Falling, Fell, Fixed }
 
-class Cell extends PositionComponent with HasGameRef<MyGame> {
+class Cell extends PositionComponent {
   static double diameter = 64.0;
   static double padding = 1.8;
   static double minSpeed = 0.01;
@@ -57,6 +57,7 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
     var min = seed.min(1).max((maxRandomValue * 0.4).ceil());
     return min + MyGame.random.nextInt(maxRandomValue - min);
   }
+
   static int getNextColumn(int seed) => Pref.tutorMode.value == 0
       ? [2, 0, 3, 2, 1, 1, 2][seed]
       : MyGame.random.nextInt(Cells.width);
@@ -114,7 +115,7 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
     _sidePaint = colors[value].withAlpha(180).paint();
     _overPaint = colors[value].paint();
     _textPaint = TextPaint(
-        config: TextPaintConfig(
+        style: TextStyle(
             fontSize:
                 radius * scales[getScore(value).toString().length.clamp(0, 5)],
             fontFamily: 'quicksand',
@@ -128,7 +129,7 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
     if (reward > 0) _coin = await Svg.load('images/coin.svg');
 
     size = Vector2(1.3, 1.3);
-    addEffect(ScaleEffect(
+    add(SizeEffect(
         size: Vector2(1, 1),
         duration: matched ? 0.2 : 0.3,
         curve: Curves.easeOutBack,
@@ -144,7 +145,7 @@ class Cell extends PositionComponent with HasGameRef<MyGame> {
   }
 
   void delete(Function(Cell)? onDelete) {
-    addEffect(ScaleEffect(
+    add(SizeEffect(
         size: Vector2(0, 0),
         duration: MyGame.random.nextDouble() * 0.8,
         curve: Curves.easeInBack,

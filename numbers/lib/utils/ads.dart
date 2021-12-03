@@ -1,50 +1,40 @@
 import 'dart:io';
 
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/prefs.dart';
-import 'package:unity_ads_plugin/unity_ads.dart';
 
 class Ads {
-  static Map<AdPlace, AdState> _placements = {
-    AdPlace.Interstitial: AdState.Closed,
-    AdPlace.Rewarded: AdState.Closed
-  };
+  static Map<AdPlace, AdState> _placements = Map();
 
   static Function(AdPlace, AdState)? onUpdate;
   static String platform = Platform.isAndroid ? "Android" : "iOS";
   static final isSupportAdMob = true;
   static final isSupportUnity = false;
-
-  static AdmobInterstitial? _interstitialAd;
-  static AdmobReward? _rewardedAd;
-  static bool _hasReward = false;
-
-  static var prefix = "ca-app-pub-5018637481206902/";
+  static final prefix = "ca-app-pub-5018637481206902/";
+  static final maxFailedLoadAttempts = 3;
+  static final AdRequest _request = AdRequest(nonPersonalizedAds: false);
+  static Map<String, Ad> _ads = Map();
+  static Map<AdPlace, int> _attempts = {
+    AdPlace.Interstitial: 0,
+    AdPlace.InterstitialVideo: 0,
+    AdPlace.Rewarded: 0
+  };
+  static RewardItem? reward;
 
   static init() async {
     if (isSupportAdMob) {
-      Admob.initialize();
-      _interstitialAd = AdmobInterstitial(
-        adUnitId: AdPlace.Interstitial.id,
-        listener: (AdmobAdEvent event, Map<String, dynamic>? args) =>
-            _adMobListeners(AdPlace.Interstitial, event, args),
-      );
-      _interstitialAd!.load();
-
-      _rewardedAd = AdmobReward(
-        adUnitId: AdPlace.Rewarded.id,
-        listener: (AdmobAdEvent event, Map<String, dynamic>? args) =>
-            _adMobListeners(AdPlace.Rewarded, event, args),
-      );
-      _rewardedAd!.load();
+      MobileAds.instance.initialize();
+      _getInterstitial(AdPlace.Interstitial);
+      _getInterstitial(AdPlace.InterstitialVideo);
+      _getRewarded();
     }
 
-    if (isSupportUnity) {
+    /* if (isSupportUnity) {
       UnityAds.init(
           gameId: "4230791",
           listener: (UnityAdState state, data) {
@@ -59,58 +49,138 @@ class Ads {
                   adPlace.name, "unityads");
               _updateState(adPlace, AdState.Closed);
             }
-            debugPrint("Ads state =====> $state : $data");
+            debugPrint("Ads ==> state: $state, $data");
           });
-    }
+    } 
 
     for (var id in AdPlace.values) {
       var ready = await UnityAds.isReady(placementId: id.name);
       if (ready ?? false) _placements[id] = AdState.Loaded;
-    }
+    }*/
   }
 
-  static bool isReady([AdPlace? id]) {
-    var _id = id ?? AdPlace.Rewarded;
-    if (id != AdPlace.Rewarded && Pref.noAds.value > 0) return false;
-    return _placements.containsKey(_id) && _placements[_id] == AdState.Loaded;
-  }
-
-  static Widget getBanner({AdmobBannerSize? size}) {
-    if (Pref.noAds.value > 0 || Pref.playCount.value < AdPlace.Banner.threshold)
-      return SizedBox();
-    if (isSupportAdMob)
-      return AdmobBanner(
-        adSize: size ?? AdmobBannerSize.LARGE_BANNER,
-        adUnitId: AdPlace.Banner.id,
-        listener: (AdmobAdEvent event, Map<String, dynamic>? args) {},
-        onBannerCreated: (AdmobBannerController controller) {
-          _updateState(AdPlace.Banner, AdState.Loaded);
+  static BannerAd getBanner(String type, {AdSize? size}) {
+    var place = AdPlace.Banner;
+    var name = place.name + "_" + type;
+    if (_ads.containsKey(name)) return _ads[name]! as BannerAd;
+    var _listener = BannerAdListener(
+        onAdLoaded: (ad) => _updateState(place, AdState.Loaded, ad),
+        onAdFailedToLoad: (ad, error) {
+          _updateState(place, AdState.FailedLoad, ad, error);
+          ad.dispose();
         },
-      );
-    return UnityBannerAd(placementId: AdPlace.Banner.name);
+        onAdOpened: (ad) => _updateState(place, AdState.Clicked, ad),
+        onAdClosed: (ad) => _updateState(place, AdState.Closed, ad),
+        onAdImpression: (ad) => _updateState(place, AdState.Show, ad));
+    _updateState(place, AdState.Request);
+    return _ads[name] = BannerAd(
+        size: size ?? AdSize.largeBanner,
+        adUnitId: place.id,
+        listener: _listener,
+        request: _request)
+      ..load();
   }
 
-  static showInterstitial() async {
+  static void _getInterstitial(AdPlace place) {
+    InterstitialAd.load(
+        adUnitId: place.id,
+        request: _request,
+        adLoadCallback:
+            InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+          _updateState(place, AdState.Loaded, ad);
+          _ads[place.name] = ad;
+          _attempts[place] = 0;
+          ad.setImmersiveMode(true);
+        }, onAdFailedToLoad: (LoadAdError error) {
+          _updateState(place, AdState.FailedLoad, null, error);
+          _attempts[place] = _attempts[place]! + 1;
+          _ads.remove(place.name);
+          if (_attempts[place]! <= maxFailedLoadAttempts)
+            _getInterstitial(place);
+        }));
+  }
+
+  static void _getRewarded() {
+    var place = AdPlace.Rewarded;
+    RewardedAd.load(
+        adUnitId: place.id,
+        request: _request,
+        rewardedAdLoadCallback:
+            RewardedAdLoadCallback(onAdLoaded: (RewardedAd ad) {
+          _ads[place.name] = ad;
+          _attempts[place] = 0;
+          _updateState(place, AdState.Loaded, ad);
+        }, onAdFailedToLoad: (LoadAdError error) {
+          _updateState(place, AdState.FailedLoad, null, error);
+          _ads.remove(place.name);
+          _attempts[place] = _attempts[place]! + 1;
+          if (_attempts[place]! <= maxFailedLoadAttempts) _getRewarded();
+        }));
+  }
+
+  static bool isReady([AdPlace? place]) {
+    var _place = place ?? AdPlace.Rewarded;
+    if (_place != AdPlace.Rewarded) {
+      if (Pref.playCount.value < _place.threshold) return false;
+      if (Pref.noAds.value > 0) return false;
+    }
+    return _placements.containsKey(_place) &&
+        _placements[_place] == AdState.Loaded;
+  }
+
+  static showInterstitial(AdPlace place) async {
     if (Pref.noAds.value > 0) return;
-    if (isSupportAdMob) {
-      bool loaded = false;
-      loaded = (await _interstitialAd!.isLoaded)!;
-      if (!loaded) return;
-      _interstitialAd!.show();
-      await _waitForClose(AdPlace.Interstitial);
+    if (!_ads.containsKey(place.name)) {
+      debugPrint("Ads ==> attempt to show ${place.name} before loaded.");
+      return;
     }
+    if (!isReady(place)) return;
+    var _ad = _ads[place.name] as InterstitialAd;
+    _ad.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          _updateState(place, AdState.Closed, ad);
+          ad.dispose();
+          _getInterstitial(place);
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          _updateState(place, AdState.FailedShow, ad, error);
+          ad.dispose();
+          _getInterstitial(place);
+        },
+        onAdImpression: (ad) => _updateState(place, AdState.Show, ad));
+    _ad.show();
+    _ads.remove(place.name);
+    await _waitForClose(place);
   }
 
-  static Future<bool> showRewarded() async {
-    if (isSupportAdMob) {
-      _hasReward = false;
-      bool loaded = (await _rewardedAd!.isLoaded);
-      if (!loaded) return false;
-      _rewardedAd!.show();
-      await _waitForClose(AdPlace.Rewarded);
-      return _hasReward;
+  static Future<RewardItem?> showRewarded() async {
+    reward = null;
+    var place = AdPlace.Rewarded;
+    if (!_ads.containsKey(place.name)) {
+      debugPrint("Ads ==> attempt to show ${place.name} before loaded.");
+      return null;
     }
-    return false;
+    var _ad = _ads[place.name] as RewardedAd;
+    _ad.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (RewardedAd ad) {
+          _updateState(place, AdState.Closed, ad);
+          ad.dispose();
+          _getRewarded();
+        },
+        onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+          _updateState(place, AdState.FailedShow, ad, error);
+          ad.dispose();
+          _getRewarded();
+        },
+        onAdImpression: (ad) => _updateState(place, AdState.Show, ad));
+    _ad.setImmersiveMode(true);
+    _ad.show(onUserEarnedReward: (RewardedAd ad, RewardItem rewardItem) {
+      reward = rewardItem;
+      _updateState(place, AdState.RewardReceived, ad);
+    });
+    await _waitForClose(place);
+    _ads.remove(place.name);
+    return reward;
   }
 
   /* static Future<bool> _show([AdPlace? id]) async {
@@ -130,75 +200,67 @@ class Ads {
     const d = Duration(milliseconds: 500);
     while (_lastAdState == UnityAdState.started) await Future.delayed(d);
     return _lastAdState == UnityAdState.complete;
-  } */
+  } 
 
   static AdPlace _getPlacement(String id) {
     if (id.contains("Banner")) return AdPlace.Banner;
     if (id.contains("Interstitial")) return AdPlace.Interstitial;
+    if (id.contains("InterstitialVideo")) return AdPlace.InterstitialVideo;
     return AdPlace.Rewarded;
-  }
+  }*/
 
-  static _adMobListeners(
-      AdPlace adPlace, AdmobAdEvent event, Map<String, dynamic>? args) {
-    if (event == AdmobAdEvent.loaded) {
-      _updateState(adPlace, AdState.Loaded);
-    } else if (event == AdmobAdEvent.opened) {
-      _updateState(adPlace, AdState.Opened);
-    } else if (event == AdmobAdEvent.rewarded) {
-      _hasReward = true;
-    } else if (event == AdmobAdEvent.closed) {
-      _updateState(adPlace, AdState.Closed);
-      if (adPlace == AdPlace.Interstitial)
-        _interstitialAd!.load();
-      else
-        _rewardedAd!.load();
-    }
-    var action = _getAction(event);
-    if (action > 0) Analytics.ad(action, adPlace.type, adPlace.name, "admob");
-    debugPrint("=====> $adPlace ${event.toString()} $args");
-  }
-
-  static void _updateState(AdPlace adPlace, AdState state) {
-    _placements[adPlace] = state;
-    onUpdate?.call(adPlace, state);
+  static void _updateState(AdPlace place, AdState state,
+      [Ad? ad, AdError? error]) {
+    _placements[place] = state;
+    onUpdate?.call(place, state);
+    if (state.order > 0)
+      Analytics.ad(state.order, place.type, place.name, "admob");
+    debugPrint("Ads ==> $place ${state.toString()} ${error ?? ''}");
   }
 
   static _waitForClose(AdPlace adPlace) async {
-    _placements[adPlace] = AdState.Opened;
     const d = Duration(milliseconds: 300);
     while (_placements[adPlace] != AdState.Closed) await Future.delayed(d);
   }
 
-  static int _getAction(AdmobAdEvent event) {
-    switch (event) {
-      case AdmobAdEvent.loaded:
-        return GAAdAction.Loaded;
-      case AdmobAdEvent.opened:
-        return GAAdAction.Show;
-      case AdmobAdEvent.rewarded:
-        return GAAdAction.RewardReceived;
-      case AdmobAdEvent.leftApplication:
-        return GAAdAction.Clicked;
-      default:
-        return 0;
-    }
+  static void pausedApp() {
+    _placements.forEach((key, value) {
+      if (key != AdPlace.Banner &&
+          (value == AdState.Show || value == AdState.RewardReceived))
+        _updateState(key, AdState.Clicked);
+    });
   }
 }
 
-enum AdState { Loaded, Opened, Closed }
-enum AdPlace { Rewarded, Interstitial, Banner }
+enum AdState {
+  Closed,
+  Clicked,
+  Show,
+  FailedShow,
+  RewardReceived,
+  Request,
+  Loaded,
+  FailedLoad
+}
 
-extension AdExt on AdPlace {
-  AdPlace parse(String name) {
-    return AdPlace.Banner;
+extension AdExt on AdState {
+  int get order {
+    if (this == AdState.FailedLoad) return -1;
+    return index;
   }
+}
 
+enum AdPlace { Rewarded, Interstitial, InterstitialVideo, Banner }
+
+extension AdPlaceExt on AdPlace {
   String get name {
     switch (this) {
       case AdPlace.Banner:
         return "Banner_${Ads.platform}";
       case AdPlace.Interstitial:
         return "Interstitial_${Ads.platform}";
+      case AdPlace.InterstitialVideo:
+        return "InterstitialVideo_${Ads.platform}";
       case AdPlace.Rewarded:
         return "Rewarded_${Ads.platform}";
     }
@@ -209,6 +271,8 @@ extension AdExt on AdPlace {
       case AdPlace.Banner:
         return "${Ads.prefix}9761457956";
       case AdPlace.Interstitial:
+        return "${Ads.prefix}6937186747";
+      case AdPlace.InterstitialVideo:
         return "${Ads.prefix}4317559580";
       case AdPlace.Rewarded:
         return "${Ads.prefix}2812906224";
@@ -220,6 +284,8 @@ extension AdExt on AdPlace {
       case AdPlace.Rewarded:
         return GAAdType.RewardedVideo;
       case AdPlace.Interstitial:
+        return GAAdType.OfferWall;
+      case AdPlace.InterstitialVideo:
         return GAAdType.Interstitial;
       case AdPlace.Banner:
         return GAAdType.Banner;
@@ -227,8 +293,9 @@ extension AdExt on AdPlace {
   }
 
   int get threshold {
-    if (this == AdPlace.Interstitial) return 3;
     if (this == AdPlace.Banner) return 5;
+    if (this == AdPlace.Interstitial) return 1;
+    if (this == AdPlace.InterstitialVideo) return 3;
     return 0;
   }
 }

@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:admob_flutter/admob_flutter.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:install_prompt/install_prompt.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
@@ -41,6 +41,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   MyGame? _game;
+  GameWidget? _gameWidget;
   int loadingState = 0;
 
   AnimationController? _rewardAnimation;
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         onWillPop: _onWillPop,
         child: Scaffold(
             body: Stack(alignment: Alignment.bottomCenter, children: [
-          _game == null ? SizedBox() : GameWidget(game: _game!),
+          _game == null ? SizedBox() : _gameWidget!,
           Positioned(
               top: _game!.bounds.top - 69.d,
               left: _game!.bounds.left,
@@ -200,12 +201,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       });
     }
 
-    if (!_animationTime)
+    if (!_animationTime) {
+      var ad = Ads.getBanner("game", size: AdSize.banner);
       return Positioned(
           bottom: 2.d,
           child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8.d)),
-              child: Ads.getBanner(size: AdmobBannerSize.BANNER)));
+              child: SizedBox(
+                  width: ad.size.width.toDouble(),
+                  height: ad.size.height.toDouble(),
+                  child: AdWidget(ad: ad))));
+    }
     return Positioned(
         left: 0,
         bottom: 0.d,
@@ -315,10 +321,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         break;
       case GameEvent.celebrate:
         _confettiController!.play();
-        if (FreeCoinsDialog.allSuperMatchAppears && Ads.isReady()) {
-          await Future.delayed(Duration(milliseconds: 1300));
-          _showFreeCoinsDialog();
-        }
         return;
       case GameEvent.completeTutorial:
         _widget = ConfirmDialog(_confettiController!);
@@ -475,6 +477,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var bounds = Rect.fromLTRB(
         padding, top, Device.size.width - padding, Device.size.height - bottom);
     _game = MyGame(bounds: bounds, onGameEvent: _onGameEventHandler);
+    _gameWidget = GameWidget(game: _game!);
   }
 
   _showFreeCoinsDialog() async {

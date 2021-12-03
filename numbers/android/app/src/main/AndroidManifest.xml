@@ -5,7 +5,6 @@
 			android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
 
 			<meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme"/>
-			<meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
 			<meta-data android:name="default-url" android:value="https://numbers.sarand.net" />
 			
 			<intent-filter android:autoVerify="true">

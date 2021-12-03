@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:numbers/dialogs/shop.dart';
 import 'package:numbers/dialogs/stats.dart';
 import 'package:numbers/utils/ads.dart';
@@ -12,6 +13,7 @@ import 'package:numbers/widgets/components.dart';
 
 // ignore: must_be_immutable
 class AbstractDialog extends StatefulWidget {
+  static bool showSuicideInterstitial = false;
   DialogMode mode;
   String? sfx;
   String? title;
@@ -91,22 +93,26 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
       return;
     }
     if (showAd) {
-      var complete = await Ads.showRewarded();
-      if (!complete) {
-        return;
-      }
+      var reward = await Ads.showRewarded();
+      if (reward == null) return;
+    } else if (coin > 0 && AbstractDialog.showSuicideInterstitial) {
+      await Ads.showInterstitial(AdPlace.Interstitial);
     }
     if (coin != 0) Pref.coin.increase(coin, itemType: "confirm", itemId: type);
     Navigator.of(context).pop(type);
   }
 
-  Widget bannerAdsFactory() {
+  Widget bannerAdsFactory(String type) {
     if (!Ads.isReady(AdPlace.Banner)) return SizedBox();
+    var ad = Ads.getBanner(type);
     return Positioned(
         bottom: 8.d,
-        child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(16.d)),
-            child: Ads.getBanner()));
+        child: SizedBox(
+            width: ad.size.width.toDouble(),
+            height: ad.size.height.toDouble(),
+            child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(16.d)),
+                child: AdWidget(ad: ad))));
   }
 
   Widget rankButtonFactory(ThemeData theme) {

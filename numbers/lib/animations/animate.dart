@@ -16,11 +16,31 @@ class Animate {
     sizeX = sizeX ?? target.size.x;
     sizeY = sizeY ?? target.size.y;
     curve = curve ?? Curves.easeInExpo;
-    target.addEffect(MoveEffect(
+    target.add(MoveEffect(
       path: [Vector2(target.x, target.y), Vector2(x, y)],
       curve: curve,
       duration: duration,
       onComplete: onComplete,
     ));
+  }
+
+  int index = 0;
+  Function? onComplete;
+  List<ComponentEffect> effects;
+  PositionComponent owner;
+  Animate(this.owner, this.effects, {this.onComplete}) {
+    this.effects = effects;
+    _onEffectComplete();
+  }
+
+  _onEffectComplete() {
+    if (index >= effects.length) {
+      onComplete?.call();
+      return;
+    }
+    var effect = effects[index];
+    effect.onComplete = _onEffectComplete;
+    owner.add(effects[index]);
+    ++index;
   }
 }

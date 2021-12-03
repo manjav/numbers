@@ -40,7 +40,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
     if (Pref.tutorMode.value == 0) return SizedBox();
     var theme = Theme.of(context);
     stepChildren.clear();
-    stepChildren.add(bannerAdsFactory());
+    stepChildren.add(bannerAdsFactory("start"));
     widget.child =
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Expanded(
@@ -74,7 +74,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
     _onUpdate();
     var shown = await RatingDialog.showRating(context);
     if (!shown && Pref.playCount.value > AdPlace.Interstitial.threshold)
-      await Ads.showInterstitial();
+      await Ads.showInterstitial(AdPlace.InterstitialVideo);
     await Rout.push(context, HomePage());
     Cell.maxRandomValue = 4;
     MyGame.boostNextMode = 0;

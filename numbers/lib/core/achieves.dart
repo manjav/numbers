@@ -1,10 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flame_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:numbers/core/game.dart';
 import 'package:numbers/utils/utils.dart';
 
-class ScoreFX extends PositionComponent with HasGameRef<MyGame> {
+class ScoreFX extends PositionComponent {
   static final _textColor = Color(0xFFFFFFFF);
 
   final value;
@@ -20,14 +19,15 @@ class ScoreFX extends PositionComponent with HasGameRef<MyGame> {
   void render(Canvas canvas) {
     super.render(canvas);
     if (_alpha <= 5) {
-      remove();
+      removeFromParent();
       return;
     }
     var change = (dy - y);
     _alpha = (change / diff * -255).floor();
     y += change / 50;
+
     TextPaint(
-            config: TextPaintConfig(
+            style: TextStyle(
                 fontSize: 24.d,
                 fontFamily: 'quicksand',
                 color: _textColor.withAlpha(_alpha)))
@@ -35,7 +35,7 @@ class ScoreFX extends PositionComponent with HasGameRef<MyGame> {
   }
 }
 
-class Reward extends PositionComponent with HasGameRef<MyGame> {
+class Reward extends PositionComponent {
   static final _textColor = Color(0xFFFFFFFF);
 
   final value;
@@ -60,13 +60,13 @@ class Reward extends PositionComponent with HasGameRef<MyGame> {
   void render(Canvas canvas) {
     super.render(canvas);
     if (_alpha <= 5) {
-      remove();
+      removeFromParent();
       return;
     }
     // var change = (dy - y);
     // _alpha = (change / diff * -255).floor();
     TextPaint(
-            config: TextPaintConfig(
+            style: TextStyle(
                 fontSize: 64 * size.x,
                 fontFamily: 'quicksand',
                 color: _textColor.withAlpha(_alpha)))
