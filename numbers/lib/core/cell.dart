@@ -130,8 +130,7 @@ class Cell extends PositionComponent {
     }
     _textPaint = TextPaint(
         style: TextStyle(
-            fontSize:
-                radius * scales[getScore(value).toString().length.clamp(0, 5)],
+            fontSize: radius * 0.8,
             fontFamily: 'icons',
             color: hiddenMode > 1
                 ? colors[value].color
