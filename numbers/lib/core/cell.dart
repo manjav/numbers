@@ -24,6 +24,8 @@ class Cell extends PositionComponent {
   static final firstBigRecord = 8;
   static int maxRandomValue = 4;
   static int lastRandomValue = 9;
+
+  static final signs = ["", ";", "<", "=", ">", "?", "@"];
   static final colors = [
     PaletteEntry(Color(0xFF191C1D)),
     PaletteEntry(Color(0xFF9600FF)),
@@ -45,11 +47,13 @@ class Cell extends PositionComponent {
     PaletteEntry(Color(0xFF004940))
   ];
   static final scales = [0, 1, 0.9, 0.75, 0.65, 0.6, 0.55];
+
   static double get radius => diameter * 0.5;
   static double get strock => padding * 1.1;
   static double getX(int col) => MyGame.bounds.left + col * diameter + radius;
   static double getY(int row) => MyGame.bounds.top + row * diameter + radius;
   static int getScore(int value) => pow(2, value) as int;
+  static String getSign(int v) => v < signs.length ? signs[v] : v.toString();
   // static int getNextValue(int step) => [1, 2, 3, 3, 2, 2, 1, 1][step];
   // static int getNextColumn(int step) => [0, 1, 1, 2, 4, 4, 4, 4][step];
   static int getNextValue(int seed) {
@@ -77,7 +81,7 @@ class Cell extends PositionComponent {
       roundness * 1.3,
       roundness * 1.3);
   static final RRect _sideRect = RRect.fromLTRBXY(strock - radius,
-      strock - radius, radius - strock, radius - strock, roundness, roundness);
+      strock - radius, radius - strock, radius, roundness, roundness);
   static final RRect _overRect = RRect.fromLTRBXY(
       strock - radius,
       strock - radius,
@@ -85,9 +89,11 @@ class Cell extends PositionComponent {
       radius - strock - thickness,
       roundness,
       roundness);
+  static final RRect _lightRect = RRect.fromRectAndRadius(
+      _overRect.outerRect, Radius.circular(roundness * 5));
 
   static final Paint _backPaint = colors[0].paint();
-
+  static final _lightPaint = PaletteEntry(Color(0x55FFFFFF)).paint();
   TextPaint? _textPaint;
   Paint? _sidePaint;
   Paint? _overPaint;
@@ -118,16 +124,18 @@ class Cell extends PositionComponent {
     var shadows = <Shadow>[];
     if (hiddenMode == 0) {
       shadows.add(BoxShadow(
-          color: Colors.black.withAlpha(150),
+          color: Colors.white.withAlpha(150),
           blurRadius: 3,
-          offset: Offset(0, radius * 0.05)));
+          offset: Offset(0, -radius * 0.05)));
     }
     _textPaint = TextPaint(
         style: TextStyle(
             fontSize:
                 radius * scales[getScore(value).toString().length.clamp(0, 5)],
-            fontFamily: 'quicksand',
-            color: hiddenMode > 1 ? colors[value].color : Colors.white,
+            fontFamily: 'icons',
+            color: hiddenMode > 1
+                ? colors[value].color
+                : Colors.black.withAlpha(200),
             shadows: shadows));
 
     if (hiddenMode > 0)
@@ -170,9 +178,10 @@ class Cell extends PositionComponent {
       c.drawRRect(_backRect.s(size), _backPaint);
       c.drawRRect(_sideRect.s(size), _sidePaint!);
       c.drawRRect(_overRect.s(size), _overPaint!);
+      c.drawRRect(_lightRect.s(size), _lightPaint);
     }
 
-    _textPaint!.render(c, "${hiddenMode == 1 ? "?" : getScore(value)}", _center,
+    _textPaint!.render(c, "${hiddenMode == 1 ? "?" : getSign(value)}", _center,
         anchor: Anchor.center);
     if (reward > 0) _coin!.renderPosition(c, _coinPos, _coinSize);
   }
@@ -184,7 +193,7 @@ class Cell extends PositionComponent {
     diameter = _diameter;
     padding = _diameter * 0.04;
     roundness = _diameter * 0.15;
-    thickness = _diameter * 0.1;
+    thickness = _diameter * 0.05;
   }
 }
 
