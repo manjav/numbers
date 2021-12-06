@@ -123,7 +123,6 @@ class MyGame extends FlameGame with TapDetector {
         hiddenMode: boostNextMode + 1);
     _nextCell.x = Cell.getX(_nextCell.column);
     _nextCell.y = bounds.bottom - Cell.radius;
-    add(_nextCell);
 
     if (_tutorMode) {
       add(_columnHint = ColumnHint(RRect.fromLTRBXY(
@@ -245,13 +244,6 @@ class MyGame extends FlameGame with TapDetector {
       return;
     }
     if (_tutorMode == isPlaying) return;
-    if (!_tutorMode &&
-        boostNextMode == 0 &&
-        info.eventPosition.global.y < bounds.top + Cell.diameter) {
-      isPlaying = false;
-      onGameEvent?.call(GameEvent.boost, 0);
-      return;
-    }
     if (_cells.last!.state == CellState.Float && !_cells.last!.matched) {
       var col = ((info.eventPosition.global.x - bounds.left) / Cell.diameter)
           .clamp(0, Cells.width - 1)

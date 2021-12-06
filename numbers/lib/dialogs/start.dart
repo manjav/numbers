@@ -45,9 +45,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Expanded(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Components.startButton(context, "start_big".l(), "512", _onUpdate),
-        SizedBox(width: 2.d),
-        Components.startButton(context, "start_next".l(), "next", _onUpdate)
+        Components.startButton(context, "start_big".l(), "512", _onUpdate)
       ])),
       SizedBox(height: 10.d),
       Container(
