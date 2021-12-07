@@ -25,7 +25,7 @@ class Cell extends PositionComponent {
   static int maxRandomValue = 4;
   static int lastRandomValue = 9;
 
-  static final signs = ["", ";", "<", "=", ">", "?", "@"];
+  static final signs = ["", "a", "b", "c", "d", "e", "f"];
   static final colors = [
     PaletteEntry(Color(0xFF191C1D)),
     PaletteEntry(Color(0xFF9600FF)),
