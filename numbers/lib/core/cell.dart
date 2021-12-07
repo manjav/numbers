@@ -102,6 +102,14 @@ class Cell extends PositionComponent {
   Vector2 _coinPos = Vector2.all(-radius * 0.86);
   Vector2 _coinSize = Vector2.all(26);
 
+  get _fontColor {
+    if (hiddenMode == 1) return Colors.white;
+    if (hiddenMode == 2) return colors[value].color;
+    return Colors.black.withAlpha(200);
+  }
+
+  get _color => hiddenMode > 1 ? colors[value].color : Colors.white;
+
   Cell(int column, int row, int value, {int reward = 0, Function(Cell)? onInit})
       : super() {
     init(column, row, value, reward: reward, onInit: onInit);
@@ -132,16 +140,14 @@ class Cell extends PositionComponent {
         style: TextStyle(
             fontSize: radius * 0.8,
             fontFamily: 'icons',
-            color: hiddenMode > 1
-                ? colors[value].color
-                : Colors.black.withAlpha(200),
+            color: _fontColor,
             shadows: shadows));
 
     if (hiddenMode > 0)
       _hiddenPaint = Paint()
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke
-        ..color = hiddenMode > 1 ? colors[value].color : Colors.white;
+        ..color = _color;
     if (reward > 0) _coin = await Svg.load('images/coin.svg');
 
     size = Vector2(1.3, 1.3);
