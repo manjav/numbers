@@ -108,11 +108,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
     Ads.init();
     Sound.init();
-    Notifier.init();
     GamesServices.signIn();
     Analytics.init(widget.analytics);
     Prefs.init(() async {
       await Localization.init();
+      Notifier.init();
       _loadingState = 2;
       setState(() {});
     });
