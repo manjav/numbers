@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/dialogs/toast.dart';
@@ -79,10 +78,10 @@ class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {
           cornerRadius: 16.d,
           isEnable: Ads.isReady(),
           colors: TColors.orange.value,
-          errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
+          errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
           onTap: () => buttonsClick(context, "big", reward * rewardCoef, true),
           content: Stack(alignment: Alignment.centerLeft, children: [
-            SVG.icon("0", theme),
+            SVG.icon("A", theme),
             Positioned(
                 top: 5.d,
                 left: 44.d,

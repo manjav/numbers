@@ -1,14 +1,11 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flame_svg/svg.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+import 'package:numbers/animations/animate.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -49,6 +46,9 @@ class Cell extends PositionComponent {
   static final scales = [0, 1, 0.9, 0.75, 0.65, 0.6, 0.55];
   static double get radius => diameter * 0.5;
   static double get strock => padding * 1.1;
+  static double getX(int col) => MyGame.bounds.left + col * diameter + radius;
+  static double getY(int row) =>
+      MyGame.bounds.top + (Cells.height - row) * diameter + radius;
   static int getScore(int value) => pow(2, value) as int;
   // static int getNextValue(int step) => [1, 2, 3, 3, 2, 2, 1, 1][step];
   // static int getNextColumn(int step) => [0, 1, 1, 2, 4, 4, 4, 4][step];
@@ -114,12 +114,21 @@ class Cell extends PositionComponent {
 
     _sidePaint = colors[value].withAlpha(180).paint();
     _overPaint = colors[value].paint();
+
+    var shadows = <Shadow>[];
+    if (hiddenMode == 0) {
+      shadows.add(BoxShadow(
+          color: Colors.black.withAlpha(150),
+          blurRadius: 3,
+          offset: Offset(0, radius * 0.05)));
+    }
     _textPaint = TextPaint(
         style: TextStyle(
             fontSize:
                 radius * scales[getScore(value).toString().length.clamp(0, 5)],
             fontFamily: 'quicksand',
-            color: hiddenMode > 1 ? colors[value].color : Colors.white));
+            color: hiddenMode > 1 ? colors[value].color : Colors.white,
+            shadows: shadows));
 
     if (hiddenMode > 0)
       _hiddenPaint = Paint()
@@ -129,11 +138,10 @@ class Cell extends PositionComponent {
     if (reward > 0) _coin = await Svg.load('images/coin.svg');
 
     size = Vector2(1.3, 1.3);
-    add(SizeEffect(
-        size: Vector2(1, 1),
-        duration: matched ? 0.2 : 0.3,
-        curve: Curves.easeOutBack,
-        onComplete: _animationComplete));
+    var controller = EffectController(
+        duration: matched ? 0.2 : 0.3, curve: Curves.easeOutBack);
+    add(SizeEffect.to(Vector2(1, 1), controller));
+    Animate.checkCompletion(controller, _animationComplete);
     return this;
   }
 
@@ -145,11 +153,10 @@ class Cell extends PositionComponent {
   }
 
   void delete(Function(Cell)? onDelete) {
-    add(SizeEffect(
-        size: Vector2(0, 0),
-        duration: MyGame.random.nextDouble() * 0.8,
-        curve: Curves.easeInBack,
-        onComplete: () => onDelete?.call(this)));
+    var controller = EffectController(
+        duration: MyGame.random.nextDouble() * 0.8, curve: Curves.easeInBack);
+    add(SizeEffect.to(Vector2.zero(), controller));
+    Animate.checkCompletion(controller, () => onDelete?.call(this));
   }
 
   @override
@@ -169,9 +176,7 @@ class Cell extends PositionComponent {
   }
 
   @override
-  String toString() {
-    return "Cell c:$column, r:$row, v:$value, s:$state}";
-  }
+  String toString() => "Cell c:$column, r:$row, v:$value, s:$state}";
 
   static void updateSizes(double _diameter) {
     diameter = _diameter;

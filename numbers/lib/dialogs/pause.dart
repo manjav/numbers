@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -40,23 +39,23 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               BumpedButton(
-                  onTap: () => Navigator.of(context).pop("reset"),
+                  onTap: () => Navigator.of(context).pop(["reset"]),
                   colors: TColors.green.value,
                   cornerRadius: 16.d,
                   content: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        SVG.icon("5", theme),
+                        SVG.icon("F", theme),
                         Text("pause_l".l(), style: theme.textTheme.headline5)
                       ])),
               BumpedButton(
-                  onTap: () => Navigator.of(context).pop("resume"),
+                  onTap: () => Navigator.of(context).pop(["resume"]),
                   colors: TColors.blue.value,
                   cornerRadius: 16.d,
                   content: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        SVG.icon("4", theme),
+                        SVG.icon("E", theme),
                         Text("continue_l".l(), style: theme.textTheme.headline5)
                       ]))
             ])));
@@ -73,7 +72,7 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
               colors: TColors.orange.value,
               cornerRadius: 16.d,
               content: Center(
-                  child: SVG.icon("${Pref.isVibrateOff.value + 6}", theme,
+                  child: SVG.icon(["G", "H"][Pref.isVibrateOff.value], theme,
                       scale: 1.2)))),
       SizedBox(width: 12.d),
       SizedBox(
@@ -87,8 +86,8 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
               colors: TColors.yellow.value,
               cornerRadius: 16.d,
               content: Center(
-                  child:
-                      SVG.icon("${Pref.isMute.value + 1}", theme, scale: 1.2))))
+                  child: SVG.icon(["B", "C"][Pref.isMute.value], theme,
+                      scale: 1.2))))
     ]));
 
     children.add(

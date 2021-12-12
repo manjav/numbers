@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
-import 'package:numbers/dialogs/dialogs.dart';
+import 'package:numbers/utils/ads.dart';
 
 class Analytics {
   static late FirebaseAnalytics _firebaseAnalytics;
@@ -41,8 +41,9 @@ class Analytics {
         registerOnAppOpenAttributionCallback: true,
         registerOnDeepLinkingCallback: true);
 
-    var testingVariantId = await GameAnalytics.getABTestingVariantId();
-    AbstractDialog.showSuicideInterstitial = testingVariantId == "2";
+    var testVariantId = await GameAnalytics.getRemoteConfigsValueAsString(
+        "TheSuicideAd", "1"); //{"TheSuicideAd": "2"}
+    Ads.showSuicideInterstitial = testVariantId == "2";
   }
 
   static Future<void> purchase(String currency, double amount, String itemId,
@@ -133,8 +134,10 @@ class Analytics {
       {Map<String, dynamic>? parameters}) async {
     _firebaseAnalytics.logEvent(name: name, parameters: parameters);
 
-    var value = parameters == null ? "" : parameters.values.first;
-    GameAnalytics.addDesignEvent({"eventId": name, "value": value});
+    var data = parameters == null
+        ? {"eventId": name}
+        : {"eventId": name, "value": parameters.values.first};
+    GameAnalytics.addDesignEvent(data);
   }
 
   static Future<void> share(String contentType, String itemId) async {

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -29,7 +28,7 @@ class RatingDialog extends AbstractDialog {
       return false;
     }
     Pref.rate.set(rating);
-    Pref.rateTarget.increase(10);
+    Pref.rateTarget.increase(2);
 
     String comment = "";
     if (rating > 0) {

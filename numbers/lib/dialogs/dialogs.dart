@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -13,7 +12,6 @@ import 'package:numbers/widgets/components.dart';
 
 // ignore: must_be_immutable
 class AbstractDialog extends StatefulWidget {
-  static bool showSuicideInterstitial = false;
   DialogMode mode;
   String? sfx;
   String? title;
@@ -95,11 +93,10 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     if (showAd) {
       var reward = await Ads.showRewarded();
       if (reward == null) return;
-    } else if (coin > 0 && AbstractDialog.showSuicideInterstitial) {
+    } else if (coin > 0 && Ads.showSuicideInterstitial) {
       await Ads.showInterstitial(AdPlace.Interstitial);
     }
-    if (coin != 0) Pref.coin.increase(coin, itemType: "confirm", itemId: type);
-    Navigator.of(context).pop(type);
+    Navigator.of(context).pop([type, coin]);
   }
 
   Widget bannerAdsFactory(String type) {
@@ -251,41 +248,3 @@ extension DialogName on DialogMode {
     }
   }
 }
-
-// class DialogBuilder {
-//   DialogMode mode;
-//   String? sfx;
-//   String? title;
-//   double? width;
-//   double? height;
-//   Widget? child;
-//   Widget? scoreButton;
-//   Widget? coinButton;
-//   Widget? closeButton;
-//   Widget? statsButton;
-//   Function? onWillPop;
-//   EdgeInsets? padding;
-//   bool? hasChrome;
-//   bool? showCloseButton;
-//   bool? closeOnBack;
-//   Map<String, dynamic>? args;
-
-//   DialogBuilder(
-//     this.mode, {
-//     this.sfx,
-//     this.title,
-//     this.width,
-//     this.height,
-//     this.child,
-//     this.scoreButton,
-//     this.coinButton,
-//     this.closeButton,
-//     this.statsButton,
-//     this.onWillPop,
-//     this.padding,
-//     this.hasChrome,
-//     this.showCloseButton,
-//     this.closeOnBack,
-//     this.args,
-//   });
-// }

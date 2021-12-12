@@ -13,6 +13,7 @@ class Ads {
 
   static Function(AdPlace, AdState)? onUpdate;
   static String platform = Platform.isAndroid ? "Android" : "iOS";
+  static final rewardCoef = 10;
   static final isSupportAdMob = true;
   static final isSupportUnity = false;
   static final prefix = "ca-app-pub-5018637481206902/";
@@ -24,6 +25,7 @@ class Ads {
     AdPlace.InterstitialVideo: 0,
     AdPlace.Rewarded: 0
   };
+  static bool showSuicideInterstitial = false;
   static RewardItem? reward;
 
   static init() async {
@@ -293,9 +295,8 @@ extension AdPlaceExt on AdPlace {
   }
 
   int get threshold {
-    if (this == AdPlace.Banner) return 5;
-    if (this == AdPlace.Interstitial) return 1;
     if (this == AdPlace.InterstitialVideo) return 3;
+    if (this == AdPlace.Banner) return 5;
     return 0;
   }
 }

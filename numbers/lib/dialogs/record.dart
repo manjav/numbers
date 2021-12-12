@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
@@ -33,7 +32,6 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
   @override
   Widget build(BuildContext context) {
     var reward = 10;
-    var rewardCoef = 10;
     var theme = Theme.of(context);
     Timer(Duration(milliseconds: 500), () {
       widget.confettiController.play();
@@ -76,22 +74,22 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
           cornerRadius: 16.d,
           isEnable: Ads.isReady(),
           colors: TColors.orange.value,
-          errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
+          errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
           onTap: () =>
-              buttonsClick(context, "record", rewardCoef * reward, true),
+              buttonsClick(context, "record", reward * Ads.rewardCoef, true),
           content: Stack(alignment: Alignment.centerLeft, children: [
-            SVG.icon("0", theme),
+            SVG.icon("A", theme),
             Positioned(
                 top: 5.d,
                 left: 44.d,
-                child: Text((rewardCoef * reward).format(),
+                child: Text((reward * Ads.rewardCoef).format(),
                     style: theme.textTheme.headline4)),
             Positioned(
                 bottom: 4.d,
                 left: 44.d,
                 child: Row(children: [
                   SVG.show("coin", 22.d),
-                  Text("x$rewardCoef", style: theme.textTheme.headline6)
+                  Text("x${Ads.rewardCoef}", style: theme.textTheme.headline6)
                 ])),
           ])),
       Positioned(

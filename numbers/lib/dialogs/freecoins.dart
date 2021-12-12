@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
+import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 import 'package:rive/rive.dart';
 
@@ -16,12 +16,13 @@ import 'toast.dart';
 // ignore: must_be_immutable
 class FreeCoinsDialog extends AbstractDialog {
   static int autoAppearance = 3;
-  static int reward = 200;
+  static int reward = 20;
   bool? playApplaud;
 
   FreeCoinsDialog({this.playApplaud})
       : super(DialogMode.piggy,
             height: 320.d,
+            showCloseButton: false,
             title: "freecoins_l".l(),
             padding: EdgeInsets.all(18.d));
   @override
@@ -35,12 +36,8 @@ class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
 
     if (widget.playApplaud ?? false)
       Timer(Duration(milliseconds: 600), () => Sound.play("win"));
-    widget.closeButton = GestureDetector(
-        child: SVG.show("close", 14.d),
-        onTap: () {
-          widget.onWillPop?.call();
-          Navigator.of(context).pop();
-        });
+    widget.onWillPop =
+        () => buttonsClick(context, "freecoins", FreeCoinsDialog.reward, false);
     widget.child = Stack(alignment: Alignment.topCenter, children: [
       SizedBox(
           width: 126.d,
@@ -50,36 +47,59 @@ class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
       Positioned(
           top: 126.d,
           width: 260.d,
-          child: Text("piggy_collect".l([FreeCoinsDialog.reward.toString()]),
-              textAlign: TextAlign.center, style: theme.textTheme.caption)),
+          child: Text(
+              "piggy_collect"
+                  .l([(FreeCoinsDialog.reward * Ads.rewardCoef).format()]),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.caption)),
       PunchButton(
           height: 76.d,
-          width: 160.d,
+          width: 130.d,
           bottom: 4.d,
+          right: 4.d,
           cornerRadius: 16.d,
-          padding: EdgeInsets.fromLTRB(8.d, 0, 8.d, 8.d),
           isEnable: Ads.isReady(),
           colors: TColors.orange.value,
-          errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
-          onTap: () {
-            FreeCoinsDialog.autoAppearance = 0;
-            buttonsClick(context, "freecoins", 0, true);
-          },
-          content:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            SVG.icon("0", theme),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("free_l".l(), style: theme.textTheme.headline4),
-                  Row(children: [
-                    SVG.show("coin", 32.d),
-                    Text("+${FreeCoinsDialog.reward}",
-                        style: theme.textTheme.headline5)
-                  ])
-                ])
-          ]))
+          errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
+          onTap: () => buttonsClick(context, "freecoins",
+              FreeCoinsDialog.reward * Ads.rewardCoef, true),
+          content: Stack(alignment: Alignment.centerLeft, children: [
+            SVG.icon("A", theme),
+            Positioned(
+                top: 4.d,
+                left: 40.d,
+                child: Text((FreeCoinsDialog.reward * Ads.rewardCoef).format(),
+                    style: theme.textTheme.headline4)),
+            Positioned(
+                bottom: 4.d,
+                left: 40.d,
+                child: Row(children: [
+                  SVG.show("coin", 22.d),
+                  Text("x${Ads.rewardCoef}", style: theme.textTheme.headline6)
+                ])),
+          ])),
+      Positioned(
+          height: 76.d,
+          width: 110.d,
+          bottom: 4.d,
+          left: 4.d,
+          child: BumpedButton(
+              onTap: () => buttonsClick(
+                  context, "freecoins", FreeCoinsDialog.reward, false),
+              cornerRadius: 16.d,
+              content: Stack(alignment: Alignment.centerLeft, children: [
+                SVG.show("coin", 36.d),
+                Positioned(
+                    top: 5.d,
+                    left: 40.d,
+                    child: Text(FreeCoinsDialog.reward.format(),
+                        style: theme.textTheme.button)),
+                Positioned(
+                    bottom: 7.d,
+                    left: 40.d,
+                    child:
+                        Text("claim_l".l(), style: theme.textTheme.subtitle2)),
+              ])))
     ]);
     return super.build(context);
   }

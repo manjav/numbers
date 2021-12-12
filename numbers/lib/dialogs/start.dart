@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/game.dart';
@@ -31,8 +32,9 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
 
   @override
   void initState() {
-    if (Pref.tutorMode.value == 0) _onStart();
     super.initState();
+    if (Pref.tutorMode.value == 0)
+      Timer(const Duration(milliseconds: 100), _onStart);
   }
 
   @override
@@ -59,7 +61,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
               cornerRadius: 16.d,
               content:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                SVG.icon("4", theme),
+                SVG.icon("E", theme),
                 SizedBox(width: 12.d),
                 Text(_startButtonLabel,
                     style: theme.textTheme.headline5,
@@ -72,8 +74,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   _onStart() async {
     _startButtonLabel = "wait_l".l();
     _onUpdate();
-    var shown = await RatingDialog.showRating(context);
-    if (!shown && Pref.playCount.value > AdPlace.Interstitial.threshold)
+    if (Pref.playCount.value > AdPlace.Interstitial.threshold)
       await Ads.showInterstitial(AdPlace.InterstitialVideo);
     await Rout.push(context, HomePage());
     Cell.maxRandomValue = 4;
@@ -81,6 +82,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
     MyGame.boostBig = false;
     _startButtonLabel = "start_l".l();
     _onUpdate();
+    await RatingDialog.showRating(context);
   }
 
   _onUpdate() => setState(() {});

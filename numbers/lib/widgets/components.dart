@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/core/game.dart';
 import 'package:numbers/dialogs/toast.dart';
@@ -115,11 +114,11 @@ class Components {
                   height: 39.d,
                   child: BumpedButton(
                       cornerRadius: 8.d,
-                      errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
+                      errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
                       isEnable: !_has(boost) && Ads.isReady(),
                       colors: TColors.orange.value,
                       content: Row(children: [
-                        SVG.icon("0", theme, scale: 0.7),
+                        SVG.icon("A", theme, scale: 0.7),
                         Expanded(
                             child: Text("free_l".l(),
                                 textAlign: TextAlign.center,

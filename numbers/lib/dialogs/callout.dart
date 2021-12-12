@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/dialogs/toast.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
+import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
@@ -36,6 +36,9 @@ class _CalloutState extends AbstractDialogState<Callout> {
     var cost = 200;
     var theme = Theme.of(context);
     var hasCoinButton = widget.hasCoinButton ?? true;
+    var hasCoin = Pref.coin.value > cost;
+    Callout.chromeWidth = hasCoin ? 132.d : 220.d;
+    Callout.chromeHeight = hasCoin ? 100.d : 84.d;
     Sound.play("pop");
     return Stack(children: [
       Positioned(
@@ -62,27 +65,27 @@ class _CalloutState extends AbstractDialogState<Callout> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(widget.text, style: theme.textTheme.subtitle2),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                              width: 98.d,
-                              height: 40.d,
-                              child: hasCoinButton
-                                  ? BumpedButton(
-                                      cornerRadius: 8.d,
-                                      content: Row(children: [
-                                        SVG.show("coin", 24.d),
-                                        Expanded(
-                                            child: Text("$cost",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    theme.textTheme.bodyText2))
-                                      ]),
-                                      onTap: () => buttonsClick(
-                                          context, widget.type, -cost, false))
-                                  : SizedBox()),
-                          SizedBox(
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      SizedBox(
+                          width: 98.d,
+                          height: 40.d,
+                          child: hasCoinButton
+                              ? BumpedButton(
+                                  cornerRadius: 8.d,
+                                  content: Row(children: [
+                                    SVG.show("coin", 24.d),
+                                    Expanded(
+                                        child: Text("$cost",
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.bodyText2))
+                                  ]),
+                                  onTap: () => buttonsClick(
+                                      context, widget.type, -cost, false))
+                              : SizedBox()),
+                      SizedBox(width: hasCoin ? 0 : 8.d),
+                      hasCoin
+                          ? SizedBox()
+                          : SizedBox(
                               width: 98.d,
                               height: 40.d,
                               child: BumpedButton(
@@ -92,7 +95,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                   errorMessage: Toast("ads_unavailable".l(),
                                       monoIcon: "0"),
                                   content: Row(children: [
-                                    SVG.icon("0", theme, scale: 0.7),
+                                    SVG.icon("A", theme, scale: 0.7),
                                     Expanded(
                                         child: Text("free_l".l(),
                                             textAlign: TextAlign.center,
@@ -100,7 +103,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                   ]),
                                   onTap: () => buttonsClick(
                                       context, widget.type, 0, true)))
-                        ])
+                    ])
                   ])))
     ]);
   }

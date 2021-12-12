@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:numbers/dialogs/dialogs.dart';
@@ -161,10 +160,10 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
                           isEnable: Ads.isReady(),
                           colors: TColors.orange.value,
                           errorMessage:
-                              Toast("ads_unavailable".l(), monoIcon: "0"),
+                              Toast("ads_unavailable".l(), monoIcon: "A"),
                           onTap: _freeCoin,
                           content: Row(children: [
-                            SVG.icon("0", theme),
+                            SVG.icon("A", theme),
                             SizedBox(width: 8.d),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +188,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
                           colors: TColors.green.value,
                           cornerRadius: 16.d,
                           content: Row(children: [
-                            SVG.icon("5", theme),
+                            SVG.icon("F", theme),
                             SizedBox(width: 12.d),
                             Text("shop_restore".l(),
                                 overflow: TextOverflow.ellipsis,

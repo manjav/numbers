@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
@@ -59,8 +58,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
                   Positioned(
                       top: 5.d,
                       left: 40.d,
-                      child: Text("${cost.format()}",
-                          style: theme.textTheme.button)),
+                      child: Text("$cost", style: theme.textTheme.button)),
                   Positioned(
                       bottom: 7.d,
                       left: 40.d,
@@ -73,12 +71,12 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
             bottom: 4.d,
             right: 4.d,
             cornerRadius: 16.d,
-            errorMessage: Toast("ads_unavailable".l(), monoIcon: "0"),
+            errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
             isEnable: widget.numRevive < 2 && Ads.isReady(),
             onTap: () => buttonsClick(context, "revive", 0, true),
             colors: TColors.orange.value,
             content: Stack(alignment: Alignment.centerLeft, children: [
-              SVG.icon("0", theme),
+              SVG.icon("A", theme),
               Positioned(
                   top: 5.d,
                   left: 40.d,

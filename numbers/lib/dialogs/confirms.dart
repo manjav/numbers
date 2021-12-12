@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/themes.dart';
@@ -43,13 +42,13 @@ class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
           bottom: 0,
           left: 0,
           child: BumpedButton(
-              onTap: () => Navigator.of(context).pop("tutorReset"),
+              onTap: () => Navigator.of(context).pop(["tutorReset"]),
               colors: TColors.green.value,
               cornerRadius: 16.d,
               content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    SVG.icon("5", theme),
+                    SVG.icon("F", theme),
                     Text("Replay", style: theme.textTheme.headline5)
                   ]))),
       Positioned(
@@ -58,13 +57,13 @@ class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
           bottom: 0,
           right: 0,
           child: BumpedButton(
-              onTap: () => Navigator.of(context).pop("tutorFinish"),
+              onTap: () => Navigator.of(context).pop(["tutorFinish"]),
               colors: TColors.blue.value,
               cornerRadius: 16.d,
               content: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    SVG.icon("4", theme),
+                    SVG.icon("E", theme),
                     Text("ok_l".l(), style: theme.textTheme.headline5)
                   ]))),
       Center(child: Components.confetty(widget.confettiController))
