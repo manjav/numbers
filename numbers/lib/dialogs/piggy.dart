@@ -15,7 +15,7 @@ import 'toast.dart';
 
 // ignore: must_be_immutable
 class PiggyDialog extends AbstractDialog {
-  static int capacity = 30;
+  static final capacity = 30;
   bool? playApplaud;
   PiggyDialog({this.playApplaud})
       : super(DialogMode.piggy,
@@ -31,13 +31,12 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var message =
-        Pref.coinPiggy.value >= PiggyDialog.capacity ? "collect" : "fill";
+    var filled = Pref.coinPiggy.value >= PiggyDialog.capacity;
 
     if (widget.playApplaud ?? false)
       Timer(Duration(milliseconds: 600), () => Sound.play("win"));
-    widget.onWillPop =
-        () => buttonsClick(context, "piggy", PiggyDialog.capacity, false);
+    widget.onWillPop = () => buttonsClick(
+        context, "piggy", filled ? PiggyDialog.capacity : 0, false);
 
     widget.child = Stack(alignment: Alignment.topCenter, children: [
       SVG.show("piggy", 144.d),
@@ -45,7 +44,7 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
           top: 112.d,
           width: 260.d,
           child: Text(
-              "piggy_$message"
+              "piggy_${filled ? 'collect' : 'fill'}"
                   .l([(PiggyDialog.capacity * Ads.rewardCoef).toString()]),
               textAlign: TextAlign.center,
               style: theme.textTheme.caption)),

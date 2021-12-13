@@ -191,8 +191,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var isAdsReady = Ads.isReady();
     if (isAdsReady && _timer == null) {
       var duration = Duration(
-          milliseconds:
-              _animationTime ? 2500 : 30000 + Random().nextInt(30000));
+          milliseconds: _animationTime
+              ? FreeCoinsDialog.showTime
+              : FreeCoinsDialog.waitingTime +
+                  Random().nextInt(FreeCoinsDialog.waitingTime));
       _timer = Timer(duration, () {
         _animationTime = !_animationTime;
         _timer = null;
@@ -363,9 +365,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             curve: Curves.easeOutSine);
         _rewardLineAnimation!.animateTo(Pref.coinPiggy.value * 1.0,
             duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
-        if (dailyCoins >= PiggyDialog.capacity) {
-          if (Ads.isReady()) await _boost("piggy", playApplaud: true);
-        }
+        if (dailyCoins >= PiggyDialog.capacity)
+          await _boost("piggy", playApplaud: true);
         return;
       case GameEvent.score:
         setState(() {});
@@ -510,8 +511,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   _showReward(int value, GameEvent event, [Vector2? target]) async {
-    await Future.delayed(Duration(milliseconds: 200));
     MyGame.isPlaying = true;
+    if (value <= 0) return;
+    await Future.delayed(Duration(milliseconds: 200));
     _game!.showReward(value,
         target ?? Vector2(MyGame.bounds.top, Device.size.width * 0.5), event);
   }

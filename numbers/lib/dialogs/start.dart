@@ -74,7 +74,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   _onStart() async {
     _startButtonLabel = "wait_l".l();
     _onUpdate();
-    if (Pref.playCount.value > AdPlace.Interstitial.threshold)
+    if (Pref.playCount.value > AdPlace.InterstitialVideo.threshold)
       await Ads.showInterstitial(AdPlace.InterstitialVideo);
     await Rout.push(context, HomePage());
     Cell.maxRandomValue = 4;
