@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -28,6 +29,12 @@ class PiggyDialog extends AbstractDialog {
 }
 
 class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
+  @override
+  void initState() {
+    super.initState();
+    Analytics.updateVariantIDs();
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);

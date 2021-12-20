@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
@@ -35,13 +36,16 @@ class FreeCoinsDialog extends AbstractDialog {
 
 class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
   @override
+  void initState() {
+    super.initState();
+    Analytics.updateVariantIDs();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var now = DateTime.now().millisecondsSinceEpoch;
-    var reward = now - FreeCoinsDialog.earnedAt > FreeCoinsDialog.waitingTime
-        ? FreeCoinsDialog.reward
-        : 0;
-    FreeCoinsDialog.earnedAt = now;
+    var reward = FreeCoinsDialog.reward;
+    FreeCoinsDialog.earnedAt = DateTime.now().millisecondsSinceEpoch;
     if (widget.playApplaud ?? false)
       Timer(Duration(milliseconds: 600), () => Sound.play("win"));
     widget.onWillPop = () => buttonsClick(context, "freecoins", reward, false);

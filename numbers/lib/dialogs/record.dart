@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -29,6 +30,12 @@ class RecordDialog extends AbstractDialog {
 }
 
 class _RecordDialogState extends AbstractDialogState<RecordDialog> {
+  @override
+  void initState() {
+    super.initState();
+    Analytics.updateVariantIDs();
+  }
+
   @override
   Widget build(BuildContext context) {
     var reward = 10;

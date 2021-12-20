@@ -14,7 +14,7 @@ class Analytics {
     "isDebug": false
   });
 
-  static init(FirebaseAnalytics analytics) async {
+  static init(FirebaseAnalytics analytics) {
     _firebaseAnalytics = analytics;
 
     GameAnalytics.setEnabledInfoLog(false);
@@ -31,6 +31,7 @@ class Analytics {
     var type = "instant";
     GameAnalytics.setCustomDimension01(type);
     appsflyerSdk.logEvent("type_$type", {});
+    _firebaseAnalytics.setUserProperty(name: "buildType", value: type);
 
     GameAnalytics.configureAutoDetectAppVersion(true);
     GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
@@ -41,6 +42,10 @@ class Analytics {
         registerOnAppOpenAttributionCallback: true,
         registerOnDeepLinkingCallback: true);
 
+    updateVariantIDs();
+  }
+
+  static void updateVariantIDs() async {
     var testVariantId = await GameAnalytics.getRemoteConfigsValueAsString(
         "TheSuicideAd", "1"); //{"TheSuicideAd": "2"}
     Ads.showSuicideInterstitial = testVariantId == "2";

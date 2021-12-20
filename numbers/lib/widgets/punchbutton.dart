@@ -57,7 +57,7 @@ class _PunchButtonState extends State<PunchButton>
         animation!.reverse();
       } else if (status == AnimationStatus.dismissed) {
         await Future.delayed(Duration(seconds: widget.punchGap ?? 2));
-        animation!.forward();
+        animation?.forward();
       }
     });
     animation!.addListener(() {

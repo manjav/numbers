@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/dialogs/toast.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
@@ -33,6 +34,12 @@ class BigBlockDialog extends AbstractDialog {
 }
 
 class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {
+  @override
+  void initState() {
+    super.initState();
+    Analytics.updateVariantIDs();
+  }
+
   @override
   Widget build(BuildContext context) {
     var rewardCoef = 10;

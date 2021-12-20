@@ -484,6 +484,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   _showFreeCoinsDialog() async {
+    // Check Fruad n frequently tap on cube man
+    if (DateTime.now().millisecondsSinceEpoch - FreeCoinsDialog.earnedAt <
+        FreeCoinsDialog.waitingTime) return;
     MyGame.isPlaying = false;
     var result = await Rout.push(context, FreeCoinsDialog());
     if (result != null) _showReward(result[1], GameEvent.freeCoins);
