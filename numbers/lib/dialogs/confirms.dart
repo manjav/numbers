@@ -49,7 +49,7 @@ class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SVG.icon("F", theme),
-                    Text("Replay", style: theme.textTheme.headline5)
+                    Text("replay_l".l(), style: theme.textTheme.headline5)
                   ]))),
       Positioned(
           height: 76.d,
