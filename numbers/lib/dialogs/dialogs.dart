@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:numbers/dialogs/shop.dart';
 import 'package:numbers/dialogs/stats.dart';
@@ -118,8 +117,8 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
             top: 46.d,
             right: 10.d,
             child: Components.scores(theme, onTap: () {
-              Analytics.design('guiClick:record:${widget.mode.name}');
-              GamesServices.showLeaderboards();
+              // Analytics.design('guiClick:record:${widget.mode.name}');
+              // GamesServices.showLeaderboards();
             }));
   }
 

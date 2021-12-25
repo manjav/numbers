@@ -22,7 +22,7 @@ dependencies:
   firebase_messaging: ^11.2.3
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
-  games_services: ^2.0.1
+  # games_services: ^2.0.1
   gameanalytics_sdk: ^1.2.1
   google_mobile_ads: ^1.0.1
   http: ^0.13.4

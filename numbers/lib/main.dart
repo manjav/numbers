@@ -2,7 +2,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:games_services/games_services.dart';
 import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/dialogs/confirm.dart';
 import 'package:numbers/dialogs/quit.dart';
@@ -108,7 +107,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
     Ads.init();
     Sound.init();
-    GamesServices.signIn();
+    // GamesServices.signIn();
     Analytics.init(widget.analytics);
     Prefs.init(() async {
       await Localization.init();

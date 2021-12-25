@@ -4,9 +4,8 @@ import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
-import 'package:install_prompt/install_prompt.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
@@ -118,9 +117,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               SVG.show("cup", 22.d)
             ]),
             Components.scores(theme, onTap: () {
-              _pause("record");
-              Analytics.design('guiClick:record:home');
-              GamesServices.showLeaderboards();
+              // _pause("record");
+              // Analytics.design('guiClick:record:home');
+              // GamesServices.showLeaderboards();
             })
           ]))
         ]));
