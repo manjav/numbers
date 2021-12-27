@@ -25,7 +25,7 @@ class Ads {
     AdPlace.InterstitialVideo: 0,
     AdPlace.Rewarded: 0
   };
-  static bool showSuicideInterstitial = false;
+  static bool showSuicideInterstitial = true;
   static RewardItem? reward;
 
   static init() async {

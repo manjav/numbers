@@ -3,14 +3,15 @@ description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.43+43
+version: 0.0.45+45
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  # cupertino_icons: ^1.0.2
   appsflyer_sdk: ^6.4.0+2
   confetti: ^0.6.0
   cupertino_icons: ^1.0.3

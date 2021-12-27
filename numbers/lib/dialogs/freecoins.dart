@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:numbers/utils/ads.dart';
-import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
@@ -35,12 +34,6 @@ class FreeCoinsDialog extends AbstractDialog {
 }
 
 class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
-  @override
-  void initState() {
-    super.initState();
-    Analytics.updateVariantIDs();
-  }
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);

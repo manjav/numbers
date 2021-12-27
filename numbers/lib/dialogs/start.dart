@@ -5,6 +5,7 @@ import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/game.dart';
 import 'package:numbers/dialogs/rating.dart';
 import 'package:numbers/utils/ads.dart';
+import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
@@ -74,6 +75,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   _onStart() async {
     _startButtonLabel = "wait_l".l();
     _onUpdate();
+    await Analytics.updateVariantIDs();
     if (Pref.playCount.value > AdPlace.InterstitialVideo.threshold)
       await Ads.showInterstitial(AdPlace.InterstitialVideo);
     await Rout.push(context, HomePage());
