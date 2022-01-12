@@ -91,7 +91,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   Future<bool> _onWillPop() async {
     var result = await Rout.push(
         context,
-        Toast(
+        Confirm(
             "Install the game on your device to make sure you’ll always have your progress saved and safe!",
             acceptText: "Install",
             declineText: "Not yet"));

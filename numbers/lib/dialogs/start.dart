@@ -187,7 +187,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
       await Coins.change(result[1], "game", result[0]);
       var accept = await Rout.push(
           context,
-          Toast(
+          Confirm(
               "Install the game on your device to make sure you’ll always have your progress saved and safe!",
               acceptText: "Install",
               declineText: "Not yet"));
