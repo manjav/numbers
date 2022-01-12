@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:numbers/dialogs/dialogs.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 
-import 'dialogs.dart';
-
-// ignore: must_be_immutable
 class PauseDialog extends AbstractDialog {
   PauseDialog()
       : super(
           DialogMode.pause,
           title: "pause_l".l(),
+          popDuration: 300,
           showCloseButton: false,
         );
   @override
@@ -39,14 +38,14 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               BumpedButton(
-                  onTap: () => Navigator.of(context).pop(["reset"]),
+                  onTap: () => Navigator.of(context).pop(["home"]),
                   colors: TColors.green.value,
                   cornerRadius: 16.d,
                   content: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        SVG.icon("F", theme),
-                        Text("restart_l".l(), style: theme.textTheme.headline5)
+                        SVG.icon("J", theme),
+                        Text("home_l".l(), style: theme.textTheme.headline5)
                       ])),
               BumpedButton(
                   onTap: () => Navigator.of(context).pop(["resume"]),

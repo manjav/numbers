@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
-import 'package:numbers/dialogs/piggy.dart';
+import 'package:numbers/dialogs/shop.dart';
+import 'package:numbers/utils/prefs.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Analytics {
+  static late int variant = 1;
   static late FirebaseAnalytics _firebaseAnalytics;
 
   static AppsflyerSdk appsflyerSdk = AppsflyerSdk({
@@ -46,13 +49,25 @@ class Analytics {
   }
 
   static Future<void> updateVariantIDs() async {
+    var packageInfo = await PackageInfo.fromPlatform();
+    var testVersion = Prefs.getString("testVersion");
+    if (testVersion.isNotEmpty && testVersion != packageInfo.buildNumber)
+      return;
+    if (testVersion.isEmpty)
+      Prefs.setString("testVersion", packageInfo.buildNumber);
     var testVariantId =
-        await GameAnalytics.getRemoteConfigsValueAsString("MoreRewards", "1");
-    print("testVariantId ==> $testVariantId");
-    PiggyDialog.capacity = testVariantId == "2" ? 60 : 30;
+        await GameAnalytics.getRemoteConfigsValueAsString("res-dayquest", "1");
+    variant = int.parse(testVariantId ?? "1");
+    print("testVariantId ==> $variant");
+    Price.ad = variant == 2 ? 50 : 100;
+    Price.cube = variant == 2 ? 10 : 20;
+    Price.piggy = variant == 2 ? 20 : 30;
+    Price.tutorial = variant == 2 ? 100 : 500;
+    Price.boost = variant == 2 ? 300 : 100;
+    Price.revive = variant == 2 ? 300 : 100;
   }
 
-  static Future<void> purchase(String currency, double amount, String itemId,
+  static Future<void> purchase(String currency, int amount, String itemId,
       String itemType, String receipt, String signature) async {
     // if (iOS) {
     //   await _firebaseAnalytics.logEcommercePurchase(
@@ -62,16 +77,17 @@ class Analytics {
     //       origin: itemId,
     //       coupon: receipt);
     // }
-
-    GameAnalytics.addBusinessEvent({
+    var data = {
       "currency": currency,
+      "cartType": "shop",
       "amount": (amount * 100),
       "itemType": itemType,
       "itemId": itemId,
-      "cartType": "end_of_level",
       "receipt": receipt,
       "signature": signature,
-    });
+    };
+    print(data);
+    GameAnalytics.addBusinessEvent(data);
   }
 
   static Future<void> ad(

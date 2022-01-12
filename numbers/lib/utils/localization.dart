@@ -19,7 +19,7 @@ extension Localization on String {
     });
   }
 
-  String l([List<String>? args]) {
+  String l([List<dynamic>? args]) {
     final key = this;
     if (_sentences == null) throw "[Localization System] sentences = null";
     var result = _sentences![key];

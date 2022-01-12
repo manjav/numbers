@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:numbers/dialogs/dialogs.dart';
+import 'package:numbers/dialogs/shop.dart';
+import 'package:numbers/dialogs/toast.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -10,39 +13,35 @@ import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 import 'package:rive/rive.dart';
 
-import 'dialogs.dart';
-import 'toast.dart';
-
-// ignore: must_be_immutable
-class FreeCoinsDialog extends AbstractDialog {
+class CubeDialog extends AbstractDialog {
   static final waitingTime = 30000;
   static final showTime = 2500;
   static final autoAppearance = 3;
-  static final reward = 20;
 
-  bool? playApplaud;
   static int earnedAt = 0;
 
-  FreeCoinsDialog({this.playApplaud})
-      : super(DialogMode.piggy,
+  CubeDialog()
+      : super(DialogMode.cube,
             height: 320.d,
             showCloseButton: false,
-            title: "freecoins_l".l(),
+            title: "cube_l".l(),
             padding: EdgeInsets.all(18.d));
   @override
-  _FreeCoinsDialogState createState() => _FreeCoinsDialogState();
+  _CubeDialogState createState() => _CubeDialogState();
 }
 
-class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
+class _CubeDialogState extends AbstractDialogState<CubeDialog> {
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    var reward = FreeCoinsDialog.reward;
-    FreeCoinsDialog.earnedAt = DateTime.now().millisecondsSinceEpoch;
-    if (widget.playApplaud ?? false)
-      Timer(Duration(milliseconds: 600), () => Sound.play("win"));
-    widget.onWillPop = () => buttonsClick(context, "freecoins", reward, false);
-    widget.child = Stack(alignment: Alignment.topCenter, children: [
+  void initState() {
+    reward = Price.cube;
+    Timer(Duration(milliseconds: 600), () => Sound.play("win"));
+    CubeDialog.earnedAt = DateTime.now().millisecondsSinceEpoch;
+    super.initState();
+  }
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    return Stack(alignment: Alignment.topCenter, children: [
       SizedBox(
           width: 126.d,
           height: 126.d,
@@ -62,8 +61,8 @@ class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
           isEnable: Ads.isReady(),
           colors: TColors.orange.value,
           errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
-          onTap: () =>
-              buttonsClick(context, "freecoins", reward * Ads.rewardCoef, true),
+          onTap: () => buttonsClick(
+              context, widget.mode.name, reward * Ads.rewardCoef, true),
           content: Stack(alignment: Alignment.centerLeft, children: [
             SVG.icon("A", theme),
             Positioned(
@@ -85,7 +84,8 @@ class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
           bottom: 4.d,
           left: 4.d,
           child: BumpedButton(
-              onTap: () => buttonsClick(context, "freecoins", reward, false),
+              onTap: () =>
+                  buttonsClick(context, widget.mode.name, reward, false),
               cornerRadius: 16.d,
               content: Stack(alignment: Alignment.centerLeft, children: [
                 SVG.show("coin", 36.d),
@@ -101,6 +101,5 @@ class _FreeCoinsDialogState extends AbstractDialogState<FreeCoinsDialog> {
                         Text("claim_l".l(), style: theme.textTheme.subtitle2)),
               ])))
     ]);
-    return super.build(context);
   }
 }

@@ -11,9 +11,20 @@ import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
-import 'package:numbers/widgets/components.dart';
+import 'package:numbers/widgets/coins.dart';
 
-// ignore: must_be_immutable
+class Price {
+  static int ad = 50;
+  static int big = 10;
+  static int cube = 10;
+  static int piggy = 20;
+  static int record = 10;
+  static int tutorial = 100;
+
+  static int boost = 300;
+  static int revive = 300;
+}
+
 class ShopDialog extends AbstractDialog {
   ShopDialog()
       : super(DialogMode.shop,
@@ -91,14 +102,13 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+  Widget coinsButtonFactory(ThemeData theme) =>
+      Coins(widget.mode.name, left: 12.d, clickable: false);
+
+  @override
+  Widget contentFactory(ThemeData theme) {
     var items = coins.values.toList();
-    widget.coinButton = Positioned(
-        top: 32.d,
-        left: 12.d,
-        child: Components.coins(context, "shop", clickable: false));
-    widget.child = Stack(children: [
+    return Stack(children: [
       Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         SizedBox(
             height: 200.d,
@@ -174,7 +184,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
                                 Row(
                                   children: [
                                     SVG.show("coin", 24.d),
-                                    Text("+100",
+                                    Text("+${Price.ad}",
                                         style: theme.textTheme.headline6)
                                   ],
                                 )
@@ -198,8 +208,6 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
       ]),
       _overlay(theme)
     ]);
-
-    return super.build(context);
   }
 
   ProductDetails? _findProduct(String id) {
@@ -276,8 +284,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
   _freeCoin() async {
     var reward = await Ads.showRewarded();
     if (reward != null) {
-      Pref.coin.increase(100, itemType: "shop", itemId: "ad");
-      setState(() {});
+      Coins.change(Price.ad, "shop", "ad");
     }
   }
 
@@ -288,11 +295,10 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
       Pref.noAds.set(1);
     } else {
       type = "coin";
-      Pref.coin.increase(p!.amount,
-          itemType: "shop", itemId: purchaseDetails.productID);
+      Coins.change(p!.amount, "shop", purchaseDetails.productID);
     }
 
-    Analytics.purchase(p!.currencyCode, p.rawPrice, p.id, type,
+    Analytics.purchase(p!.currencyCode, (p.rawPrice * 100).round(), p.id, type,
         purchaseDetails.purchaseID!, purchaseDetails.verificationData.source);
   }
 }

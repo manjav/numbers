@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:numbers/dialogs/dialogs.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:rive/rive.dart';
 
-import 'dialogs.dart';
-
-// ignore: must_be_immutable
 class QuitDialog extends AbstractDialog {
   final bool? showAvatar;
   QuitDialog({this.showAvatar})
       : super(DialogMode.quit,
             height: 54.d,
             title: "quit_l".l(),
-            coinButton: SizedBox(),
             statsButton: SizedBox(),
             scoreButton: SizedBox(),
             padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d));
@@ -22,9 +19,11 @@ class QuitDialog extends AbstractDialog {
 
 class _QuitDialogState extends AbstractDialogState<QuitDialog> {
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    widget.child = GestureDetector(
+  Widget coinsButtonFactory(ThemeData theme) => SizedBox();
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    return GestureDetector(
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Expanded(
@@ -33,7 +32,6 @@ class _QuitDialogState extends AbstractDialogState<QuitDialog> {
           SVG.show("accept", 28.d)
         ]),
         onTap: () => buttonsClick(context, "quit", 0, false));
-    return super.build(context);
   }
 
   @override

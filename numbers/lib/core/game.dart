@@ -13,6 +13,7 @@ import 'package:numbers/animations/animate.dart';
 import 'package:numbers/core/achieves.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
+import 'package:numbers/dialogs/quests.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
@@ -20,18 +21,16 @@ import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 
 enum GameEvent {
-  big,
-  bigReward,
   boost,
   celebrate,
   completeTutorial,
-  freeCoins,
   lose,
-  recordReward,
   remove,
   reward,
-  rewarded,
-  piggyReward,
+  rewardBig,
+  rewardCube,
+  rewardPiggy,
+  rewardRecord,
   score
 }
 
@@ -43,7 +42,6 @@ class MyGame extends FlameGame with TapDetector {
   static Rect bounds = Rect.fromLTRB(0, 0, 0, 0);
 
   Function(GameEvent, int)? onGameEvent;
-  int numRevives = 0;
   String? removingMode;
 
   bool _tutorMode = false;
@@ -68,8 +66,9 @@ class MyGame extends FlameGame with TapDetector {
   ColumnHint? _columnHint;
 
   MyGame({onGameEvent}) : super() {
-    Prefs.score = 0;
     this.onGameEvent = onGameEvent;
+    Prefs.score = Pref.score.value;
+    Cell.maxRandom = Pref.maxRandom.value;
   }
 
   @override
@@ -95,7 +94,10 @@ class MyGame extends FlameGame with TapDetector {
     await super.onLoad();
 
     _tutorMode = Pref.tutorMode.value == 0;
-    Pref.playCount.increase(1);
+    if (_tutorMode)
+      Prefs.setString("cells", "");
+    else
+      Pref.playCount.increase(1);
     Analytics.startProgress(
         "main", Pref.playCount.value, "big $boostBig next $boostNextMode");
 
@@ -119,7 +121,7 @@ class MyGame extends FlameGame with TapDetector {
 
     add(_fallingEffect = FallingEffect());
 
-    _valueRecord = Cell.firstBigRecord;
+    _valueRecord = Pref.lastBig.value;
     _nextCell.init(Cell.getNextColumn(_fallingsCount), 0,
         Cell.getNextValue(_fallingsCount),
         hiddenMode: boostNextMode + 1);
@@ -137,29 +139,44 @@ class MyGame extends FlameGame with TapDetector {
           8)));
     }
 
-    // Add initial cells
-    if (boostBig) _createCell(_nextCell.column, 9);
-    for (var i = 0; i < (_tutorMode ? 3 : 5); i++) {
-      _createCell(Cell.getNextColumn(_fallingsCount),
-          Cell.getNextValue(_fallingsCount));
-      ++_fallingsCount;
+    var data = Prefs.getString("cells");
+    if (data.isEmpty) {
+      // Add initial cells
+      if (boostBig) _defineCell(_nextCell.column, 9);
+      for (var i = 0; i < (_tutorMode ? 3 : 5); i++) {
+        _defineCell(Cell.getNextColumn(_fallingsCount),
+            Cell.getNextValue(_fallingsCount));
+        ++_fallingsCount;
+      }
+    } else {
+      var columns = data.split("|");
+      for (var i = 0; i < columns.length; i++) {
+        var cells = columns[i].split(",");
+        for (var j = 0; j < cells.length; j++) {
+          if (cells[j].isEmpty) continue;
+          _createCell(i, j, int.parse(cells[j]));
+        }
+      }
     }
-
     isPlaying = true;
     _spawn();
     await Future.delayed(Duration(milliseconds: 10));
     onGameEvent?.call(GameEvent.score, 0);
   }
 
-  void _createCell(int column, value) {
+  void _defineCell(int column, value) {
     var row = _cells.length(column);
     while (_cells.getMatchs(column, row, value).length > 0)
       value = Cell.getNextValue(0);
+    _createCell(column, row, value);
+  }
+
+  void _createCell(int column, int row, value) {
     var cell = Cell(column, row, value);
     cell.x = Cell.getX(column);
     cell.y = Cell.getY(row);
     cell.state = CellState.Fixed;
-    _cells.map[column][row] = cell;
+    _cells.set(column, row, cell);
     add(cell);
   }
 
@@ -247,6 +264,7 @@ class MyGame extends FlameGame with TapDetector {
       if (cell == null || cell.state != CellState.Fixed) return;
       if (removingMode == "one") {
         Pref.removeOne.increase(-1);
+        Quests.increase(QuestType.removeone, 1);
         _removeCell(cell.column, cell.row, true);
       } else {
         Pref.removeColor.increase(-1);
@@ -363,6 +381,7 @@ class MyGame extends FlameGame with TapDetector {
         cm--;
       }
     }
+    Quests.increase(QuestType.merges, numMerges);
     return numMerges > 0;
   }
 
@@ -411,14 +430,16 @@ class MyGame extends FlameGame with TapDetector {
 
     // Show big number popup
     if (cell.value > _valueRecord) {
-      isPlaying = false;
-      onGameEvent?.call(GameEvent.big, _valueRecord = cell.value);
+      if (cell.value == 11) Quests.increase(QuestType.b2048, 1);
+      Pref.lastBig.set(_valueRecord = cell.value);
+      Prefs.increaseBig(_valueRecord);
+      onGameEvent?.call(GameEvent.rewardBig, _valueRecord);
     }
 
     // More chance for spawm new cells
-    var index = cell.value - (Cell.maxRandomValue * 0.7).ceil();
+    var index = cell.value - (Cell.maxRandom * 0.7).ceil();
     if (index > -1 && index < Cell.lastRandomValue) {
-      Cell.maxRandomValue = index.min(Cell.maxRandomValue);
+      Pref.maxRandom.set(Cell.maxRandom = index.min(Cell.maxRandom));
     }
 
     _fallAll();
@@ -430,7 +451,7 @@ class MyGame extends FlameGame with TapDetector {
     if (accumulate)
       _cells.accumulateColumn(column, row);
     else
-      _cells.map[column][row] = null;
+      _cells.set(column, row, null);
   }
 
   void _removeCellsByValue(int value) {
@@ -445,7 +466,7 @@ class MyGame extends FlameGame with TapDetector {
 
   void revive() {
     _linePaint.color = TColors.black.value[0];
-    numRevives++;
+    Pref.numRevives.increase(1);
     for (var i = 0; i < Cells.width; i++)
       for (var j = Cells.height - 3; j < Cells.height; j++)
         _removeCell(i, j, false);
@@ -456,28 +477,12 @@ class MyGame extends FlameGame with TapDetector {
     });
   }
 
-  void showReward(int value, Vector2 destination, GameEvent event) {
-    Sound.play("coin");
-    var r = Reward(value, size.x * 0.5, size.y * 0.6);
-    var start = EffectController(duration: 0.3, curve: Curves.easeOutBack);
-    r.add(SizeEffect.to(Vector2(1, 1), start));
-    var end = EffectController(duration: 0.3, curve: Curves.easeInExpo);
-    var delay = DelayedEffectController(end, delay: 1);
-    r.add(MoveEffect.to(destination, delay));
-    r.add(SizeEffect.to(Vector2(0.3, 0.3), delay));
-    Animate.checkCompletion(delay, () {
-      remove(r);
-      onGameEvent?.call(event, value);
-    });
-    add(r);
-  }
-
   Future<void> _celebrate() async {
     var limit = 3;
     if (_mergesCount < limit) return;
     _reward = _numRewardCells > 0 || _tutorMode
         ? 0
-        : random.nextInt(3) + _mergesCount * 3;
+        : random.nextInt(3) + _mergesCount * 2;
     var sprite = await Sprite.load(
         'celebration-${(_mergesCount - limit).clamp(0, 3)}.png');
     var celebration = SpriteComponent(

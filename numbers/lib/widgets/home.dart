@@ -5,15 +5,13 @@ import 'package:confetti/confetti.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:install_prompt/install_prompt.dart';
 import 'package:numbers/core/cell.dart';
 import 'package:numbers/core/cells.dart';
 import 'package:numbers/core/game.dart';
 import 'package:numbers/dialogs/big.dart';
 import 'package:numbers/dialogs/callout.dart';
-import 'package:numbers/dialogs/confirm.dart';
 import 'package:numbers/dialogs/confirms.dart';
-import 'package:numbers/dialogs/freecoins.dart';
+import 'package:numbers/dialogs/cube.dart';
 import 'package:numbers/dialogs/pause.dart';
 import 'package:numbers/dialogs/piggy.dart';
 import 'package:numbers/dialogs/record.dart';
@@ -24,10 +22,10 @@ import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
-import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
+import 'package:numbers/widgets/coins.dart';
 import 'package:numbers/widgets/components.dart';
 import 'package:rive/rive.dart';
 
@@ -42,7 +40,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   GameWidget? _gameWidget;
   int loadingState = 0;
 
-  AnimationController? _rewardAnimation;
   AnimationController? _rewardLineAnimation;
   ConfettiController? _confettiController;
 
@@ -52,11 +49,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _createGame();
-    _rewardAnimation = AnimationController(vsync: this);
-    _rewardAnimation!.addListener(() => setState(() {}));
     _rewardLineAnimation = AnimationController(
         vsync: this,
-        upperBound: PiggyDialog.capacity * 1.0,
+        upperBound: Price.piggy * 1.0,
         value: Pref.coinPiggy.value * 1.0);
     _rewardLineAnimation!.addListener(() => setState(() {}));
     _confettiController =
@@ -82,7 +77,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               right: MyGame.bounds.left,
               child: _getFooter(theme)),
           _underFooter(),
-          Center(child: Components.confetty(_confettiController!))
+          Center(child: Components.confetty(_confettiController!)),
+          Coins("home",
+              top: MyGame.bounds.top - 69.d,
+              left: MyGame.bounds.left + 52.d,
+              height: 56.d, onTap: () async {
+            MyGame.isPlaying = false;
+            await Rout.push(context, ShopDialog());
+            MyGame.isPlaying = true;
+            setState(() {});
+          })
         ])));
   }
 
@@ -98,12 +102,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             _pause("stats");
             Analytics.design('guiClick:stats:home');
             Rout.push(context, StatsDialog());
-          }),
-          Components.coins(context, "home", onTap: () async {
-            MyGame.isPlaying = false;
-            await Rout.push(context, ShopDialog());
-            MyGame.isPlaying = true;
-            setState(() {});
           }),
           Expanded(
               child:
@@ -163,16 +161,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                  SizedBox(height: 5 * _rewardAnimation!.value),
                   Expanded(
                       child: _button(
                           theme, 20.d, "piggy", () => _boost("piggy"),
                           // width: 96.d,
-                          badge: _slider(
-                              theme,
-                              _rewardLineAnimation!.value.round(),
-                              PiggyDialog.capacity),
-                          colors: Pref.coinPiggy.value >= PiggyDialog.capacity
+                          badge: Positioned(
+                              height: 32.d,
+                              bottom: 0,
+                              left: 0,
+                              right: 6.d,
+                              child: Components.slider(
+                                  theme,
+                                  0,
+                                  _rewardLineAnimation!.value.round(),
+                                  Price.piggy,
+                                  icon: SVG.show("coin", 32.d))),
+                          colors: Pref.coinPiggy.value >= Price.piggy
                               ? TColors.orange.value
                               : null))
                 ])),
@@ -191,9 +195,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (isAdsReady && _timer == null) {
       var duration = Duration(
           milliseconds: _animationTime
-              ? FreeCoinsDialog.showTime
-              : FreeCoinsDialog.waitingTime +
-                  Random().nextInt(FreeCoinsDialog.waitingTime));
+              ? CubeDialog.showTime
+              : CubeDialog.waitingTime +
+                  Random().nextInt(CubeDialog.waitingTime));
       _timer = Timer(duration, () {
         _animationTime = !_animationTime;
         _timer = null;
@@ -219,7 +223,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         bottom: 0.d,
         height: 120.d,
         child: GestureDetector(
-            onTap: _showFreeCoinsDialog,
+            onTap: _showCubeDialog,
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SizedBox(
@@ -230,8 +234,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   height: 44.d,
                   alignment: Alignment.center,
                   padding: EdgeInsets.symmetric(horizontal: 12.d),
-                  child: Text("freecoins_catch".l()),
-                  decoration: _badgeDecoration(color: Colors.white)),
+                  child: Text("cube_catch".l()),
+                  decoration: Components.badgeDecoration(color: Colors.white)),
             ])));
   }
 
@@ -267,57 +271,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             padding: EdgeInsets.symmetric(horizontal: 8.d),
             child: Text(value == 0 ? "free_l".l() : "$value",
                 style: theme.textTheme.headline6),
-            decoration: _badgeDecoration()));
-  }
-
-  Widget _slider(ThemeData theme, int value, int maxValue) {
-    var label = value >= maxValue ? "collect_l".l() : "$value / $maxValue";
-    return Positioned(
-        height: 32.d,
-        bottom: 0,
-        left: 0,
-        right: 6.d,
-        child: Stack(alignment: Alignment.centerLeft, children: [
-          Positioned(
-              height: 20.d,
-              left: 26.d,
-              right: 0,
-              child: Container(
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(12.d),
-                          bottomRight: Radius.circular(12.d)),
-                      child: LinearProgressIndicator(value: value / maxValue)),
-                  decoration: _badgeDecoration())),
-          SVG.show("coin", 32.d),
-          Positioned(
-              left: 32.d,
-              right: 4.d,
-              child: Text(label,
-                  style: TextStyle(fontSize: 10.d),
-                  textAlign: TextAlign.center)),
-        ]));
-  }
-
-  Decoration _badgeDecoration({double? cornerRadius, Color? color}) {
-    return BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-              blurRadius: 3.d, color: Colors.black, offset: Offset(0.5.d, 1.d))
-        ],
-        color: color ?? Colors.pink[700],
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(cornerRadius ?? 12.d)));
+            decoration: Components.badgeDecoration()));
   }
 
   void _onGameEventHandler(GameEvent event, int value) async {
     Widget? _widget;
     switch (event) {
-      case GameEvent.big:
-        await Future.delayed(Duration(milliseconds: 250));
-        _widget = BigBlockDialog(value, _confettiController!);
-        Prefs.increaseBig(value);
-        break;
       case GameEvent.boost:
         await _boost("next");
         break;
@@ -329,84 +288,90 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         break;
       case GameEvent.lose:
         await Future.delayed(Duration(seconds: 1));
-        _widget = ReviveDialog(_game!.numRevives);
+        _widget = ReviveDialog();
         break;
-      case GameEvent.bigReward:
-      case GameEvent.recordReward:
-      case GameEvent.piggyReward:
-      case GameEvent.freeCoins:
-        if (event == GameEvent.piggyReward) {
-          Pref.coinPiggy.set(0);
-          _rewardLineAnimation!
-              .animateTo(0, duration: const Duration(milliseconds: 400));
-        }
-        Pref.coin.increase(value, itemType: "game", itemId: event.name);
-        if (event == GameEvent.recordReward) {
-          _closeGame();
-          return;
-        }
-        Sound.play("win");
-        setState(() {});
-        return;
       case GameEvent.remove:
         _onRemoveBlock();
         break;
       case GameEvent.reward:
-        _showReward(value, GameEvent.rewarded,
-            Vector2(MyGame.bounds.center.dx, MyGame.bounds.bottom + 8.d));
-        return;
-      case GameEvent.rewarded:
-        var dailyCoins = Pref.coinPiggy.value + value;
-        Pref.coinPiggy.set(dailyCoins.clamp(0, PiggyDialog.capacity));
-        _rewardAnimation!.value = 1;
-        _rewardAnimation!.animateTo(0,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOutSine);
-        _rewardLineAnimation!.animateTo(Pref.coinPiggy.value * 1.0,
+        await Coins.effect(value,
+            x: MyGame.bounds.center.dx,
+            y: MyGame.bounds.bottom + 8.d,
+            duraion: 1000);
+        var piggyCoins = (Pref.coinPiggy.value + value).clamp(0, Price.piggy);
+        Pref.coinPiggy.set(piggyCoins);
+        _rewardLineAnimation!.animateTo(piggyCoins * 1.0,
             duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
-        if (dailyCoins >= PiggyDialog.capacity)
-          await _boost("piggy", playApplaud: true);
+        if (piggyCoins >= Price.piggy) {
+          await Future.delayed(Duration(milliseconds: 500));
+          _game!.onGameEvent?.call(GameEvent.rewardPiggy, 1);
+        }
         return;
+      case GameEvent.rewardBig:
+        await Future.delayed(Duration(milliseconds: 250));
+        _widget = BigBlockDialog(value, _confettiController!);
+        break;
+      case GameEvent.rewardCube:
+        _widget = CubeDialog();
+        break;
+      case GameEvent.rewardPiggy:
+        _widget = PiggyDialog(playApplaud: value > 0);
+        break;
+      case GameEvent.rewardRecord:
+        _widget = RecordDialog(_confettiController!);
+        break;
       case GameEvent.score:
         setState(() {});
         return;
     }
 
     if (_widget != null) {
+      MyGame.isPlaying = false;
       var result = await Rout.push(context, _widget);
       if (event == GameEvent.lose) {
         if (result == null) {
-          if (value > 0) {
-            var r =
-                await Rout.push(context, RecordDialog(_confettiController!));
-            if (r != null) {
-              _showReward(r[1], GameEvent.recordReward);
-            }
-            return;
-          }
-          var _result = await Rout.push(
-              context,
-              Toast(
-                  "Install the game on your device to make sure you’ll always have your progress saved and safe!",
-                  acceptText: "Install",
-                  declineText: "Not yet"));
-          if (_result) InstallPrompt.showInstallPrompt();
-          _closeGame();
+          if (value > 0)
+            _game!.onGameEvent?.call(GameEvent.rewardRecord, 0);
+          else
+            _closeGame(result);
           return;
         }
-        Pref.coin.increase(result[1], itemType: "game", itemId: "revive");
+        await Coins.change(result[1], "game", "revive");
         _game!.revive();
+        MyGame.isPlaying = true;
         setState(() {});
         return;
       }
-      if (event == GameEvent.big) {
-        _showReward(result[1], GameEvent.bigReward);
+
+      if (event == GameEvent.rewardPiggy) {
+        Pref.coinPiggy.set(0);
+        _rewardLineAnimation!
+            .animateTo(0, duration: const Duration(milliseconds: 400));
+      }
+      if (event == GameEvent.rewardRecord) {
+        _closeGame(result);
         return;
       }
+      MyGame.isPlaying = true;
+      if (event == GameEvent.rewardBig ||
+          event == GameEvent.rewardCube ||
+          event == GameEvent.rewardPiggy) {
+        await Future.delayed(Duration(milliseconds: 250));
+        await Coins.change(result[1], "game", event.name);
+        return;
+      }
+
       if (event == GameEvent.completeTutorial) {
-        if (result[0] == "tutorFinish") Pref.tutorMode.set(1);
-        MyGame.boostNextMode = 1;
-        _createGame();
+        Prefs.setString("cells", "");
+        if (result[0] == "tutorFinish") {
+          Pref.tutorMode.set(1);
+          MyGame.boostNextMode = 1;
+        }
+        setState(() => _createGame());
+        if (result[0] == "tutorFinish") {
+          await Future.delayed(Duration(microseconds: 200));
+          await Coins.change(Price.tutorial, "game", event.name);
+        }
       }
     }
     _onPauseButtonsClick("resume");
@@ -422,7 +387,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _onPauseButtonsClick(String type) {
     switch (type) {
-      case "reset":
+      case "home":
+        Pref.score.set(Prefs.score);
         Navigator.of(context).pop();
         break;
       case "resume":
@@ -432,16 +398,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  _boost(String type, {bool? playApplaud}) async {
-    MyGame.isPlaying = false;
+  _boost(String type) async {
     if (type == "piggy") {
-      var result =
-          await Rout.push(context, PiggyDialog(playApplaud: playApplaud));
-      if (result != null) _showReward(result[1], GameEvent.piggyReward);
-      MyGame.isPlaying = true;
+      Rout.push(context, PiggyDialog());
       return;
     }
-
+    MyGame.isPlaying = false;
     if (type == "one" && Pref.removeOne.value > 0 ||
         type == "color" && Pref.removeColor.value > 0) {
       setState(() => _game!.removingMode = type);
@@ -457,7 +419,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         context, Callout("clt_${type}_text".l(), type, padding: padding),
         barrierColor: Colors.transparent, barrierDismissible: true);
     if (result != null) {
-      Pref.coin.increase(result[1], itemType: "game", itemId: result[0]);
+      await Coins.change(result[1], "game", result[0]);
       if (type == "next") {
         _game!.boostNext();
         return;
@@ -470,7 +432,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     MyGame.isPlaying = true;
   }
 
-  void _createGame() {
+  _createGame() {
     Analytics.setScreen("game");
     var top = 140.d;
     var bottom = 180.d;
@@ -482,14 +444,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _gameWidget = GameWidget(game: _game!);
   }
 
-  _showFreeCoinsDialog() async {
-    // Check Fruad n frequently tap on cube man
-    if (DateTime.now().millisecondsSinceEpoch - FreeCoinsDialog.earnedAt <
-        FreeCoinsDialog.waitingTime) return;
-    MyGame.isPlaying = false;
-    var result = await Rout.push(context, FreeCoinsDialog());
-    if (result != null) _showReward(result[1], GameEvent.freeCoins);
-    MyGame.isPlaying = true;
+  _showCubeDialog() async {
+    // Check fruad in frequently tap on cube man
+    if (DateTime.now().millisecondsSinceEpoch - CubeDialog.earnedAt >
+        CubeDialog.waitingTime)
+      _game!.onGameEvent?.call(GameEvent.rewardCube, 0);
   }
 
   void _onRemoveBlock() {
@@ -506,23 +465,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _timer?.cancel();
-    _rewardAnimation?.dispose();
+    _confettiController?.stop();
     _confettiController?.dispose();
     _rewardLineAnimation?.dispose();
     super.dispose();
   }
 
-  _showReward(int value, GameEvent event, [Vector2? target]) async {
-    MyGame.isPlaying = true;
-    if (value <= 0) return;
-    await Future.delayed(Duration(milliseconds: 200));
-    _game!.showReward(value,
-        target ?? Vector2(MyGame.bounds.top, Device.size.width * 0.5), event);
-  }
-
-  void _closeGame() {
+  void _closeGame(result) {
     Analytics.endProgress(
-        "main", Pref.playCount.value, Pref.record.value, _game!.numRevives);
-    Navigator.of(context).pop();
+        "main", Pref.playCount.value, Pref.record.value, Prefs.score);
+    Navigator.of(context).pop(result);
   }
 }

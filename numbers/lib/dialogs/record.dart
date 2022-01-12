@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:numbers/dialogs/dialogs.dart';
+import 'package:numbers/dialogs/shop.dart';
+import 'package:numbers/dialogs/toast.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -13,10 +16,6 @@ import 'package:numbers/widgets/components.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 import 'package:rive/rive.dart';
 
-import 'dialogs.dart';
-import 'toast.dart';
-
-// ignore: must_be_immutable
 class RecordDialog extends AbstractDialog {
   final ConfettiController confettiController;
   RecordDialog(this.confettiController)
@@ -30,15 +29,18 @@ class RecordDialog extends AbstractDialog {
 
 class _RecordDialogState extends AbstractDialogState<RecordDialog> {
   @override
-  Widget build(BuildContext context) {
-    var reward = 10;
-    var theme = Theme.of(context);
+  void initState() {
+    reward = Price.record;
     Timer(Duration(milliseconds: 500), () {
       widget.confettiController.play();
       Sound.play("win");
     });
-    widget.onWillPop = () => buttonsClick(context, "record", reward, false);
-    widget.child = Stack(alignment: Alignment.topCenter, children: [
+    super.initState();
+  }
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    return Stack(alignment: Alignment.topCenter, children: [
       Positioned(
           top: 152.d,
           child: Text("record_l".l(), style: theme.textTheme.caption)),
@@ -99,6 +101,11 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
           child: RiveAnimation.asset('anims/nums-record.riv',
               stateMachines: ["machine"])),
     ]);
-    return super.build(context);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.confettiController.stop();
   }
 }

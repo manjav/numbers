@@ -2,15 +2,13 @@ import 'dart:async';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:numbers/dialogs/dialogs.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/components.dart';
 
-import 'dialogs.dart';
-
-// ignore: must_be_immutable
 class ConfirmDialog extends AbstractDialog {
   final ConfettiController confettiController;
   ConfirmDialog(this.confettiController)
@@ -19,7 +17,6 @@ class ConfirmDialog extends AbstractDialog {
             height: 200.d,
             width: 340.d,
             showCloseButton: false,
-            coinButton: SizedBox(),
             statsButton: SizedBox(),
             scoreButton: SizedBox(),
             padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d));
@@ -29,10 +26,17 @@ class ConfirmDialog extends AbstractDialog {
 
 class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+  Widget coinsButtonFactory(ThemeData theme) => SizedBox();
+
+  @override
+  void initState() {
     Timer(Duration(milliseconds: 10), () => widget.confettiController.play());
-    widget.child = Stack(alignment: Alignment.topCenter, children: [
+    super.initState();
+  }
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    return Stack(alignment: Alignment.topCenter, children: [
       Positioned(
           top: 20.d,
           child: Text("tutor_message".l(), style: theme.textTheme.caption)),
@@ -68,6 +72,5 @@ class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
                   ]))),
       Center(child: Components.confetty(widget.confettiController))
     ]);
-    return super.build(context);
   }
 }

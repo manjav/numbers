@@ -1,6 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:numbers/core/cell.dart';
+import 'package:numbers/dialogs/dialogs.dart';
+import 'package:numbers/dialogs/shop.dart';
+import 'package:numbers/dialogs/toast.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
@@ -10,13 +14,8 @@ import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 import 'package:rive/rive.dart';
 
-import 'dialogs.dart';
-import 'toast.dart';
-
-// ignore: must_be_immutable
 class ReviveDialog extends AbstractDialog {
-  final int numRevive;
-  ReviveDialog(this.numRevive)
+  ReviveDialog()
       : super(DialogMode.revive,
             sfx: "lose", title: "revive_l".l(), width: 310.d);
   @override
@@ -24,11 +23,33 @@ class ReviveDialog extends AbstractDialog {
 }
 
 class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
+  var _cells = "";
+  var _lastBig = 0;
+  var _maxRandom = 0;
+  var _numRevives;
+  var _score = 0;
+
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    var cost = 200 * pow(2, widget.numRevive).round();
-    widget.child = Stack(
+  void initState() {
+    // Immediate reset game stats (Anti fraud)
+    _cells = Prefs.getString("cells");
+    _lastBig = Pref.lastBig.value;
+    _maxRandom = Pref.maxRandom.value;
+    _numRevives = Pref.numRevives.value;
+    _score = Pref.score.value;
+    Prefs.setString("cells", "");
+    Pref.lastBig.set(Cell.firstBigRecord);
+    Pref.maxRandom.set(Cell.maxRandomValue);
+    Pref.numRevives.set(0);
+    Pref.score.set(0);
+
+    super.initState();
+  }
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    var cost = Price.revive * pow(2, _numRevives).round();
+    return Stack(
       alignment: Alignment.topCenter,
       children: [
         Positioned(
@@ -72,7 +93,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
             right: 4.d,
             cornerRadius: 16.d,
             errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
-            isEnable: widget.numRevive < 2 && Ads.isReady(),
+            isEnable: _numRevives < 2 && Ads.isReady(),
             onTap: () => buttonsClick(context, "revive", 0, true),
             colors: TColors.orange.value,
             content: Stack(alignment: Alignment.centerLeft, children: [
@@ -89,6 +110,27 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
             ]))
       ],
     );
-    return super.build(context);
+  }
+
+  @override
+  buttonsClick(BuildContext context, String type, int coin, bool showAd) async {
+    if (coin < 0 && Pref.coin.value < -coin) {
+      Rout.push(context, ShopDialog());
+      return;
+    }
+    if (showAd) {
+      var reward = await Ads.showRewarded();
+      if (reward == null) return;
+    } else if (coin > 0 && Ads.showSuicideInterstitial) {
+      await Ads.showInterstitial(AdPlace.Interstitial);
+    }
+
+    // rterive game stats (Anti fraud)
+    Prefs.setString("cells", _cells);
+    Pref.lastBig.set(_lastBig);
+    Pref.maxRandom.set(_maxRandom);
+    Pref.numRevives.set(_numRevives);
+    Pref.score.set(_score);
+    Navigator.of(context).pop([type, coin]);
   }
 }

@@ -20,9 +20,10 @@ class Cell extends PositionComponent {
   static double maxSpeed = 0.8;
   static double roundness = 7.0;
   static double thickness = 4.6;
-  static final firstBigRecord = 8;
-  static int maxRandomValue = 4;
   static int lastRandomValue = 9;
+  static int maxRandom = 0;
+  static final firstBigRecord = 8;
+  static final maxRandomValue = 4;
   static final colors = [
     PaletteEntry(Color(0xFF191C1D)),
     PaletteEntry(Color(0xFF9600FF)),
@@ -49,13 +50,13 @@ class Cell extends PositionComponent {
   static double getX(int col) => MyGame.bounds.left + col * diameter + radius;
   static double getY(int row) =>
       MyGame.bounds.top + (Cells.height - row) * diameter + radius;
-  static int getScore(int value) => pow(2, value) as int;
+  static int getScore(int value) => pow(2, value).toInt();
   // static int getNextValue(int step) => [1, 2, 3, 3, 2, 2, 1, 1][step];
   // static int getNextColumn(int step) => [0, 1, 1, 2, 4, 4, 4, 4][step];
   static int getNextValue(int seed) {
     if (Pref.tutorMode.value == 0) return [1, 3, 5, 1, 2, 4, 5][seed];
-    var min = seed.min(1).max((maxRandomValue * 0.4).ceil());
-    return min + MyGame.random.nextInt(maxRandomValue - min);
+    var min = seed.min(1).max((maxRandom * 0.4).ceil());
+    return min + MyGame.random.nextInt(maxRandom - min);
   }
 
   static int getNextColumn(int seed) => Pref.tutorMode.value == 0

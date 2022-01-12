@@ -1,1 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 26.458 26.458"><defs><linearGradient id="prefix__b"><stop offset="0" stop-color="#00c5ff"/><stop offset="1" stop-color="#00a3ff"/></linearGradient><linearGradient id="prefix__a"><stop offset="0" stop-color="#00c5ff"/><stop offset="1" stop-color="#00a3ff"/></linearGradient><linearGradient xlink:href="#prefix__a" id="prefix__c" x1="-105.041" y1="67.628" x2="-68.688" y2="79.977" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.17028 0 0 .17028 29.593 267.909)"/><linearGradient xlink:href="#prefix__b" id="prefix__d" x1="-103.579" y1="59.221" x2="-67.226" y2="58.41" gradientUnits="userSpaceOnUse" gradientTransform="matrix(.17028 0 0 .17028 29.785 267.753)"/></defs><path d="M11.41 2.096C8.893 2.78 6.978 5.572 6.907 8.5c-.078 3.158 2.529 4.635 4.542 5.173-.81-.865-2.728-2.966-2.74-4.092-.033-2.928 1.986-5.72 4.505-6.404 1.142-.31 3.143.065 3.908.255-1.468-1.302-4.061-1.777-5.71-1.336z" fill="#00498c"/><path d="M17.393 11.53c-1.415 2.138-5.107 5.31-9.562 2.638-3.69 2.778-5.023 5.315-4.353 9.312l1.803 1.61c.165-4.174 1.1-7.392 4.352-9.84 4.455 2.672 8.147-.501 9.562-2.64z" fill="#00498c"/><path d="M13.213 273.719c4.494-1.221 5.843 2.188 5.793 4.28-.065 2.67-2.09 5.96-5.278 6.468-3.349.534-4.995-2.06-5.02-4.344-.032-2.929 1.986-5.72 4.505-6.404z" fill="url(#prefix__c)" transform="translate(0 -270.542)"/><path d="M9.633 285.791c4.455 2.672 8.147-.5 9.562-2.639 2.524 1.012 4.367 2.652 3.96 6.726-4.675 3.973-12.46 6.02-17.874 5.754-.737-4.923.662-7.063 4.352-9.84z" fill="url(#prefix__d)" transform="translate(0 -270.542)"/></svg>
+<svg width="100" height="100"
+    viewBox="0 0 26.458 26.458">
+    <defs>
+        <linearGradient id="prefix__b">
+            <stop offset="0" stop-color="#00c5ff" />
+            <stop offset="1" stop-color="#00a3ff" />
+        </linearGradient>
+        <linearGradient id="prefix__a">
+            <stop offset="0" stop-color="#00c5ff" />
+            <stop offset="1" stop-color="#00a3ff" />
+        </linearGradient>
+        <linearGradient xlink:href="#prefix__a" id="prefix__c" x1="-105.041" y1="67.628" x2="-68.688" y2="79.977"
+            gradientUnits="userSpaceOnUse" gradientTransform="matrix(.17028 0 0 .17028 29.593 267.909)" />
+        <linearGradient xlink:href="#prefix__b" id="prefix__d" x1="-103.579" y1="59.221" x2="-67.226" y2="58.41"
+            gradientUnits="userSpaceOnUse" gradientTransform="matrix(.17028 0 0 .17028 29.785 267.753)" />
+    </defs>
+    <path
+        d="M11.41 2.096C8.893 2.78 6.978 5.572 6.907 8.5c-.078 3.158 2.529 4.635 4.542 5.173-.81-.865-2.728-2.966-2.74-4.092-.033-2.928 1.986-5.72 4.505-6.404 1.142-.31 3.143.065 3.908.255-1.468-1.302-4.061-1.777-5.71-1.336z"
+        fill="#00498c" />
+    <path
+        d="M17.393 11.53c-1.415 2.138-5.107 5.31-9.562 2.638-3.69 2.778-5.023 5.315-4.353 9.312l1.803 1.61c.165-4.174 1.1-7.392 4.352-9.84 4.455 2.672 8.147-.501 9.562-2.64z"
+        fill="#00498c" />
+    <path
+        d="M13.213 273.719c4.494-1.221 5.843 2.188 5.793 4.28-.065 2.67-2.09 5.96-5.278 6.468-3.349.534-4.995-2.06-5.02-4.344-.032-2.929 1.986-5.72 4.505-6.404z"
+        fill="url(#prefix__c)" transform="translate(0 -270.542)" />
+    <path
+        d="M9.633 285.791c4.455 2.672 8.147-.5 9.562-2.639 2.524 1.012 4.367 2.652 3.96 6.726-4.675 3.973-12.46 6.02-17.874 5.754-.737-4.923.662-7.063 4.352-9.84z"
+        fill="url(#prefix__d)" transform="translate(0 -270.542)" />
+</svg>

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:numbers/core/cell.dart';
+import 'package:numbers/dialogs/dialogs.dart';
 import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
-import 'package:numbers/widgets/components.dart';
+import 'package:numbers/widgets/coins.dart';
 import 'package:numbers/widgets/widgets.dart';
 
-import 'dialogs.dart';
-
-// ignore: must_be_immutable
 class StatsDialog extends AbstractDialog {
   StatsDialog()
       : super(
@@ -26,12 +24,18 @@ class StatsDialog extends AbstractDialog {
 class _StatsDialogState extends AbstractDialogState<StatsDialog> {
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
     stepChildren.clear();
     stepChildren.add(bannerAdsFactory("stats"));
-    widget.coinButton = Positioned(
-        top: 32.d, left: 12.d, child: Components.coins(context, "stats"));
-    widget.child = Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+    return super.build(context);
+  }
+
+  @override
+  Widget coinsButtonFactory(ThemeData theme) =>
+      Coins(widget.mode.name, left: 12.d);
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             SVG.show("record", 24.d),
             Text(" ${Pref.record.value.format()}",
@@ -53,7 +57,6 @@ class _StatsDialogState extends AbstractDialogState<StatsDialog> {
                     List.generate(9, (i) => _bigRecordItem(theme, 9 + i))),
           )
         ]);
-    return super.build(context);
   }
 
   Widget _bigRecordItem(ThemeData theme, int i) {

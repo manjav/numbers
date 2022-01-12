@@ -3,6 +3,7 @@ import 'package:numbers/utils/utils.dart';
 
 import 'buttons.dart';
 
+// ignore: must_be_immutable
 class PunchButton extends StatefulWidget {
   final bool? isEnable;
   final Widget? content;
@@ -19,6 +20,7 @@ class PunchButton extends StatefulWidget {
   final Widget? errorMessage;
   final int? punchGap;
   final int? punchSpeed;
+  bool isPlaying = true;
 
   PunchButton(
       {Key? key,
@@ -69,7 +71,7 @@ class _PunchButtonState extends State<PunchButton>
 
   @override
   Widget build(BuildContext context) {
-    var v = animation!.value;
+    var v = widget.isPlaying ? animation!.value : 0;
     return Positioned(
         left: widget.left == null ? null : widget.left! - v,
         top: widget.top == null ? null : widget.top! - v,

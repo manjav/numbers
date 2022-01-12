@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:numbers/dialogs/dialogs.dart';
 import 'package:numbers/dialogs/toast.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
@@ -11,9 +12,6 @@ import 'package:numbers/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
-import 'dialogs.dart';
-
-// ignore: must_be_immutable
 class RatingDialog extends AbstractDialog {
   static Future<bool> showRating(BuildContext context) async {
     print(
@@ -102,9 +100,8 @@ class RatingDialog extends AbstractDialog {
 class _RatingDialogState extends AbstractDialogState<RatingDialog> {
   int _response = 0;
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    widget.child = WillPopScope(
+  Widget contentFactory(ThemeData theme) {
+    return WillPopScope(
         onWillPop: () async => false,
         child: Stack(alignment: Alignment.topRight, children: <Widget>[
           Text("rate_message".l(),
@@ -138,11 +135,9 @@ class _RatingDialogState extends AbstractDialogState<RatingDialog> {
                           Text("rate_l".l(), style: theme.textTheme.headline5)),
                   onTap: () => Navigator.pop(context, _response)))
         ]));
-    return super.build(context);
   }
 }
 
-// ignore: must_be_immutable
 class ReviewDialog extends AbstractDialog {
   ReviewDialog()
       : super(
@@ -168,9 +163,8 @@ class _ReviewDialogState extends AbstractDialogState<ReviewDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    widget.child = Column(
+  Widget contentFactory(ThemeData theme) {
+    return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -192,6 +186,10 @@ class _ReviewDialogState extends AbstractDialogState<ReviewDialog> {
                   child: Text("send_l".l(), style: theme.textTheme.headline5)),
               onTap: () => Navigator.pop(context, _commentController.text))
         ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(body: Center(child: super.build(context)));
   }
 }

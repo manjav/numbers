@@ -1,1 +1,25 @@
-<svg width="100" height="100" viewBox="0 0 26 26"><defs><clipPath id="prefix__b"><path d="M0 972h1087V0H0" clip-rule="evenodd"/></clipPath><clipPath id="prefix__a"><path d="M0 972h1087V0H0" clip-rule="evenodd"/></clipPath><linearGradient id="prefix__c" x1="816" x2="765" y1="445" y2="50" gradientUnits="userSpaceOnUse"><stop stop-color="#fc0" offset="0"/><stop stop-color="#ffd83d" offset="1"/></linearGradient></defs><g clip-path="url(#prefix__a)" transform="matrix(.15522 0 0 -.15522 -110.054 51.038)"><path d="M871 263l-31-82-112 15-13 87 36-20 49 47 32-60z" fill="#fc0" fill-rule="evenodd"/></g><g clip-path="url(#prefix__b)" transform="matrix(.15522 0 0 -.15522 -110.054 51.038)" opacity=".551"><path d="M869 269l7.5-7.8-31-82-6.4-3.8-112 15-5.1 5.1-13 87 8.9 6.1 36-20-7.1-.9 49 47 9.4-1.5 32-60-7.2 2.9zm-35-24l-7.2 2.9-32 60 9.5-1.5-49-47-7.1-.9-36 20 8.9 6.1 13-87-5.1 5.1 112-15-6.4-3.8 31 82 7.5-7.8z" fill="url(#prefix__c)"/></g><path d="M2.732 9.844l3.88-1.94 1.941-3.881 1.94 3.88 3.881 1.94-3.88 1.94-1.94 3.882-1.941-3.881zM10.22 5.275l1.552-.796.796-1.552.795 1.552 1.552.796-1.552.795-.795 1.553-.796-1.553z" fill="#fff" fill-rule="evenodd"/></svg>
+<svg width="100" height="100" viewBox="0 0 26 26">
+    <defs>
+        <clipPath id="prefix__b">
+            <path d="M0 972h1087V0H0" clip-rule="evenodd" />
+        </clipPath>
+        <clipPath id="prefix__a">
+            <path d="M0 972h1087V0H0" clip-rule="evenodd" />
+        </clipPath>
+        <linearGradient id="prefix__c" x1="816" x2="765" y1="445" y2="50" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fc0" offset="0" />
+            <stop stop-color="#ffd83d" offset="1" />
+        </linearGradient>
+    </defs>
+    <g clip-path="url(#prefix__a)" transform="matrix(.15522 0 0 -.15522 -110.054 51.038)">
+        <path d="M871 263l-31-82-112 15-13 87 36-20 49 47 32-60z" fill="#fc0" fill-rule="evenodd" />
+    </g>
+    <g clip-path="url(#prefix__b)" transform="matrix(.15522 0 0 -.15522 -110.054 51.038)" opacity=".551">
+        <path
+            d="M869 269l7.5-7.8-31-82-6.4-3.8-112 15-5.1 5.1-13 87 8.9 6.1 36-20-7.1-.9 49 47 9.4-1.5 32-60-7.2 2.9zm-35-24l-7.2 2.9-32 60 9.5-1.5-49-47-7.1-.9-36 20 8.9 6.1 13-87-5.1 5.1 112-15-6.4-3.8 31 82 7.5-7.8z"
+            fill="url(#prefix__c)" />
+    </g>
+    <path
+        d="M2.732 9.844l3.88-1.94 1.941-3.881 1.94 3.88 3.881 1.94-3.88 1.94-1.94 3.882-1.941-3.881zM10.22 5.275l1.552-.796.796-1.552.795 1.552 1.552.796-1.552.795-.795 1.553-.796-1.553z"
+        fill="#fff" fill-rule="evenodd" />
+</svg>

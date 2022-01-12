@@ -10,10 +10,12 @@ class Sound {
     for (var i = 1; i <= 6; i++) add("merge-$i");
     add("foul");
     add("fall");
+    add("bell");
     add("lose");
     add("pop");
     add("win");
     add("coin");
+    add("coins");
     add("merge-end");
     add("button-down");
     add("button-up");

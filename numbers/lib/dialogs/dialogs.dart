@@ -7,54 +7,60 @@ import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/sounds.dart';
 import 'package:numbers/utils/utils.dart';
+import 'package:numbers/widgets/coins.dart';
 import 'package:numbers/widgets/components.dart';
 
-// ignore: must_be_immutable
 class AbstractDialog extends StatefulWidget {
-  DialogMode mode;
-  String? sfx;
-  String? title;
-  double? width;
-  double? height;
-  Widget? child;
-  Widget? scoreButton;
-  Widget? coinButton;
-  Widget? closeButton;
-  Widget? statsButton;
-  Function? onWillPop;
-  EdgeInsets? padding;
-  bool? hasChrome;
-  bool? showCloseButton;
-  bool? closeOnBack;
-  Map<String, dynamic>? args;
+  final DialogMode mode;
+  final String? sfx;
+  final String? title;
+  final double? width;
+  final double? height;
+  final Widget? scoreButton;
+  final Widget? closeButton;
+  final Widget? statsButton;
+  final Function? onWillPop;
+  final EdgeInsets? padding;
+  final bool? hasChrome;
+  final bool? showCloseButton;
+  final bool? closeOnBack;
+  final Map<String, dynamic>? args;
+  final int? popDuration;
 
-  AbstractDialog(this.mode,
-      {this.sfx,
-      this.title,
-      this.width,
-      this.height,
-      this.child,
-      this.scoreButton,
-      this.coinButton,
-      this.closeButton,
-      this.statsButton,
-      this.onWillPop,
-      this.padding,
-      this.hasChrome,
-      this.showCloseButton,
-      this.closeOnBack,
-      this.args});
+  AbstractDialog(
+    this.mode, {
+    this.sfx,
+    this.title,
+    this.width,
+    this.height,
+    this.scoreButton,
+    this.closeButton,
+    this.statsButton,
+    this.onWillPop,
+    this.padding,
+    this.hasChrome,
+    this.showCloseButton,
+    this.closeOnBack,
+    this.args,
+    this.popDuration,
+  });
   @override
   AbstractDialogState createState() => AbstractDialogState();
 }
 
 class AbstractDialogState<T extends AbstractDialog> extends State<T> {
   List<Widget> stepChildren = <Widget>[];
+  int reward = 0;
+  Function? onWillPop;
   @override
   void initState() {
     Ads.onUpdate = _onAdsUpdate;
     Sound.play(widget.sfx ?? "pop");
     Analytics.setScreen(widget.mode.name);
+    if (widget.onWillPop != null)
+      onWillPop = widget.onWillPop;
+    else if (reward > 0)
+      onWillPop = () => buttonsClick(context, widget.mode.name, reward, false);
     super.initState();
   }
 
@@ -66,7 +72,6 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     var children = <Widget>[];
     children.add(rankButtonFactory(theme));
     children.add(statsButtonFactory(theme));
-    children.add(coinsButtonFactory(theme));
 
     var rows = <Widget>[];
     rows.add(headerFactory(theme, width));
@@ -74,11 +79,12 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     children.add(
         Column(mainAxisAlignment: MainAxisAlignment.center, children: rows));
     children.addAll(stepChildren);
+    children.add(coinsButtonFactory(theme));
 
     return WillPopScope(
         key: Key(widget.mode.name),
         onWillPop: () async {
-          widget.onWillPop?.call();
+          onWillPop?.call();
           return widget.closeOnBack ?? true;
         },
         child: Stack(alignment: Alignment.center, children: children));
@@ -133,13 +139,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
             }));
   }
 
-  Widget coinsButtonFactory(ThemeData theme) {
-    return widget.coinButton ??
-        Positioned(
-            top: 32.d,
-            left: 66.d,
-            child: Components.coins(context, widget.mode.name));
-  }
+  Widget coinsButtonFactory(ThemeData theme) => Coins(widget.mode.name);
 
   Widget headerFactory(ThemeData theme, double width) {
     var hasClose = widget.showCloseButton ?? true;
@@ -178,8 +178,10 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.all(Radius.circular(24.d)))
             : null,
-        child: widget.child ?? SizedBox());
+        child: contentFactory(theme));
   }
+
+  Widget contentFactory(ThemeData theme) => SizedBox();
 
   _onAdsUpdate(AdPlace placement, AdState state) {
     if (placement == AdPlace.Rewarded && state != AdState.Closed)
@@ -198,8 +200,11 @@ enum DialogMode {
   callout,
   confirm,
   confirmDialog,
+  cube,
+  daily,
   pause,
   piggy,
+  quests,
   quit,
   rating,
   record,
@@ -222,10 +227,16 @@ extension DialogName on DialogMode {
         return "confirmDialog";
       case DialogMode.confirm:
         return "confirm";
+      case DialogMode.cube:
+        return "cube";
+      case DialogMode.daily:
+        return "daily";
       case DialogMode.pause:
         return "pause";
       case DialogMode.piggy:
         return "piggy";
+      case DialogMode.quests:
+        return "quests";
       case DialogMode.quit:
         return "quit";
       case DialogMode.rating:

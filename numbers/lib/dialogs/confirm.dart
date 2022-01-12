@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:numbers/dialogs/dialogs.dart';
 import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:rive/rive.dart';
 
-import 'dialogs.dart';
-
-// ignore: must_be_immutable
 class Toast extends AbstractDialog {
   final String text;
   final String? acceptText;
@@ -14,7 +12,6 @@ class Toast extends AbstractDialog {
   Toast(this.text, {this.acceptText, this.declineText})
       : super(DialogMode.confirm,
             showCloseButton: false,
-            coinButton: SizedBox(),
             statsButton: SizedBox(),
             scoreButton: SizedBox(),
             padding: EdgeInsets.fromLTRB(16.d, 0, 16.d, 16.d),
@@ -25,9 +22,11 @@ class Toast extends AbstractDialog {
 
 class _ToastState extends AbstractDialogState<Toast> {
   @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    widget.child = Column(children: [
+  Widget coinsButtonFactory(ThemeData theme) => SizedBox();
+
+  @override
+  Widget contentFactory(ThemeData theme) {
+    return Column(children: [
       SizedBox(
           width: 120.d,
           height: 120.d,
@@ -61,6 +60,5 @@ class _ToastState extends AbstractDialogState<Toast> {
                             style: theme.textTheme.headline5))))
       ])
     ]);
-    return super.build(context);
   }
 }

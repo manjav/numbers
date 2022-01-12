@@ -1,1 +1,20 @@
-<svg width="100" height="100" viewBox="0 0 26 26"><defs><linearGradient id="prefix__a" x1="419" x2="516" y1="772" y2="655" gradientTransform="matrix(.69 0 0 -.69 -309 504)" gradientUnits="userSpaceOnUse"><stop stop-color="#c74670" offset="0"/><stop stop-color="#fb5353" offset=".19"/><stop stop-color="#fd9521" offset=".33"/><stop stop-color="#fb5353" offset=".48"/><stop stop-color="#c74670" offset=".67"/><stop stop-color="#fb5353" offset=".85"/><stop stop-color="#fd9521" offset="1"/></linearGradient></defs><path d="M21 .71c1.1-.007 2.2.41 2.9 1.2 1.7 1.6 1.7 4.3.035 6.1l-4.9 5.1 4.9 4.9c1.7 1.6 1.7 4.3.035 6.1-1.6 1.7-4.3 1.7-6.1.035l-4.9-4.9-4.9 5.1c-1.6 1.7-4.3 1.7-6.1.035-1.7-1.6-1.7-4.3-.035-6.1l4.9-5.1-4.9-4.9c-1.7-1.6-1.7-4.3-.035-6.1C3.5.48 6.2.48 8 2.145l4.9 4.9 4.9-5.1c.82-.82 1.9-1.2 2.9-1.3z" fill="url(#prefix__a)" fill-rule="evenodd"/><path d="M21 .52c1.1-.008 2.2.41 3.1 1.3 1.7 1.7 1.7 4.5.035 6.1l-4.9 5.1 5.1 4.9c1.7 1.7 1.7 4.5.035 6.1-1.7 1.7-4.5 1.7-6.1.035l-5.1-4.9-4.9 5.1c-1.7 1.7-4.5 1.7-6.1.035-1.7-1.7-1.7-4.5-.035-6.1l4.9-5.1-5.1-4.9c-1.7-1.7-1.7-4.5-.035-6.1C3.6.39 6.4.39 8 2.055l5.1 4.9 4.9-5.1c.84-.84 1.9-1.3 3.1-1.3z" fill="none" stroke="#212527" stroke-linecap="round" stroke-linejoin="bevel" stroke-miterlimit="8"/></svg>
+<svg width="100" height="100" viewBox="0 0 26 26">
+    <defs>
+        <linearGradient id="prefix__a" x1="419" x2="516" y1="772" y2="655"
+            gradientTransform="matrix(.69 0 0 -.69 -309 504)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#c74670" offset="0" />
+            <stop stop-color="#fb5353" offset=".19" />
+            <stop stop-color="#fd9521" offset=".33" />
+            <stop stop-color="#fb5353" offset=".48" />
+            <stop stop-color="#c74670" offset=".67" />
+            <stop stop-color="#fb5353" offset=".85" />
+            <stop stop-color="#fd9521" offset="1" />
+        </linearGradient>
+    </defs>
+    <path
+        d="M21 .71c1.1-.007 2.2.41 2.9 1.2 1.7 1.6 1.7 4.3.035 6.1l-4.9 5.1 4.9 4.9c1.7 1.6 1.7 4.3.035 6.1-1.6 1.7-4.3 1.7-6.1.035l-4.9-4.9-4.9 5.1c-1.6 1.7-4.3 1.7-6.1.035-1.7-1.6-1.7-4.3-.035-6.1l4.9-5.1-4.9-4.9c-1.7-1.6-1.7-4.3-.035-6.1C3.5.48 6.2.48 8 2.145l4.9 4.9 4.9-5.1c.82-.82 1.9-1.2 2.9-1.3z"
+        fill="url(#prefix__a)" fill-rule="evenodd" />
+    <path
+        d="M21 .52c1.1-.008 2.2.41 3.1 1.3 1.7 1.7 1.7 4.5.035 6.1l-4.9 5.1 5.1 4.9c1.7 1.7 1.7 4.5.035 6.1-1.7 1.7-4.5 1.7-6.1.035l-5.1-4.9-4.9 5.1c-1.7 1.7-4.5 1.7-6.1.035-1.7-1.7-1.7-4.5-.035-6.1l4.9-5.1-5.1-4.9c-1.7-1.7-1.7-4.5-.035-6.1C3.6.39 6.4.39 8 2.055l5.1 4.9 4.9-5.1c.84-.84 1.9-1.3 3.1-1.3z"
+        fill="none" stroke="#212527" stroke-linecap="round" stroke-linejoin="bevel" stroke-miterlimit="8" />
+</svg>

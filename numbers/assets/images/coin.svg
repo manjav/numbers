@@ -1,1 +1,32 @@
-<svg width="50" height="50" viewBox="0 0 14 14"><defs><linearGradient id="prefix__a" x1="1.2" x2="17" y1="288" y2="288" gradientTransform="matrix(.83 0 0 .83 -.68 -233)" gradientUnits="userSpaceOnUse"><stop stop-color="#fc0" offset="0"/><stop stop-color="#fc0" offset="1"/><stop stop-color="#d19d00" offset="1"/></linearGradient><linearGradient id="prefix__c" x1="11" x2="11" y1="12" y2="8.6" gradientTransform="matrix(.83 0 0 .83 -1.3 -.85)" gradientUnits="userSpaceOnUse"><stop stop-opacity=".31" offset="0"/><stop stop-color="#fff" offset="1"/></linearGradient><radialGradient id="prefix__b" cx="9.1" cy="292" r="6" gradientTransform="matrix(.79 -.0039 .0052 .76 -1.7 -215)" gradientUnits="userSpaceOnUse"><stop stop-color="#eac100" offset="0"/><stop stop-color="#e4ac01" stop-opacity=".13" offset=".72"/><stop stop-color="#846049" stop-opacity=".74" offset="1"/></radialGradient></defs><path d="M.26 7l3.5-5.9h6.7l3.3 5.9-3.3 5.9h-6.7z"/><g fill-rule="evenodd"><path d="M.31 6.9l3.4-5.7h6.6l3.2 5.7-3.2 5.7h-6.6z" fill="url(#prefix__a)" transform="translate(.089 .15)"/><path d="M1.9 6.9l2.6-4.3h4.9L12 6.9l-2.6 4.3H4.5z" fill="url(#prefix__b)" transform="translate(.089 .15)"/><path d="M2.489 1.55l.93-.44.48-.91.48.91.93.44-.93.44-.48.91-.48-.91z" fill="#fff"/><path d="M10.089 5.95l-.74 3.1-4.1-.026-.83-3.1 1.4.56 1.6-1.9 1.4 2z" fill="#ffdf57"/></g><path d="M10 5.8l.17.13-.74 3.1-.12.091-4.1-.026-.12-.083-.91-3.1.22-.26 1.3.72 1.6-1.9.19.005 1.2 2zm-1.2.83l-.21-.049-1.2-1.7-1.5 1.7-.14.036-1.3-.7.81 3 4-.004.62-2.7z" fill="url(#prefix__c)"/><path d="M6.3 4.6l.6-.27.31-.52.31.52.6.27-.6.27-.31.52-.31-.52z" fill="#fff" fill-rule="evenodd"/></svg>
+<svg width="50" height="50" viewBox="0 0 14 14">
+    <defs>
+        <linearGradient id="prefix__a" x1="1.2" x2="17" y1="288" y2="288"
+            gradientTransform="matrix(.83 0 0 .83 -.68 -233)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#fc0" offset="0" />
+            <stop stop-color="#fc0" offset="1" />
+            <stop stop-color="#d19d00" offset="1" />
+        </linearGradient>
+        <linearGradient id="prefix__c" x1="11" x2="11" y1="12" y2="8.6"
+            gradientTransform="matrix(.83 0 0 .83 -1.3 -.85)" gradientUnits="userSpaceOnUse">
+            <stop stop-opacity=".31" offset="0" />
+            <stop stop-color="#fff" offset="1" />
+        </linearGradient>
+        <radialGradient id="prefix__b" cx="9.1" cy="292" r="6"
+            gradientTransform="matrix(.79 -.0039 .0052 .76 -1.7 -215)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#eac100" offset="0" />
+            <stop stop-color="#e4ac01" stop-opacity=".13" offset=".72" />
+            <stop stop-color="#846049" stop-opacity=".74" offset="1" />
+        </radialGradient>
+    </defs>
+    <path d="M.26 7l3.5-5.9h6.7l3.3 5.9-3.3 5.9h-6.7z" />
+    <g fill-rule="evenodd">
+        <path d="M.31 6.9l3.4-5.7h6.6l3.2 5.7-3.2 5.7h-6.6z" fill="url(#prefix__a)" transform="translate(.089 .15)" />
+        <path d="M1.9 6.9l2.6-4.3h4.9L12 6.9l-2.6 4.3H4.5z" fill="url(#prefix__b)" transform="translate(.089 .15)" />
+        <path d="M2.489 1.55l.93-.44.48-.91.48.91.93.44-.93.44-.48.91-.48-.91z" fill="#fff" />
+        <path d="M10.089 5.95l-.74 3.1-4.1-.026-.83-3.1 1.4.56 1.6-1.9 1.4 2z" fill="#ffdf57" />
+    </g>
+    <path
+        d="M10 5.8l.17.13-.74 3.1-.12.091-4.1-.026-.12-.083-.91-3.1.22-.26 1.3.72 1.6-1.9.19.005 1.2 2zm-1.2.83l-.21-.049-1.2-1.7-1.5 1.7-.14.036-1.3-.7.81 3 4-.004.62-2.7z"
+        fill="url(#prefix__c)" />
+    <path d="M6.3 4.6l.6-.27.31-.52.31.52.6.27-.6.27-.31.52-.31-.52z" fill="#fff" fill-rule="evenodd" />
+</svg>
