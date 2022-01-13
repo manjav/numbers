@@ -199,7 +199,6 @@ enum DialogMode {
   big,
   callout,
   confirm,
-  confirmDialog,
   cube,
   daily,
   pause,
@@ -213,7 +212,8 @@ enum DialogMode {
   shop,
   start,
   stats,
-  toast
+  toast,
+  tutorial,
 }
 
 extension DialogName on DialogMode {
@@ -223,8 +223,6 @@ extension DialogName on DialogMode {
         return "big";
       case DialogMode.callout:
         return "callout";
-      case DialogMode.confirmDialog:
-        return "confirmDialog";
       case DialogMode.confirm:
         return "confirm";
       case DialogMode.cube:
@@ -255,6 +253,8 @@ extension DialogName on DialogMode {
         return "stats";
       case DialogMode.toast:
         return "toast";
+      case DialogMode.tutorial:
+        return "tutorial";
     }
   }
 }

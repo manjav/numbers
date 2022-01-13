@@ -5,11 +5,11 @@ import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:rive/rive.dart';
 
-class Toast extends AbstractDialog {
+class Confirm extends AbstractDialog {
   final String text;
   final String? acceptText;
   final String? declineText;
-  Toast(this.text, {this.acceptText, this.declineText})
+  Confirm(this.text, {this.acceptText, this.declineText})
       : super(DialogMode.confirm,
             showCloseButton: false,
             statsButton: SizedBox(),
@@ -17,10 +17,10 @@ class Toast extends AbstractDialog {
             padding: EdgeInsets.fromLTRB(16.d, 0, 16.d, 16.d),
             height: 0);
   @override
-  _ToastState createState() => _ToastState();
+  _ConfirmState createState() => _ConfirmState();
 }
 
-class _ToastState extends AbstractDialogState<Toast> {
+class _ConfirmState extends AbstractDialogState<Confirm> {
   @override
   Widget coinsButtonFactory(ThemeData theme) => SizedBox();
 

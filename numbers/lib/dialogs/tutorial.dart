@@ -9,10 +9,10 @@ import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/components.dart';
 
-class ConfirmDialog extends AbstractDialog {
+class TutorialDialog extends AbstractDialog {
   final ConfettiController confettiController;
-  ConfirmDialog(this.confettiController)
-      : super(DialogMode.confirmDialog,
+  TutorialDialog(this.confettiController)
+      : super(DialogMode.tutorial,
             sfx: "win",
             height: 200.d,
             width: 340.d,
@@ -21,10 +21,10 @@ class ConfirmDialog extends AbstractDialog {
             scoreButton: SizedBox(),
             padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d));
   @override
-  _ConfirmDialogState createState() => _ConfirmDialogState();
+  _TutorialDialogState createState() => _TutorialDialogState();
 }
 
-class _ConfirmDialogState extends AbstractDialogState<ConfirmDialog> {
+class _TutorialDialogState extends AbstractDialogState<TutorialDialog> {
   @override
   Widget coinsButtonFactory(ThemeData theme) => SizedBox();
 
