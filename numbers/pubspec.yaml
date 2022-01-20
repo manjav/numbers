@@ -11,7 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # cupertino_icons: ^1.0.2
   appsflyer_sdk: ^6.4.0+2
   confetti: ^0.6.0
   cupertino_icons: ^1.0.3
@@ -23,8 +22,7 @@ dependencies:
   firebase_messaging: ^11.2.3
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
-  # games_services: ^2.0.1
-  gameanalytics_sdk: ^1.2.1
+  gameanalytics_sdk: ^1.2.3
   google_mobile_ads: ^1.0.1
   http: ^0.13.4
   in_app_purchase: ^2.0.0
@@ -32,16 +30,16 @@ dependencies:
   install_prompt: ^0.0.1
   intl: ^0.17.0
   package_info_plus: ^1.0.6
-  shared_preferences: ^2.0.11
+  shared_preferences: ^2.0.12
   soundpool: ^2.1.0
-  rive: ^0.7.33
-  # unity_ads_plugin: ^0.2.2
-  url_launcher: ^6.0.17
+  rive: ^0.8.1
+  url_launcher: ^6.0.18
   vibration: ^1.7.4-nullsafety.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^1.0.0
 
 flutter:
   # generate: true

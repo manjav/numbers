@@ -18,7 +18,7 @@ class Rout {
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             SlideTransition(
                 position: animation.drive(tween ??
-                    Tween(begin: Offset(0.0, 0.08), end: Offset.zero)
+                    Tween(begin: const Offset(0.0, 0.08), end: Offset.zero)
                         .chain(CurveTween(curve: Curves.easeOutExpo))),
                 child: child),
         pageBuilder: (c, _, __) => page));
@@ -54,10 +54,11 @@ class SVG {
   }
 
   static Text icon(String name, ThemeData theme, {double? scale}) {
-    if (scale != null)
+    if (scale != null) {
       return Text(name,
           style: theme.textTheme.overline!
               .copyWith(fontSize: theme.textTheme.overline!.fontSize! * scale));
+    }
     return Text(name, style: theme.textTheme.overline);
   }
 }

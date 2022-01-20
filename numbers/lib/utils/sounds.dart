@@ -4,10 +4,12 @@ import 'package:soundpool/soundpool.dart';
 import 'package:vibration/vibration.dart';
 
 class Sound {
-  static Map<String, int> map = Map();
+  static Map<String, int> map = {};
   static Soundpool pool = Soundpool.fromOptions();
   static Future<void> init() async {
-    for (var i = 1; i <= 6; i++) add("merge-$i");
+    for (var i = 1; i <= 6; i++) {
+      add("merge-$i");
+    }
     add("foul");
     add("fall");
     add("bell");

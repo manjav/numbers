@@ -11,26 +11,29 @@ import 'package:numbers/widgets/components.dart';
 
 class TutorialDialog extends AbstractDialog {
   final ConfettiController confettiController;
-  TutorialDialog(this.confettiController)
-      : super(DialogMode.tutorial,
-            sfx: "win",
-            height: 200.d,
-            width: 340.d,
-            showCloseButton: false,
-            statsButton: SizedBox(),
-            scoreButton: SizedBox(),
-            padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d));
+  TutorialDialog(this.confettiController, {Key? key})
+      : super(
+          DialogMode.tutorial,
+          key: key,
+          sfx: "win",
+          height: 200.d,
+          width: 340.d,
+          showCloseButton: false,
+          statsButton: const SizedBox(),
+          scoreButton: const SizedBox(),
+          padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 12.d)
+        );
   @override
   _TutorialDialogState createState() => _TutorialDialogState();
 }
 
 class _TutorialDialogState extends AbstractDialogState<TutorialDialog> {
   @override
-  Widget coinsButtonFactory(ThemeData theme) => SizedBox();
+  Widget coinsButtonFactory(ThemeData theme) => const SizedBox();
 
   @override
   void initState() {
-    Timer(Duration(milliseconds: 10), () => widget.confettiController.play());
+    Timer(const Duration(milliseconds: 10), () => widget.confettiController.play());
     super.initState();
   }
 

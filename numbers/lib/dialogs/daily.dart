@@ -11,9 +11,10 @@ import 'package:numbers/widgets/coins.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 
 class DailyDialog extends AbstractDialog {
-  DailyDialog()
+  DailyDialog({Key? key})
       : super(
           DialogMode.daily,
+          key: key,
           title: "daily_l".l(),
         );
   @override
@@ -84,8 +85,9 @@ class _DailyDialogState extends AbstractDialogState<DailyDialog> {
   }
 
   _lineItem(ThemeData theme, Day day) {
-    if (day.state == DayState.collected)
+    if (day.state == DayState.collected) {
       return Positioned(bottom: 20.d, child: SVG.show("accept", 40.d));
+    }
     var waiting = day.state == DayState.waiting;
     var content = Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text("${day.reward}",
@@ -116,7 +118,7 @@ class _DailyDialogState extends AbstractDialogState<DailyDialog> {
 class TimeWidget extends StatefulWidget {
   final String label;
   final Function callback;
-  TimeWidget(this.label, this.callback);
+  const TimeWidget(this.label, this.callback, {Key? key}) : super(key: key);
   @override
   _TimeWidgetState createState() => _TimeWidgetState();
 }
@@ -134,8 +136,7 @@ class _TimeWidgetState extends State<TimeWidget> {
       return SizedBox(height: 54.d);
     }
 
-    if (_timer == null)
-      _timer = Timer.periodic(const Duration(milliseconds: 999), _onTimerTick);
+    _timer ??= Timer.periodic(const Duration(milliseconds: 999), _onTimerTick);
 
     return Column(children: [
       SizedBox(height: 12.d),
@@ -164,24 +165,24 @@ class _TimeWidgetState extends State<TimeWidget> {
 }
 
 class Days {
-  static const DAY_LEN = 86400000;
+  static const dayLen = 86400000;
   static List<Day> list = [];
 
   static bool collectable = false;
   static int get remaining =>
-      (Pref.dayFirst.value + (Pref.dayCount.value + 1) * DAY_LEN) -
+      (Pref.dayFirst.value + (Pref.dayCount.value + 1) * dayLen) -
       DateTime.now().millisecondsSinceEpoch;
 
   static init() {
     var dayFirst = Pref.dayFirst.value;
     var dayCount = Pref.dayCount.value;
     var millisecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch;
-    var diff = millisecondsSinceEpoch - (dayFirst + dayCount * DAY_LEN);
-    if (diff > DAY_LEN * 2) {
-      Pref.dayFirst.set(millisecondsSinceEpoch - DAY_LEN);
+    var diff = millisecondsSinceEpoch - (dayFirst + dayCount * dayLen);
+    if (diff > dayLen * 2) {
+      Pref.dayFirst.set(millisecondsSinceEpoch - dayLen);
       Pref.dayCount.set(dayCount = 0);
     }
-    collectable = (diff < DAY_LEN * 2 && diff > DAY_LEN) || dayCount == 0;
+    collectable = (diff < dayLen * 2 && diff > dayLen) || dayCount == 0;
     list.clear();
     for (var i = 0; i < 90; i++) {
       list.add(Day(

@@ -14,7 +14,7 @@ class BumpedButton extends StatefulWidget {
   final double? cornerRadius;
   final Widget? errorMessage;
 
-  BumpedButton(
+  const BumpedButton(
       {Key? key,
       this.onTap,
       this.isEnable,
@@ -35,9 +35,10 @@ class _BumpedButtonState extends State<BumpedButton> {
   Widget build(BuildContext context) {
     var enable = widget.isEnable ?? true;
     var padding = widget.padding ?? EdgeInsets.fromLTRB(10.d, 6.d, 10.d, 12.d);
-    if (_isPressed && enable)
+    if (_isPressed && enable) {
       padding = padding.copyWith(
           top: padding.top + 2.d, bottom: padding.bottom - 2.d);
+    }
     return GestureDetector(
         onTap: () {
           if (enable) {
@@ -61,7 +62,7 @@ class _BumpedButtonState extends State<BumpedButton> {
         },
         child: Container(
             padding: padding,
-            child: widget.content ?? SizedBox(),
+            child: widget.content ?? const SizedBox(),
             decoration: ButtonDecor(widget.colors ?? TColors.white.value,
                 widget.cornerRadius ?? 10.d, enable, _isPressed),
             width: 144.d,
@@ -75,7 +76,7 @@ class ButtonDecor extends Decoration {
   final List<Color> colors;
   final double cornerRadius;
 
-  ButtonDecor(this.colors, this.cornerRadius, this.isEnable, this.isPressed);
+  const ButtonDecor(this.colors, this.cornerRadius, this.isEnable, this.isPressed);
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
@@ -84,11 +85,11 @@ class ButtonDecor extends Decoration {
 }
 
 class _ButtonDecorationPainter extends BoxPainter {
-  var _backPaint = Paint()..style = PaintingStyle.fill;
-  var _shadowPaint = Paint()
-    ..color = Color(0x66000000)
+  final _backPaint = Paint()..style = PaintingStyle.fill;
+  final _shadowPaint = Paint()
+    ..color = const Color(0x66000000)
     ..style = PaintingStyle.fill
-    ..maskFilter = MaskFilter.blur(BlurStyle.normal, 1.5);
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5);
   final _mainPaint = Paint()..style = PaintingStyle.fill;
   var _overPaint = Paint()..style = PaintingStyle.fill;
 
@@ -98,13 +99,11 @@ class _ButtonDecorationPainter extends BoxPainter {
   bool isEnable = true;
 
   _ButtonDecorationPainter(
-      this.colors, this.cornerRadius, bool isEnable, bool isPressed)
+      this.colors, this.cornerRadius, this.isEnable, this.isPressed)
       : super() {
-    this.isEnable = isEnable;
-    this.isPressed = isPressed;
     _mainPaint.color =
-        isEnable ? colors[2] : Color.lerp(colors[2], Color(0xFF8a8a8a), 0.80)!;
-    _backPaint.color = isEnable ? Color(0xFF212527) : Colors.grey[600]!;
+        isEnable ? colors[2] : Color.lerp(colors[2], const Color(0xFF8a8a8a), 0.80)!;
+    _backPaint.color = isEnable ? const Color(0xFF212527) : Colors.grey[600]!;
   }
 
   @override
@@ -130,8 +129,8 @@ class _ButtonDecorationPainter extends BoxPainter {
     _overPaint = Paint()
       ..shader = ui.Gradient.linear(
           Offset(or.left, or.top), Offset(or.left, or.bottom), [
-        isEnable ? colors[0] : Color.lerp(colors[0], Color(0xFF8a8a8a), 0.70)!,
-        isEnable ? colors[1] : Color.lerp(colors[1], Color(0xFF8a8a8a), 0.70)!
+        isEnable ? colors[0] : Color.lerp(colors[0], const Color(0xFF8a8a8a), 0.70)!,
+        isEnable ? colors[1] : Color.lerp(colors[1], const Color(0xFF8a8a8a), 0.70)!
       ]);
 
     if (isEnable) canvas.drawRRect(sr, _shadowPaint);

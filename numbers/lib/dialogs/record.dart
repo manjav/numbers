@@ -18,11 +18,14 @@ import 'package:rive/rive.dart';
 
 class RecordDialog extends AbstractDialog {
   final ConfettiController confettiController;
-  RecordDialog(this.confettiController)
-      : super(DialogMode.record,
-            showCloseButton: false,
-            height: 310.d,
-            padding: EdgeInsets.fromLTRB(18.d, 0.d, 18.d, 18.d));
+  RecordDialog(this.confettiController, {Key? key})
+      : super(
+          DialogMode.record,
+          key: key,
+          showCloseButton: false,
+          height: 310.d,
+          padding: EdgeInsets.fromLTRB(18.d, 0.d, 18.d, 18.d),
+        );
   @override
   _RecordDialogState createState() => _RecordDialogState();
 }
@@ -31,7 +34,7 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
   @override
   void initState() {
     reward = Price.record;
-    Timer(Duration(milliseconds: 500), () {
+    Timer(const Duration(milliseconds: 500), () {
       widget.confettiController.play();
       Sound.play("win");
     });
@@ -96,7 +99,7 @@ class _RecordDialogState extends AbstractDialogState<RecordDialog> {
           ])),
       Positioned(
           top: 60, child: Components.confetty(widget.confettiController)),
-      Center(
+      const Center(
           heightFactor: 0.52,
           child: RiveAnimation.asset('anims/nums-record.riv',
               stateMachines: ["machine"])),

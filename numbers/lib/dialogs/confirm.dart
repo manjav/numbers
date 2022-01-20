@@ -9,20 +9,23 @@ class Confirm extends AbstractDialog {
   final String text;
   final String? acceptText;
   final String? declineText;
-  Confirm(this.text, {this.acceptText, this.declineText})
-      : super(DialogMode.confirm,
-            showCloseButton: false,
-            statsButton: SizedBox(),
-            scoreButton: SizedBox(),
-            padding: EdgeInsets.fromLTRB(16.d, 0, 16.d, 16.d),
-            height: 0);
+  Confirm(this.text, {Key? key, this.acceptText, this.declineText,})
+      : super(
+          DialogMode.confirm,
+          key: key,
+          showCloseButton: false,
+          statsButton: const SizedBox(),
+          scoreButton: const SizedBox(),
+          padding: EdgeInsets.fromLTRB(16.d, 0, 16.d, 16.d),
+          height: 0,
+        );
   @override
   _ConfirmState createState() => _ConfirmState();
 }
 
 class _ConfirmState extends AbstractDialogState<Confirm> {
   @override
-  Widget coinsButtonFactory(ThemeData theme) => SizedBox();
+  Widget coinsButtonFactory(ThemeData theme) => const SizedBox();
 
   @override
   Widget contentFactory(ThemeData theme) {
@@ -30,14 +33,14 @@ class _ConfirmState extends AbstractDialogState<Confirm> {
       SizedBox(
           width: 120.d,
           height: 120.d,
-          child: RiveAnimation.asset('anims/nums-character.riv',
+          child: const RiveAnimation.asset('anims/nums-character.riv',
               stateMachines: ["happyState"])),
       SizedBox(height: 12.d),
       Text(widget.text, style: theme.textTheme.headline6),
       SizedBox(height: 16.d),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         widget.declineText == null
-            ? SizedBox()
+            ? const SizedBox()
             : SizedBox(
                 width: 100.d,
                 child: BumpedButton(
@@ -48,7 +51,7 @@ class _ConfirmState extends AbstractDialogState<Confirm> {
                         child: Text(widget.declineText!,
                             style: theme.textTheme.headline5)))),
         widget.acceptText == null
-            ? SizedBox()
+            ? const SizedBox()
             : SizedBox(
                 width: 158.d,
                 child: BumpedButton(

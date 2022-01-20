@@ -6,20 +6,23 @@ import 'package:rive/rive.dart';
 
 class QuitDialog extends AbstractDialog {
   final bool? showAvatar;
-  QuitDialog({this.showAvatar})
-      : super(DialogMode.quit,
-            height: 54.d,
-            title: "quit_l".l(),
-            statsButton: SizedBox(),
-            scoreButton: SizedBox(),
-            padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d));
+  QuitDialog({Key? key, this.showAvatar})
+      : super(
+          DialogMode.quit,
+          key: key,
+          height: 54.d,
+          title: "quit_l".l(),
+          statsButton: const SizedBox(),
+          scoreButton: const SizedBox(),
+          padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d),
+        );
   @override
   _QuitDialogState createState() => _QuitDialogState();
 }
 
 class _QuitDialogState extends AbstractDialogState<QuitDialog> {
   @override
-  Widget coinsButtonFactory(ThemeData theme) => SizedBox();
+  Widget coinsButtonFactory(ThemeData theme) => const SizedBox();
 
   @override
   Widget contentFactory(ThemeData theme) {
@@ -51,9 +54,9 @@ class _QuitDialogState extends AbstractDialogState<QuitDialog> {
               ? SizedBox(
                   width: 120.d,
                   height: 120.d,
-                  child: RiveAnimation.asset('anims/nums-character.riv',
+                  child: const RiveAnimation.asset('anims/nums-character.riv',
                       stateMachines: ["unhappyState"]))
-              : SizedBox()
+              : const SizedBox()
         ]));
   }
 }

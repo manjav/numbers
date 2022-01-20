@@ -24,9 +24,11 @@ class Cells {
 
   int getMinValue() {
     int value = 1000;
-    for (var i = 0; i < width; i++)
-      for (var j = 0; j < height; j++)
+    for (var i = 0; i < width; i++) {
+      for (var j = 0; j < height; j++) {
         value = (map[i][j] == null ? 1000 : get(i, j)!.value).max(value);
+      }
+    }
     return value;
   }
 
@@ -57,9 +59,11 @@ class Cells {
   }
 
   bool existState(CellState state) {
-    for (var i = 0; i < width; i++)
-      for (var j = 0; j < height; j++)
+    for (var i = 0; i < width; i++) {
+      for (var j = 0; j < height; j++) {
         if (map[i][j] != null && map[i][j].state == state) return true;
+      }
+    }
     return false;
   }
 
@@ -103,7 +107,7 @@ class Cells {
       if (c == null) continue;
       map[c.column][c.row] = null;
       --c.row;
-      c.state = CellState.Float;
+      c.state = CellState.float;
       map[c.column][c.row] = c;
       found = true;
       _save();
@@ -114,9 +118,10 @@ class Cells {
   void _save() {
     var data = "";
     for (var i = 0; i < width; i++) {
-      for (var j = 0; j < height; j++)
+      for (var j = 0; j < height; j++) {
         data += (map[i][j] != null ? map[i][j]!.value.toString() : "") +
             (j < height - 1 ? "," : "");
+      }
       data += (i < width - 1 ? "|" : "");
     }
     Prefs.setString("cells", data);

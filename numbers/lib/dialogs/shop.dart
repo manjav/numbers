@@ -26,22 +26,25 @@ class Price {
 }
 
 class ShopDialog extends AbstractDialog {
-  ShopDialog()
-      : super(DialogMode.shop,
-            title: "shop_l".l(),
-            padding: EdgeInsets.all(8.d),
-            width: 310.d,
-            height: 410.d,
-            statsButton: SizedBox(),
-            scoreButton: SizedBox());
+  ShopDialog({Key? key})
+      : super(
+          DialogMode.shop,
+          key: key,
+          title: "shop_l".l(),
+          padding: EdgeInsets.all(8.d),
+          width: 310.d,
+          height: 410.d,
+          statsButton: const SizedBox(),
+          scoreButton: const SizedBox(),
+        );
   @override
   _ShopDialogState createState() => _ShopDialogState();
 }
 
 class _ShopDialogState extends AbstractDialogState<ShopDialog> {
   String _message = "wait_l".l();
-  var coins = Map<String, ProductDetails>();
-  var others = Map<String, ProductDetails>();
+  var coins = <String, ProductDetails>{};
+  var others = <String, ProductDetails>{};
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
 
@@ -57,7 +60,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
       setState(() => _message = "shop_unavailable");
       return;
     }
-    if (coins.length > 0) {
+    if (coins.isNotEmpty) {
       setState(() => _message = "");
       return;
     }
@@ -66,24 +69,27 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
         _inAppPurchase.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _listenToPurchaseUpdated(purchaseDetailsList);
-    }, onDone: () => _subscription.cancel(), onError: (error) => print(error));
+    }, onDone: () => _subscription.cancel());
 
     Set<String> skus = {"no_ads"};
-    for (var i = 0; i < 6; i++) skus.add("coin_$i");
+    for (var i = 0; i < 6; i++) {
+      skus.add("coin_$i");
+    }
     var response = await InAppPurchase.instance.queryProductDetails(skus);
-    coins = Map<String, ProductDetails>();
-    others = Map<String, ProductDetails>();
+    coins = <String, ProductDetails>{};
+    others = <String, ProductDetails>{};
     for (var product in response.productDetails) {
-      if (product.isConsumable)
+      if (product.isConsumable) {
         coins[product.id] = product;
-      else
+      } else {
         others[product.id] = product;
+      }
     }
     setState(() => _message = "");
   }
 
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+  _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
+    for (var purchaseDetails in purchaseDetailsList) {
       if (purchaseDetails.status == PurchaseStatus.pending) {
       } else {
         if (purchaseDetails.status == PurchaseStatus.error) {
@@ -98,7 +104,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
           await InAppPurchase.instance.completePurchase(purchaseDetails);
         }
       }
-    });
+    }
   }
 
   @override
@@ -140,7 +146,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
                     colors: TColors.green.value,
                     content: Center(
                         child: Text(
-                            "${others.length > 0 ? others["no_ads"]!.price : 0}",
+                            "${others.isNotEmpty ? others["no_ads"]!.price : 0}",
                             style: theme.textTheme.headline5)),
                     onTap: () => _onShopItemTap(others["no_ads"]!),
                   )),
@@ -217,7 +223,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
   }
 
   _overlay(ThemeData theme) {
-    if (_message == "") return SizedBox();
+    if (_message.isEmpty) return const SizedBox();
     return Container(
         color: TColors.black.value[0].withAlpha(230),
         alignment: Alignment.center,
@@ -226,20 +232,21 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
           Text(_message, style: theme.textTheme.headline4),
           SizedBox(height: 32.d),
           _message == "wait_l".l()
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : TextButton(
                   onPressed: () {
-                    if (_message == "shop_unavailable".l())
+                    if (_message == "shop_unavailable".l()) {
                       Navigator.of(context).pop();
-                    else
+                    } else {
                       setState(() => _message = "");
+                    }
                   },
-                  child: Text("OK"))
+                  child: const Text("OK"))
         ]));
   }
 
   Widget _itemBuilder(ThemeData theme, ProductDetails product) {
-    return Container(
+    return SizedBox(
         height: 110.d,
         child: BumpedButton(
           colors: TColors.whiteFlat.value,
@@ -257,7 +264,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
               decoration: ButtonDecor(TColors.green.value, 8.d, true, false),
               child: Padding(
                   padding: EdgeInsets.fromLTRB(6.d, 6.d, 6.d, 7.d),
-                  child: Text("${product.price}",
+                  child: Text(product.price,
                       style: theme.textTheme.headline6,
                       textAlign: TextAlign.center)),
             ),

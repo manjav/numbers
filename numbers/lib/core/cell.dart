@@ -11,7 +11,7 @@ import 'package:numbers/core/game.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:numbers/utils/utils.dart';
 
-enum CellState { Init, Float, Falling, Fell, Fixed }
+enum CellState { init, float, falling, fell, fixed }
 
 class Cell extends PositionComponent {
   static double diameter = 64.0;
@@ -22,27 +22,27 @@ class Cell extends PositionComponent {
   static double thickness = 4.6;
   static int lastRandomValue = 9;
   static int maxRandom = 0;
-  static final firstBigRecord = 8;
-  static final maxRandomValue = 4;
+  static const firstBigRecord = 8;
+  static const maxRandomValue = 4;
   static final colors = [
-    PaletteEntry(Color(0xFF191C1D)),
-    PaletteEntry(Color(0xFF9600FF)),
-    PaletteEntry(Color(0xFFF0145A)),
-    PaletteEntry(Color(0xFFFFBC15)),
-    PaletteEntry(Color(0xFF21C985)),
-    PaletteEntry(Color(0xFF00B0F0)),
-    PaletteEntry(Color(0xFFE007B4)),
-    PaletteEntry(Color(0xFF7EE024)),
-    PaletteEntry(Color(0xFFFF5B8E)),
-    PaletteEntry(Color(0xFFFF5518)),
-    PaletteEntry(Color(0xFFACC723)),
-    PaletteEntry(Color(0xFF6132D6)),
-    PaletteEntry(Color(0xFFAC3674)),
-    PaletteEntry(Color(0xFF8E7C58)),
-    PaletteEntry(Color(0xFFE2DB21)),
-    PaletteEntry(Color(0xFF0070C0)),
-    PaletteEntry(Color(0xFF00C0C0)),
-    PaletteEntry(Color(0xFF004940))
+    const PaletteEntry(Color(0xFF191C1D)),
+    const PaletteEntry(Color(0xFF9600FF)),
+    const PaletteEntry(Color(0xFFF0145A)),
+    const PaletteEntry(Color(0xFFFFBC15)),
+    const PaletteEntry(Color(0xFF21C985)),
+    const PaletteEntry(Color(0xFF00B0F0)),
+    const PaletteEntry(Color(0xFFE007B4)),
+    const PaletteEntry(Color(0xFF7EE024)),
+    const PaletteEntry(Color(0xFFFF5B8E)),
+    const PaletteEntry(Color(0xFFFF5518)),
+    const PaletteEntry(Color(0xFFACC723)),
+    const PaletteEntry(Color(0xFF6132D6)),
+    const PaletteEntry(Color(0xFFAC3674)),
+    const PaletteEntry(Color(0xFF8E7C58)),
+    const PaletteEntry(Color(0xFFE2DB21)),
+    const PaletteEntry(Color(0xFF0070C0)),
+    const PaletteEntry(Color(0xFF00C0C0)),
+    const PaletteEntry(Color(0xFF004940))
   ];
   static final scales = [0, 1, 0.9, 0.75, 0.65, 0.6, 0.55];
   static double get radius => diameter * 0.5;
@@ -69,7 +69,7 @@ class Cell extends PositionComponent {
   int hiddenMode = 0;
   int column = 0, row = 0, reward = 0, value = 0;
   Function(Cell)? onInit;
-  CellState state = CellState.Init;
+  CellState state = CellState.init;
   static final RRect _backRect = RRect.fromLTRBXY(
       padding - radius,
       padding - radius,
@@ -94,8 +94,8 @@ class Cell extends PositionComponent {
   Paint? _overPaint;
   Paint? _hiddenPaint;
   Svg? _coin;
-  Vector2 _coinPos = Vector2.all(-radius * 0.86);
-  Vector2 _coinSize = Vector2.all(26);
+  final Vector2 _coinPos = Vector2.all(-radius * 0.86);
+  final Vector2 _coinSize = Vector2.all(26);
 
   Cell(int column, int row, int value, {int reward = 0, Function(Cell)? onInit})
       : super() {
@@ -109,9 +109,9 @@ class Cell extends PositionComponent {
     this.row = row;
     this.value = value;
     this.reward = reward;
-    this.onInit = onInit ?? null;
+    this.onInit = onInit;
     this.hiddenMode = hiddenMode;
-    state = CellState.Init;
+    state = CellState.init;
 
     _sidePaint = colors[value].withAlpha(180).paint();
     _overPaint = colors[value].paint();
@@ -131,11 +131,12 @@ class Cell extends PositionComponent {
             color: hiddenMode > 1 ? colors[value].color : Colors.white,
             shadows: shadows));
 
-    if (hiddenMode > 0)
+    if (hiddenMode > 0) {
       _hiddenPaint = Paint()
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke
         ..color = hiddenMode > 1 ? colors[value].color : Colors.white;
+    }
     if (reward > 0) _coin = await Svg.load('images/coin.svg');
 
     size = Vector2(1.3, 1.3);
@@ -148,7 +149,7 @@ class Cell extends PositionComponent {
 
   void _animationComplete() {
     size = Vector2(1, 1);
-    if (state == CellState.Init) state = CellState.Float;
+    if (state == CellState.init) state = CellState.float;
     onInit?.call(this);
     onInit = null;
   }
@@ -161,19 +162,19 @@ class Cell extends PositionComponent {
   }
 
   @override
-  void render(Canvas c) {
-    super.render(c);
+  void render(Canvas canvas) {
+    super.render(canvas);
     if (hiddenMode > 0) {
-      c.drawRRect(_overRect.s(size), _hiddenPaint!);
+      canvas.drawRRect(_overRect.s(size), _hiddenPaint!);
     } else {
-      c.drawRRect(_backRect.s(size), _backPaint);
-      c.drawRRect(_sideRect.s(size), _sidePaint!);
-      c.drawRRect(_overRect.s(size), _overPaint!);
+      canvas.drawRRect(_backRect.s(size), _backPaint);
+      canvas.drawRRect(_sideRect.s(size), _sidePaint!);
+      canvas.drawRRect(_overRect.s(size), _overPaint!);
     }
 
-    _textPaint!.render(c, "${hiddenMode == 1 ? "?" : getScore(value)}", _center,
+    _textPaint!.render(canvas, "${hiddenMode == 1 ? "?" : getScore(value)}", _center,
         anchor: Anchor.center);
-    if (reward > 0) _coin!.renderPosition(c, _coinPos, _coinSize);
+    if (reward > 0) _coin!.renderPosition(canvas, _coinPos, _coinSize);
   }
 
   @override

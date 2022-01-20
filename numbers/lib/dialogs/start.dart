@@ -23,12 +23,15 @@ import 'package:numbers/widgets/home.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 
 class StartDialog extends AbstractDialog {
-  StartDialog()
-      : super(DialogMode.start,
-            height: 330.d,
-            showCloseButton: false,
-            title: "start_title".l(),
-            padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d));
+  StartDialog({Key? key})
+      : super(
+          DialogMode.start,
+          key: key,
+          height: 330.d,
+          showCloseButton: false,
+          title: "start_title".l(),
+          padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d),
+        );
   @override
   _StartDialogState createState() => _StartDialogState();
 }
@@ -40,8 +43,12 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
   void initState() {
     super.initState();
     Quests.onQuestComplete = _onQuestUpdate;
-    if (Pref.tutorMode.value == 0)
+    if (Prefs.getString("cells").isNotEmpty) {
+      _startButtonLabel = "continue_l".l();
+    }
+    if (Pref.tutorMode.value == 0) {
       Timer(const Duration(milliseconds: 100), _onStart);
+    }
   }
 
   @override
@@ -57,7 +64,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
 
   @override
   Widget build(BuildContext context) {
-    if (Pref.tutorMode.value == 0) return SizedBox();
+    if (Pref.tutorMode.value == 0) return const SizedBox();
     var theme = Theme.of(context);
     stepChildren.clear();
     if (Analytics.variant == 3) {
@@ -70,20 +77,20 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
 
   @override
   Widget contentFactory(ThemeData theme) {
+    var startMode = Prefs.getString("cells").isEmpty;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Expanded(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        if (Prefs.getString("cells").isEmpty)
-          _boostButton("start_big".l(), "512"),
-        SizedBox(width: 2.d),
+        if (startMode) _boostButton("start_big".l(), "512"),
+        if (startMode) SizedBox(width: 2.d),
         _boostButton("start_next".l(), "next")
       ])),
       SizedBox(height: 10.d),
-      Container(
+      SizedBox(
           height: 80.d,
           child: BumpedButton(
               colors: TColors.blue.value,
-              isEnable: _startButtonLabel == "start_l".l(),
+              isEnable: _startButtonLabel != "wait_l".l(),
               onTap: _onStart,
               cornerRadius: 16.d,
               content:
@@ -107,7 +114,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 SVG.show(boost, 58.d),
-                _has(boost) ? SVG.show("accept", 22.d) : SizedBox()
+                _has(boost) ? SVG.show("accept", 22.d) : const SizedBox()
               ]),
               SizedBox(height: 6.d),
               Expanded(
@@ -175,15 +182,17 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
     _startButtonLabel = "wait_l".l();
     _onUpdate();
     await Analytics.updateVariantIDs();
-    if (Pref.playCount.value > AdPlace.InterstitialVideo.threshold)
-      await Ads.showInterstitial(AdPlace.InterstitialVideo);
-    var result = await Rout.push(context, HomePage());
+    if (Pref.playCount.value > AdPlace.interstitialVideo.threshold) {
+      await Ads.showInterstitial(AdPlace.interstitialVideo);
+    }
+    var result = await Rout.push(context, const HomePage());
     MyGame.boostNextMode = 0;
     MyGame.boostBig = false;
-    _startButtonLabel = "start_l".l();
+    _startButtonLabel =
+        (Prefs.getString("cells").isEmpty ? "start_l" : "continue_l").l();
     _onUpdate();
     if (result != null) {
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       await Coins.change(result[1], "game", result[0]);
       var accept = await Rout.push(
           context,
@@ -191,10 +200,11 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
               "Install the game on your device to make sure you’ll always have your progress saved and safe!",
               acceptText: "Install",
               declineText: "Not yet"));
-      if (accept)
+      if (accept) {
         InstallPrompt.showInstallPrompt();
-      else
+      } else {
         await RatingDialog.showRating(context);
+      }
     }
   }
 

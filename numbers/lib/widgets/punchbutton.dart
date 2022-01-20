@@ -48,6 +48,7 @@ class _PunchButtonState extends State<PunchButton>
     with TickerProviderStateMixin {
   AnimationController? animation;
 
+  @override
   void initState() {
     super.initState();
     animation = AnimationController(
@@ -91,6 +92,7 @@ class _PunchButtonState extends State<PunchButton>
 
   @override
   void dispose() {
+    animation!.stop();
     animation!.dispose();
     super.dispose();
   }

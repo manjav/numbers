@@ -11,9 +11,14 @@ extension Localization on String {
 
   static Future<void> init() async {
     dir = isRTL ? TextDirection.rtl : TextDirection.ltr;
-    var data = await rootBundle.loadString('texts/locale.json');
+    _sentences = {};
+    await _getData('keys.json');
+    await _getData('locale.json');
+  }
+
+  static _getData(String file) async {
+    var data = await rootBundle.loadString('texts/$file');
     var _result = json.decode(data);
-    _sentences = Map();
     _result.forEach((String key, dynamic value) {
       _sentences![key] = value.toString();
     });
@@ -25,9 +30,9 @@ extension Localization on String {
     var result = _sentences![key];
     if (result == null) return key;
     if (args != null) {
-      args.forEach((arg) {
+      for (var arg in args) {
         result = result!.replaceFirst(RegExp(r'%s'), arg.toString());
-      });
+      }
     }
     return result;
   }

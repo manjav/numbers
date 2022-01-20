@@ -18,7 +18,7 @@ class Widgets {
 
 class CellDecoration extends Decoration {
   final int value;
-  CellDecoration(this.value);
+  const CellDecoration(this.value);
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
     return _CellDecorationPainter(value);
@@ -26,15 +26,15 @@ class CellDecoration extends Decoration {
 }
 
 class _CellDecorationPainter extends BoxPainter {
-  var _backPaint = Paint()
-    ..color = Color(0xFF212527)
+  final _backPaint = Paint()
+    ..color = const Color(0xFF212527)
     ..style = PaintingStyle.fill;
-  var _shadowPaint = Paint()
-    ..color = Color(0xFF000000)
+  final _shadowPaint = Paint()
+    ..color = const Color(0xFF000000)
     ..style = PaintingStyle.fill
-    ..maskFilter = MaskFilter.blur(BlurStyle.outer, 2);
+    ..maskFilter = const MaskFilter.blur(BlurStyle.outer, 2);
   static final _mainPaint = Paint()..style = PaintingStyle.fill;
-  var _overPaint = Paint()..style = PaintingStyle.fill;
+  final _overPaint = Paint()..style = PaintingStyle.fill;
 
   final int value;
   _CellDecorationPainter(this.value) : super() {

@@ -15,9 +15,14 @@ import 'package:numbers/widgets/punchbutton.dart';
 import 'package:rive/rive.dart';
 
 class ReviveDialog extends AbstractDialog {
-  ReviveDialog()
-      : super(DialogMode.revive,
-            sfx: "lose", title: "revive_l".l(), width: 310.d);
+  ReviveDialog({Key? key})
+      : super(
+          DialogMode.revive,
+          key: key,
+          sfx: "lose",
+          title: "revive_l".l(),
+          width: 310.d,
+        );
   @override
   _ReviveDialogState createState() => _ReviveDialogState();
 }
@@ -26,7 +31,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
   var _cells = "";
   var _lastBig = 0;
   var _maxRandom = 0;
-  var _numRevives;
+  var _numRevives = 0;
   var _score = 0;
 
   @override
@@ -62,7 +67,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
             top: 24.d,
             child:
                 Text(Prefs.score.format(), style: theme.textTheme.headline3)),
-        Center(
+        const Center(
             heightFactor: 0.85,
             child: RiveAnimation.asset('anims/nums-revive.riv',
                 stateMachines: ["machine"])),
@@ -122,7 +127,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
       var reward = await Ads.showRewarded();
       if (reward == null) return;
     } else if (coin > 0 && Ads.showSuicideInterstitial) {
-      await Ads.showInterstitial(AdPlace.Interstitial);
+      await Ads.showInterstitial(AdPlace.interstitial);
     }
 
     // rterive game stats (Anti fraud)

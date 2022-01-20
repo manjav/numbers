@@ -27,8 +27,9 @@ class AbstractDialog extends StatefulWidget {
   final Map<String, dynamic>? args;
   final int? popDuration;
 
-  AbstractDialog(
+  const AbstractDialog(
     this.mode, {
+    Key? key,
     this.sfx,
     this.title,
     this.width,
@@ -43,7 +44,7 @@ class AbstractDialog extends StatefulWidget {
     this.closeOnBack,
     this.args,
     this.popDuration,
-  });
+  }) : super(key: key);
   @override
   AbstractDialogState createState() => AbstractDialogState();
 }
@@ -57,10 +58,11 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     Ads.onUpdate = _onAdsUpdate;
     Sound.play(widget.sfx ?? "pop");
     Analytics.setScreen(widget.mode.name);
-    if (widget.onWillPop != null)
+    if (widget.onWillPop != null) {
       onWillPop = widget.onWillPop;
-    else if (reward > 0)
+    } else if (reward > 0) {
       onWillPop = () => buttonsClick(context, widget.mode.name, reward, false);
+    }
     super.initState();
   }
 
@@ -99,13 +101,13 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
       var reward = await Ads.showRewarded();
       if (reward == null) return;
     } else if (coin > 0 && Ads.showSuicideInterstitial) {
-      await Ads.showInterstitial(AdPlace.Interstitial);
+      await Ads.showInterstitial(AdPlace.interstitial);
     }
     Navigator.of(context).pop([type, coin]);
   }
 
   Widget bannerAdsFactory(String type) {
-    if (!Ads.isReady(AdPlace.Banner)) return SizedBox();
+    if (!Ads.isReady(AdPlace.interstitial)) return const SizedBox();
     var ad = Ads.getBanner(type);
     return Positioned(
         bottom: 8.d,
@@ -152,7 +154,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
             children: [
               widget.title != null
                   ? Text(widget.title!, style: theme.textTheme.headline4)
-                  : SizedBox(),
+                  : const SizedBox(),
               if (hasClose)
                 widget.closeButton ??
                     GestureDetector(
@@ -181,11 +183,12 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
         child: contentFactory(theme));
   }
 
-  Widget contentFactory(ThemeData theme) => SizedBox();
+  Widget contentFactory(ThemeData theme) => const SizedBox();
 
   _onAdsUpdate(AdPlace placement, AdState state) {
-    if (placement == AdPlace.Rewarded && state != AdState.Closed)
+    if (placement == AdPlace.rewarded && state != AdState.closed) {
       setState(() {});
+    }
   }
 
   @override

@@ -14,14 +14,15 @@ import 'package:numbers/widgets/punchbutton.dart';
 import 'package:rive/rive.dart';
 
 class CubeDialog extends AbstractDialog {
-  static final waitingTime = 30000;
-  static final showTime = 2500;
-  static final autoAppearance = 3;
+  static const waitingTime = 30000;
+  static const showTime = 2500;
+  static const autoAppearance = 3;
 
   static int earnedAt = 0;
 
-  CubeDialog()
+  CubeDialog({Key? key})
       : super(DialogMode.cube,
+            key: key,
             height: 320.d,
             showCloseButton: false,
             title: "cube_l".l(),
@@ -34,7 +35,7 @@ class _CubeDialogState extends AbstractDialogState<CubeDialog> {
   @override
   void initState() {
     reward = Price.cube;
-    Timer(Duration(milliseconds: 600), () => Sound.play("win"));
+    Timer(const Duration(milliseconds: 600), () => Sound.play("win"));
     CubeDialog.earnedAt = DateTime.now().millisecondsSinceEpoch;
     super.initState();
   }
@@ -45,7 +46,7 @@ class _CubeDialogState extends AbstractDialogState<CubeDialog> {
       SizedBox(
           width: 126.d,
           height: 126.d,
-          child: RiveAnimation.asset('anims/nums-character.riv',
+          child: const RiveAnimation.asset('anims/nums-character.riv',
               stateMachines: ["happyState"])),
       Positioned(
           top: 126.d,

@@ -15,7 +15,7 @@ class Prefs {
         Pref.removeOne.set(3);
         Pref.removeColor.set(3);
       }
-      Pref.dayFirst.setIfEmpty(now - Days.DAY_LEN);
+      Pref.dayFirst.setIfEmpty(now - Days.dayLen);
       Pref.lastBig.setIfEmpty(Cell.firstBigRecord);
       Pref.maxRandom.setIfEmpty(Cell.maxRandomValue);
       Pref.coinPiggy.set(0);

@@ -7,9 +7,10 @@ import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 
 class PauseDialog extends AbstractDialog {
-  PauseDialog()
+  PauseDialog({Key? key})
       : super(
           DialogMode.pause,
+          key: key,
           title: "pause_l".l(),
           popDuration: 300,
           showCloseButton: false,

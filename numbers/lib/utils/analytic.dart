@@ -2,48 +2,44 @@ import 'dart:async';
 
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
 import 'package:gameanalytics_sdk/gameanalytics.dart';
 import 'package:numbers/dialogs/shop.dart';
+import 'package:numbers/utils/localization.dart';
 import 'package:numbers/utils/prefs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class Analytics {
   static late int variant = 1;
+  static late AppsflyerSdk _appsflyerSdk;
   static late FirebaseAnalytics _firebaseAnalytics;
-
-  static AppsflyerSdk appsflyerSdk = AppsflyerSdk({
-    "afDevKey": "YBThmUqaiHZYpiSwZ3GQz4",
-    "afAppId": "game.block.puzzle.drop.the.number.merge",
-    "isDebug": false
-  });
 
   static init(FirebaseAnalytics analytics) {
     _firebaseAnalytics = analytics;
+
+    _appsflyerSdk = AppsflyerSdk(
+        {"afDevKey": "af_key".l(), "afAppId": "app_id".l(), "isDebug": false});
+    _appsflyerSdk.initSdk(
+        registerConversionDataCallback: true,
+        registerOnAppOpenAttributionCallback: true,
+        registerOnDeepLinkingCallback: true);
 
     GameAnalytics.setEnabledInfoLog(false);
     GameAnalytics.setEnabledVerboseLog(false);
 
     GameAnalytics.configureAvailableCustomDimensions01(
         ["installed", "instant"]);
-    // GameAnalytics.configureAvailableCustomDimensions02(["whale", "dolphin"]);
-    // GameAnalytics.configureAvailableCustomDimensions03(["horde", "alliance"]);
     GameAnalytics.configureAvailableResourceCurrencies(["coin"]);
     GameAnalytics.configureAvailableResourceItemTypes(
         ["game", "confirm", "shop", "start"]);
 
     var type = "instant";
     GameAnalytics.setCustomDimension01(type);
-    appsflyerSdk.logEvent("type_$type", {});
+    _appsflyerSdk.logEvent("type_$type", {});
     _firebaseAnalytics.setUserProperty(name: "buildType", value: type);
 
     GameAnalytics.configureAutoDetectAppVersion(true);
-    GameAnalytics.initialize("2c9380c96ef57f01f353906b341a21cc",
-        "275843fe2b762882e938a16d6b095d7661670ee9");
-
-    appsflyerSdk.initSdk(
-        registerConversionDataCallback: true,
-        registerOnAppOpenAttributionCallback: true,
-        registerOnDeepLinkingCallback: true);
+    GameAnalytics.initialize("ga_key".l(), "ga_secret".l());
 
     updateVariantIDs();
   }
@@ -51,14 +47,16 @@ class Analytics {
   static Future<void> updateVariantIDs() async {
     var packageInfo = await PackageInfo.fromPlatform();
     var testVersion = Prefs.getString("testVersion");
-    if (testVersion.isNotEmpty && testVersion != packageInfo.buildNumber)
+    if (testVersion.isNotEmpty && testVersion != packageInfo.buildNumber) {
       return;
-    if (testVersion.isEmpty)
+    }
+    if (testVersion.isEmpty) {
       Prefs.setString("testVersion", packageInfo.buildNumber);
+    }
     var testVariantId =
         await GameAnalytics.getRemoteConfigsValueAsString("res-dayquest", "1");
     variant = int.parse(testVariantId ?? "1");
-    print("testVariantId ==> $variant");
+    debugPrint("testVariantId ==> $variant");
     Price.ad = variant == 2 ? 50 : 100;
     Price.cube = variant == 2 ? 10 : 20;
     Price.piggy = variant == 2 ? 20 : 30;
@@ -86,7 +84,6 @@ class Analytics {
       "receipt": receipt,
       "signature": signature,
     };
-    print(data);
     GameAnalytics.addBusinessEvent(data);
   }
 
@@ -107,8 +104,8 @@ class Analytics {
       "adPlacement": placementID
     });
 
-    appsflyerSdk.logEvent("ads", map);
-    appsflyerSdk.logEvent("ad_$placementID", map);
+    _appsflyerSdk.logEvent("ads", map);
+    _appsflyerSdk.logEvent("ad_$placementID", map);
   }
 
   static Future<void> resource(int type, String currency, int amount,
@@ -149,7 +146,7 @@ class Analytics {
       "revives": revives
     };
     GameAnalytics.addProgressionEvent(map);
-    if (round % 3 == 0) appsflyerSdk.logEvent("end_round", map);
+    if (round % 3 == 0) _appsflyerSdk.logEvent("end_round", map);
   }
 
   static Future<void> design(String name,

@@ -13,9 +13,10 @@ import 'package:numbers/widgets/components.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 
 class QuestsDialog extends AbstractDialog {
-  QuestsDialog()
+  QuestsDialog({Key? key})
       : super(
           DialogMode.quests,
+          key: key,
           title: "quests_l".l(),
         );
   @override
@@ -108,7 +109,9 @@ class Quests {
 
   static bool get hasCompleted {
     var quests = list.values;
-    for (var quest in quests) if (quest.isDone) return true;
+    for (var quest in quests) {
+      if (quest.isDone) return true;
+    }
     return false;
   }
 
@@ -136,8 +139,7 @@ class Quest {
   final QuestType type;
   bool notified = false;
 
-  Quest(this.type, this.level, {int value = 0}) {
-    this.value = value;
+  Quest(this.type, this.level, {this.value = 0}) {
     notified = isDone;
   }
 

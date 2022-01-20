@@ -19,7 +19,6 @@ class Animate {
   List<ComponentEffect> effects;
   PositionComponent owner;
   Animate(this.owner, this.effects, {this.onComplete}) {
-    this.effects = effects;
     _onEffectComplete();
   }
 

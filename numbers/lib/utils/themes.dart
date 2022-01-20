@@ -8,28 +8,28 @@ extension TColorsExt on TColors {
     switch (this) {
       case TColors.black:
         return [
-          Color(0xFF2c3134),
-          Color(0xBB000000),
-          Color(0xFF1F2326),
-          Color(0xFF23272A),
+          const Color(0xFF2c3134),
+          const Color(0xBB000000),
+          const Color(0xFF1F2326),
+          const Color(0xFF23272A),
         ];
       case TColors.white:
         return [
-          Color(0xFFFDFDFD),
-          Color(0xFFDDDDDD),
-          Color(0xFFCCCCCC),
-          Color(0xFFFFFFFF)
+          const Color(0xFFFDFDFD),
+          const Color(0xFFDDDDDD),
+          const Color(0xFFCCCCCC),
+          const Color(0xFFFFFFFF)
         ];
       case TColors.whiteFlat:
-        return [Color(0xFFFDFDFD), Color(0xFFFDFDFD), Color(0xFFCCCCCC)];
+        return [const Color(0xFFFDFDFD), const Color(0xFFFDFDFD), const Color(0xFFCCCCCC)];
       case TColors.yellow:
-        return [Color(0xFFFFC000), Color(0xFFFE8C0F), Color(0xFFEB6D0A)];
+        return [const Color(0xFFFFC000), const Color(0xFFFE8C0F), const Color(0xFFEB6D0A)];
       case TColors.blue:
-        return [Color(0xFF00B0F0), Color(0xFF0070C0), Color(0xFF00619F)];
+        return [const Color(0xFF00B0F0), const Color(0xFF0070C0), const Color(0xFF00619F)];
       case TColors.orange:
-        return [Color(0xFFEC8838), Color(0xFFFA3838), Color(0xFFD92A26)];
+        return [const Color(0xFFEC8838), const Color(0xFFFA3838), const Color(0xFFD92A26)];
       case TColors.green:
-        return [Color(0xFF81D33c), Color(0xFF00A550), Color(0xFF0A903D)];
+        return [const Color(0xFF81D33c), const Color(0xFF00A550), const Color(0xFF0A903D)];
     }
   }
 }
@@ -47,7 +47,7 @@ class Themes {
               BoxShadow(
                   color: Colors.black.withAlpha(150),
                   blurRadius: 3,
-                  offset: Offset(0.5, 2))
+                  offset: const Offset(0.5, 2))
             ]);
   }
 
@@ -114,7 +114,7 @@ class Themes {
       // primaryColor: primaries[700],
       // focusColor: primaries[750],
       // canvasColor: TColors.orange.value[2],
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
           // primary: primaries[700],
           // onPrimary: Colors.white,
           // primaryVariant: Colors.teal[50],

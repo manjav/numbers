@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:numbers/utils/utils.dart';
 
 class ScoreFX extends PositionComponent {
-  static final _textColor = Color(0xFFFFFFFF);
+  static const _textColor = Color(0xFFFFFFFF);
 
-  final value;
+  final int value;
   int _alpha = 255;
   double dy = 0;
   double diff = 100;

@@ -9,12 +9,13 @@ import 'package:numbers/widgets/coins.dart';
 import 'package:numbers/widgets/widgets.dart';
 
 class StatsDialog extends AbstractDialog {
-  StatsDialog()
+  StatsDialog({Key? key})
       : super(
           DialogMode.stats,
+          key: key,
           height: 270.d,
           title: "stats_l".l(),
-          statsButton: SizedBox(),
+          statsButton: const SizedBox(),
           padding: EdgeInsets.all(12.d),
         );
   @override

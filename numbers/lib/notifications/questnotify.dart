@@ -9,7 +9,7 @@ import 'package:numbers/utils/utils.dart';
 class QuestNotification extends StatefulWidget {
   final Quest quest;
   final double size;
-  QuestNotification(this.quest, this.size);
+  const QuestNotification(this.quest, this.size, {Key? key}) : super(key: key);
   @override
   _QuestNotificationyState createState() => _QuestNotificationyState();
 }

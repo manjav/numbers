@@ -16,10 +16,10 @@ import 'package:numbers/widgets/components.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 
 class PiggyDialog extends AbstractDialog {
-  final bool? playApplaud;
-  PiggyDialog({this.playApplaud})
+  final bool playApplaud;
+  PiggyDialog(this.playApplaud, {Key? key})
       : super(DialogMode.piggy,
-            showCloseButton: false,
+            key: key,
             height: 300.d,
             title: "piggy_l".l(),
             padding: EdgeInsets.all(18.d));
@@ -32,10 +32,32 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
   void initState() {
     reward = Pref.coinPiggy.value >= Price.piggy ? Price.piggy : 0;
 
-    if (widget.playApplaud ?? false)
-      Timer(Duration(milliseconds: 600), () => Sound.play("win"));
+    if (widget.playApplaud) {
+      Timer(const Duration(milliseconds: 600), () => Sound.play("win"));
+    }
     Analytics.updateVariantIDs();
     super.initState();
+  }
+
+  @override
+  Widget headerFactory(ThemeData theme, double width) {
+    return SizedBox(
+        width: width - 36.d,
+        height: 72.d,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(widget.title!, style: theme.textTheme.headline4),
+              widget.playApplaud
+                  ? const SizedBox()
+                  : GestureDetector(
+                      child: SVG.show("close", 28.d),
+                      onTap: () {
+                        widget.onWillPop?.call();
+                        Navigator.of(context).pop();
+                      })
+            ]));
   }
 
   @override
@@ -56,7 +78,7 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
   }
 
   _leftButton(ThemeData theme, int value, int maxValue) {
-    if (value < maxValue) return SizedBox();
+    if (value < maxValue) return const SizedBox();
     return Positioned(
         height: 76.d,
         width: 110.d,

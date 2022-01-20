@@ -20,11 +20,11 @@ import 'package:numbers/utils/utils.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  MyApp();
+  const MyApp({Key? key}) : super(key: key);
   @override
   AppState createState() => AppState();
   static AppState? of(BuildContext context) =>
@@ -58,7 +58,7 @@ class AppState extends State<MyApp> {
 
 class MainPage extends StatefulWidget {
   final FirebaseAnalytics analytics;
-  MainPage({Key? key, required this.analytics}) : super(key: key);
+  const MainPage({Key? key, required this.analytics}) : super(key: key);
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -71,9 +71,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       Device.size = MediaQuery.of(context).size;
       Device.ratio = Device.size.height / 764;
       Device.aspectRatio = Device.size.width / Device.size.height;
-      print("${Device.size} ${MediaQuery.of(context).devicePixelRatio}");
+      // print("${Device.size} ${MediaQuery.of(context).devicePixelRatio}");
       MyApp.of(context)!.updateTheme();
-      return SizedBox();
+      return const SizedBox();
     }
 
     _initServices();
@@ -81,7 +81,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         onWillPop: _onWillPop,
         child: Scaffold(
             body: _loadingState < 2
-                ? SizedBox()
+                ? const SizedBox()
                 : SizedBox(
                     width: Device.size.width,
                     height: Device.size.height,
@@ -109,8 +109,8 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     Sound.init();
     // GamesServices.signIn();
     Prefs.init(() async {
-      Analytics.init(widget.analytics);
       await Localization.init();
+      Analytics.init(widget.analytics);
       Days.init();
       Quests.init();
       Notifier.init();
