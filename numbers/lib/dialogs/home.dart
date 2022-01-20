@@ -19,24 +19,24 @@ import 'package:numbers/utils/themes.dart';
 import 'package:numbers/utils/utils.dart';
 import 'package:numbers/widgets/buttons.dart';
 import 'package:numbers/widgets/coins.dart';
-import 'package:numbers/widgets/home.dart';
+import 'package:numbers/widgets/gameframe.dart';
 import 'package:numbers/widgets/punchbutton.dart';
 
-class StartDialog extends AbstractDialog {
-  StartDialog({Key? key})
+class HomeDialog extends AbstractDialog {
+  HomeDialog({Key? key})
       : super(
-          DialogMode.start,
+          DialogMode.home,
           key: key,
           height: 330.d,
           showCloseButton: false,
-          title: "start_title".l(),
+          title: "home_title".l(),
           padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d),
         );
   @override
-  _StartDialogState createState() => _StartDialogState();
+  _HomeDialogState createState() => _HomeDialogState();
 }
 
-class _StartDialogState extends AbstractDialogState<StartDialog> {
+class _HomeDialogState extends AbstractDialogState<HomeDialog> {
   String _startButtonLabel = "start_l".l();
 
   @override
@@ -185,7 +185,7 @@ class _StartDialogState extends AbstractDialogState<StartDialog> {
     if (Pref.playCount.value > AdPlace.interstitialVideo.threshold) {
       await Ads.showInterstitial(AdPlace.interstitialVideo);
     }
-    var result = await Rout.push(context, const HomePage());
+    var result = await Rout.push(context, const GamePage());
     MyGame.boostNextMode = 0;
     MyGame.boostBig = false;
     _startButtonLabel =

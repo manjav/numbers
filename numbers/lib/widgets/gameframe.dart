@@ -29,13 +29,13 @@ import 'package:numbers/widgets/coins.dart';
 import 'package:numbers/widgets/components.dart';
 import 'package:rive/rive.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class GamePage extends StatefulWidget {
+  const GamePage({Key? key}) : super(key: key);
   @override
-  _HomePageState createState() => _HomePageState();
+  _GamePageState createState() => _GamePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   MyGame? _game;
   GameWidget? _gameWidget;
   int loadingState = 0;
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _getHeader(ThemeData theme) {
     if (Pref.tutorMode.value == 0) {
       return Center(
-          child: Text("home_tutor".l(), style: theme.textTheme.headline4));
+          child: Text("game_tutor".l(), style: theme.textTheme.headline4));
     }
     return SizedBox(
         height: 56.d,
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("home_rm_${_game!.removingMode!}".l()),
+                    Text("clt_${_game!.removingMode!}_tip".l()),
                     GestureDetector(
                         child: SVG.show("close", 32.d), onTap: _onRemoveBlock)
                   ])));

@@ -7,7 +7,7 @@ import 'package:numbers/dialogs/confirm.dart';
 import 'package:numbers/dialogs/daily.dart';
 import 'package:numbers/dialogs/quests.dart';
 import 'package:numbers/dialogs/quit.dart';
-import 'package:numbers/dialogs/start.dart';
+import 'package:numbers/dialogs/home.dart';
 import 'package:numbers/utils/ads.dart';
 import 'package:numbers/utils/analytic.dart';
 import 'package:numbers/utils/localization.dart';
@@ -85,7 +85,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                 : SizedBox(
                     width: Device.size.width,
                     height: Device.size.height,
-                    child: StartDialog())));
+                    child: HomeDialog())));
   }
 
   Future<bool> _onWillPop() async {
