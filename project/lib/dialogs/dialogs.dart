@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:project/dialogs/shop.dart';
 import 'package:project/dialogs/stats.dart';
 import 'package:project/dialogs/toast.dart';
 import 'package:project/theme/chrome.dart';
@@ -58,6 +55,7 @@ class AbstractDialog extends StatefulWidget {
 
 class AbstractDialogState<T extends AbstractDialog> extends State<T> {
   List<Widget> stepChildren = <Widget>[];
+  AdWaiting waiting = AdWaiting();
   int reward = 0;
   Function? onWillPop;
   @override
@@ -87,6 +85,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     rows.add(chromeFactory(theme, width));
     children.add(
         Column(mainAxisAlignment: MainAxisAlignment.center, children: rows));
+    children.add(Visibility(child: waiting, visible: waiting.visible));
     children.addAll(stepChildren);
     children.add(coinsButtonFactory(theme));
 
@@ -101,40 +100,34 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
 
   buttonsClick(BuildContext context, String type, int coin, bool showAd) async {
     if (coin < 0 && Pref.coin.value < -coin) {
-      Rout.push(context, ShopDialog());
+      Rout.push(context, Toast("coin_notenough".l()));
       return;
     }
     if (showAd) {
-      var reward = await Ads.showRewarded();
-      if (reward == null) return;
+      waiting.init(type, coin, _onWaitAdTap);
+      setState(() {});
+      Ads.showRewarded();
+      return;
     } else if (coin > 0 && Ads.showSuicideInterstitial) {
-      await Ads.showInterstitial(AdPlace.interstitial);
+      waiting.init(type, coin, _onWaitAdTap);
+      setState(() {});
+      Ads.showInterstitial(AdPlace.interstitial);
+      return;
     }
     Navigator.of(context).pop([type, coin]);
   }
 
-  Widget bannerAdsFactory(String type) {
-    if (!Ads.isReady(AdPlace.interstitial)) return const SizedBox();
-    var ad = Ads.getBanner(type);
-    return Positioned(
-        bottom: 8.d,
-        child: SizedBox(
-            width: ad.size.width.toDouble(),
-            height: ad.size.height.toDouble(),
-            child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(16.d)),
-                child: AdWidget(ad: ad))));
+  void _onWaitAdTap() {
+    waiting.visible = false;
+    setState(() {});
+    if (Ads.hasReward) Navigator.of(context).pop([waiting.type, waiting.coin]);
   }
+
+  Widget bannerAdsFactory(String type) => const SizedBox();
 
   Widget rankButtonFactory(ThemeData theme) {
     return widget.scoreButton ??
-        Positioned(
-            top: 46.d,
-            right: 10.d,
-            child: Components.scores(theme, onTap: () {
-              Analytics.design('guiClick:record:${widget.mode.name}');
-              GamesServices.showLeaderboards();
-            }));
+        Positioned(top: 46.d, right: 10.d, child: Components.scores(theme));
   }
 
   Widget statsButtonFactory(ThemeData theme) {
@@ -200,7 +193,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
         right: isAds ? 4.d : null,
         width: isAds ? 130.d : 112.d,
         height: 76.d,
-        isEnable: !isAds || Ads.isReady(),
+        isEnable: !isAds || Ads.isReady,
         colors: isAds ? TColors.green.value : TColors.orange.value,
         errorMessage:
             isAds ? Toast("ads_unavailable".l(), monoIcon: "A") : null,
@@ -320,5 +313,42 @@ extension DialogName on DialogMode {
       case DialogMode.tutorial:
         return "tutorial";
     }
+  }
+}
+
+// ignore: must_be_immutable
+class AdWaiting extends StatelessWidget {
+  int coin = 0;
+  String type = "";
+  bool visible = false;
+  Function()? onTap;
+
+  AdWaiting({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return GestureDetector(
+        onTap: _onTap,
+        child: Container(
+            alignment: Alignment.topCenter,
+            color: theme.backgroundColor.withAlpha(220),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              SVG.icon("E", theme, scale: 2),
+              SizedBox(height: 12.d),
+              Text("continue_l".l(), style: theme.textTheme.headline2)
+            ])));
+  }
+
+  void init(String type, int coin, void Function() onTap) {
+    this.type = type;
+    this.coin = coin;
+    this.onTap = onTap;
+    visible = true;
+  }
+
+  void _onTap() {
+    visible = false;
+    onTap?.call();
   }
 }

@@ -5,14 +5,12 @@ import 'package:project/core/game.dart';
 import 'package:project/dialogs/daily.dart';
 import 'package:project/dialogs/dialogs.dart';
 import 'package:project/dialogs/quests.dart';
-import 'package:project/dialogs/rating.dart';
 import 'package:project/dialogs/shop.dart';
 import 'package:project/dialogs/toast.dart';
 import 'package:project/notifications/questnotify.dart';
 import 'package:project/theme/skinnedtext.dart';
 import 'package:project/theme/themes.dart';
 import 'package:project/utils/ads.dart';
-import 'package:project/utils/analytic.dart';
 import 'package:project/utils/localization.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/utils.dart';
@@ -46,14 +44,14 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
       _startButtonLabel = "continue_l".l();
     }
     if (Pref.tutorMode.value == 0) {
-      Timer(const Duration(milliseconds: 100), _onStart);
+      Timer(const Duration(milliseconds: 100), _startGame);
     }
   }
 
   @override
   Widget headerFactory(ThemeData theme, double width) {
     return Container(
-        width: width - 36.d,
+        height: 144.d,
         padding: EdgeInsets.only(bottom: 4.d),
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -68,10 +66,8 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
     if (Pref.tutorMode.value == 0) return const SizedBox();
     var theme = Theme.of(context);
     stepChildren.clear();
-    if (Analytics.variant == 3) {
-      stepChildren.add(_questButton(theme));
-      stepChildren.add(_dailyButton(theme));
-    }
+    stepChildren.add(_questButton(theme));
+    stepChildren.add(_dailyButton(theme));
     stepChildren.add(bannerAdsFactory("start"));
     return super.build(context);
   }
@@ -146,7 +142,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
                   child: BumpedButton(
                       cornerRadius: 8.d,
                       errorMessage: Toast("ads_unavailable".l(), monoIcon: "A"),
-                      isEnable: !_has(boost) && Ads.isReady(),
+                      isEnable: !_has(boost) && Ads.isReady,
                       colors: TColors.green.value,
                       content: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -167,15 +163,23 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
         Rout.push(context, Toast("coin_notenough".l(), icon: "coin"));
         return;
       }
-    } else {
-      var reward = await Ads.showRewarded();
-      if (reward == null) return;
-    }
-    await Coins.change(-cost, "start", boost);
 
-    if (boost == "next") MyGame.boostNextMode = 1;
-    if (boost == "512") MyGame.boostBig = true;
-    _onUpdate();
+      await Coins.change(-cost, "start", boost);
+      _updateBoosts(boost);
+      _onUpdate();
+    } else {
+      waiting.init(boost, cost, () {
+        if (Ads.hasReward) _updateBoosts(boost);
+        _onUpdate();
+      });
+      _onUpdate();
+      Ads.showRewarded();
+    }
+  }
+
+  _updateBoosts(String type) {
+    if (type == "next") MyGame.boostNextMode = 1;
+    if (type == "512") MyGame.boostBig = true;
   }
 
   bool _has(String boost) {
@@ -185,10 +189,16 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
   _onStart() async {
     _startButtonLabel = "wait_l".l();
     _onUpdate();
-    await Analytics.updateVariantIDs();
     if (Pref.playCount.value > AdPlace.interstitialVideo.threshold) {
+      waiting.init("start", 0, _startGame);
+      _onUpdate();
       await Ads.showInterstitial(AdPlace.interstitialVideo);
+      return;
     }
+    _startGame();
+  }
+
+  _startGame() async {
     var result = await Rout.push(context, const GamePage());
     MyGame.boostNextMode = 0;
     MyGame.boostBig = false;
@@ -198,7 +208,6 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
     if (result != null) {
       await Future.delayed(const Duration(milliseconds: 100));
       await Coins.change(result[1], "game", result[0]);
-      await RatingDialog.showRating(context);
     }
   }
 

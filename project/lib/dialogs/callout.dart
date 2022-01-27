@@ -89,7 +89,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                           height: 42.d,
                           child: BumpedButton(
                               cornerRadius: 8.d,
-                              isEnable: Ads.isReady(),
+                              isEnable: Ads.isReady,
                               colors: TColors.green.value,
                               errorMessage:
                                   Toast("ads_unavailable".l(), monoIcon: "0"),
@@ -106,7 +106,8 @@ class _CalloutState extends AbstractDialogState<Callout> {
                               onTap: () => buttonsClick(
                                   context, widget.type, -adyCost, true)))
                     ])
-                  ])))
+                  ]))),      Visibility(child: waiting, visible: waiting.visible)
+
     ]);
   }
 }

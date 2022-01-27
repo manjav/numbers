@@ -12,7 +12,6 @@ extension Localization on String {
   static Future<void> init() async {
     dir = isRTL ? TextDirection.rtl : TextDirection.ltr;
     _sentences = {};
-    await _getData('keys.json');
     await _getData('locale.json');
   }
 

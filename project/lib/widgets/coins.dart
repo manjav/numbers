@@ -1,9 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gameanalytics_sdk/gameanalytics.dart';
-import 'package:project/dialogs/shop.dart';
-import 'package:project/utils/analytic.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/sounds.dart';
 import 'package:project/utils/utils.dart';
@@ -16,14 +13,6 @@ class Coins extends StatefulWidget {
       double? targetX,
       double? targetY]) async {
     if (value == 0) return;
-    if (itemType != null) {
-      Analytics.resource(
-          value > 0 ? GAResourceFlowType.Source : GAResourceFlowType.Sink,
-          "coin",
-          value.abs(),
-          itemType,
-          itemId!);
-    }
     if (value > 0) {
       await effect(value, x: targetX, y: targetY);
     } else {
@@ -48,7 +37,7 @@ class Coins extends StatefulWidget {
   const Coins(this.source,
       {Key? key,
       this.onTap,
-      this.clickable = true,
+      this.clickable = false,
       this.left,
       this.top,
       this.height})
@@ -138,28 +127,18 @@ class _CoinsState extends State<Coins> with TickerProviderStateMixin {
               tag: "coin",
               child: BumpedButton(
                   content: Row(children: [
-                    SVG.show("coin", 32.d),
-                    Expanded(
-                        child: Text(text,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyText2!.copyWith(
-                                fontSize: text.length > 5 ? 17.d : 22.d))),
-                    widget.clickable
-                        ? Text("+  ",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.button)
-                        : const SizedBox()
-                  ]),
-                  onTap: () {
-                    if (widget.clickable) {
-                      Analytics.design('guiClick:shop:${widget.source}');
-                      if (widget.onTap != null) {
-                        widget.onTap?.call();
-                      } else {
-                        Rout.push(context, ShopDialog());
-                      }
-                    }
-                  }))),
+                SVG.show("coin", 32.d),
+                Expanded(
+                    child: Text(text,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyText2!.copyWith(
+                            fontSize: text.length > 5 ? 17.d : 22.d))),
+                widget.clickable
+                    ? Text("+  ",
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.button)
+                    : const SizedBox()
+              ])))),
       Positioned(
           left: _x.value - 30.d,
           top: _y.value + _sizeOut.value * 0.14,

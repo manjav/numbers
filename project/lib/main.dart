@@ -1,26 +1,22 @@
-import 'package:device_info/device_info.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:games_services/games_services.dart';
 import 'package:project/dialogs/daily.dart';
+import 'package:project/dialogs/home.dart';
 import 'package:project/dialogs/quests.dart';
 import 'package:project/dialogs/quit.dart';
-import 'package:project/dialogs/home.dart';
+import 'package:project/theme/themes.dart';
 import 'package:project/utils/ads.dart';
 import 'package:project/utils/analytic.dart';
 import 'package:project/utils/localization.dart';
 import 'package:project/utils/notification.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/sounds.dart';
-import 'package:project/theme/themes.dart';
 import 'package:project/utils/utils.dart';
-import 'package:smartlook/smartlook.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -33,21 +29,17 @@ class MyApp extends StatefulWidget {
 }
 
 class AppState extends State<MyApp> {
-  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
   ThemeData _themeData = Themes.darkData;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MaterialApp(
-        navigatorObservers: <NavigatorObserver>[observer],
         theme: _themeData,
         builder: (BuildContext context, Widget? child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
             child: child!),
-        home: MainPage(analytics: analytics));
+        home: MainPage());
   }
 
   updateTheme() async {
@@ -58,17 +50,16 @@ class AppState extends State<MyApp> {
 }
 
 class MainPage extends StatefulWidget {
-  final FirebaseAnalytics analytics;
-  const MainPage({Key? key, required this.analytics}) : super(key: key);
+  MainPage({Key? key}) : super(key: key);
   @override
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
+class _MainPageState extends State<MainPage> {
   int _loadingState = 0;
   @override
   Widget build(BuildContext context) {
-    if (Device.size == Size.zero) {
+    if (Device.size.width == 0) {
       Device.size = MediaQuery.of(context).size;
       Device.ratio = Device.size.height / 764;
       Device.aspectRatio = Device.size.width / Device.size.height;
@@ -99,39 +90,16 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     if (_loadingState > 0) return;
     _loadingState = 1;
 
-    Ads.init();
     Sound.init();
-    GamesServices.signIn();
     Prefs.init(() async {
       await Localization.init();
-      Analytics.init(widget.analytics);
+      Analytics.init();
       Days.init();
       Quests.init();
       Notifier.init();
-      _recordApp();
+      Ads.init();
       _loadingState = 2;
       setState(() {});
     });
-    WidgetsBinding.instance!.addObserver(this);
-  }
-
-  _recordApp() async {
-    if (Pref.visitCount.value > 1) return;
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    if (androidInfo.version.sdkInt < 30) return;
-    Smartlook.setupAndStartRecording(SetupOptionsBuilder("sl_key".l()).build());
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) Ads.pausedApp();
-    super.didChangeAppLifecycleState(state);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
-    super.dispose();
   }
 }

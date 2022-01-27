@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
 import 'package:project/core/cell.dart';
 import 'package:project/core/cells.dart';
 import 'package:project/core/game.dart';
@@ -82,12 +81,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           Coins("home",
               top: MyGame.bounds.top - 69.d,
               left: MyGame.bounds.left + 52.d,
-              height: 56.d, onTap: () async {
-            MyGame.isPlaying = false;
-            await Rout.push(context, ShopDialog());
-            MyGame.isPlaying = true;
-            setState(() {});
-          })
+              height: 56.d)
         ])));
   }
 
@@ -115,11 +109,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               SizedBox(width: 2.d),
               SVG.show("cup", 22.d)
             ]),
-            Components.scores(theme, onTap: () {
-              _pause("record");
-              Analytics.design('guiClick:record:home');
-              GamesServices.showLeaderboards();
-            })
+            Components.scores(theme)
           ]))
         ]));
   }
@@ -169,8 +159,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   }
 
   _underFooter() {
-    var isAdsReady = Ads.isReady(AdPlace.interstitial);
-    if (isAdsReady && _timer == null) {
+    if (Ads.isReady && _timer == null) {
       var duration = Duration(
           milliseconds: _animationTime
               ? CubeDialog.showTime

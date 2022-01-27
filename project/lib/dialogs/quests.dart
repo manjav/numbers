@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:project/dialogs/dialogs.dart';
 import 'package:project/theme/themes.dart';
-import 'package:project/utils/analytic.dart';
 import 'package:project/utils/localization.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/utils.dart';
@@ -120,7 +119,7 @@ class Quests {
   }
 
   static void increase(QuestType type, int value) {
-    if (value == 0 || Analytics.variant < 3) return;
+    if (value == 0) return;
     var quest = list[type];
     var key = "q_${type.name}";
     var res = Prefs.getInt(key) + value;

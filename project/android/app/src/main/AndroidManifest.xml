@@ -1,19 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:dist="http://schemas.android.com/apk/distribution" package="game.block.puzzle.drop.the.number.merge" android:targetSandboxVersion="2">
-	<dist:module dist:instant="true" />
-	<application android:label="Drop and Merge Number" android:allowBackup="false" android:icon="@mipmap/ic_launcher">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="game.block.puzzle.drop.the.number.merge" android:targetSandboxVersion="2">
+	<application android:label="Drop and Merge Number" android:icon="@mipmap/ic_launcher">
 		<activity android:name="game.MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize"
 			android:exported="true" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode">
 
 			<meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme"/>
-			<meta-data android:name="default-url" android:value="https://numbers.sarand.net" />
-			
-			<intent-filter android:autoVerify="true">
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="https" android:host="numbers.sarand.net" />
-				<data android:scheme="http" android:host="numbers.sarand.net" />
-			</intent-filter>
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -22,9 +12,6 @@
 
 		</activity>
 
-		<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-5018637481206902~5275418035"/>
-		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
-		<meta-data android:name="com.google.android.gms.games.APP_ID" android:value="\815670881859" />
 		<meta-data android:name="flutterEmbedding" android:value="2" />
 
 	</application>

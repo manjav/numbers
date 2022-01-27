@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project/core/cell.dart';
 import 'package:project/dialogs/dialogs.dart';
 import 'package:project/dialogs/shop.dart';
+import 'package:project/dialogs/toast.dart';
 import 'package:project/theme/skinnedtext.dart';
 import 'package:project/utils/ads.dart';
 import 'package:project/utils/localization.dart';
@@ -97,7 +98,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
   @override
   buttonsClick(BuildContext context, String type, int coin, bool showAd) async {
     if (coin < 0 && Pref.coin.value < -coin) {
-      Rout.push(context, ShopDialog());
+      Rout.push(context, Toast("coin_notenough".l()));
       return;
     }
     if (showAd) {

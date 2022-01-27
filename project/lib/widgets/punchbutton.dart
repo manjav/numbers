@@ -94,6 +94,7 @@ class _PunchButtonState extends State<PunchButton>
   void dispose() {
     animation!.stop();
     animation!.dispose();
+    animation = null;
     super.dispose();
   }
 }

@@ -11,31 +11,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  appsflyer_sdk: ^6.4.0+2
+  app_tutti:
+    git:
+      url: git://github.com/manjav/flutter_apptutti_sdk.git
+      ref: master
   confetti: ^0.6.0
   cupertino_icons: ^1.0.3
   device_info: ^2.0.2
   flame: ^1.0.0
   flame_svg: ^1.0.0
-  firebase_analytics: ^9.0.3
-  firebase_core: ^1.10.5
-  firebase_messaging: ^11.2.3
   flutter_local_notifications: ^9.1.5
-  flutter_rating_bar: ^4.0.0
   flutter_svg: ^0.22.0
-  games_services: ^2.0.1
-  gameanalytics_sdk: ^1.2.3
-  google_mobile_ads: ^1.0.1
-  http: ^0.13.4
-  in_app_purchase: ^2.0.0
-  in_app_review: ^2.0.2
   intl: ^0.17.0
-  package_info_plus: ^1.0.6
   path_provider: ^2.0.8
   screenshot: ^1.2.3
   share: ^2.0.4
   shared_preferences: ^2.0.12
-  smartlook: ^2.0.1
   soundpool: ^2.1.0
   rive: ^0.8.1
   url_launcher: ^6.0.18
