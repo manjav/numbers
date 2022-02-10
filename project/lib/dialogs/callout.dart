@@ -5,6 +5,7 @@ import 'package:project/dialogs/toast.dart';
 import 'package:project/theme/themes.dart';
 import 'package:project/utils/ads.dart';
 import 'package:project/utils/localization.dart';
+import 'package:project/utils/prefs.dart';
 import 'package:project/utils/sounds.dart';
 import 'package:project/utils/utils.dart';
 import 'package:project/widgets/buttons.dart';
@@ -12,10 +13,9 @@ import 'package:project/widgets/buttons.dart';
 class Callout extends AbstractDialog {
   static double chromeWidth = 220.d;
   static double chromeHeight = 84.d;
-  final String text;
-  final String type;
+  final Pref type;
   final bool? hasCoinButton;
-  const Callout(this.text, this.type,
+  const Callout(this.type,
       {Key? key,
       EdgeInsets? padding,
       double? width,
@@ -36,6 +36,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
   @override
   Widget build(BuildContext context) {
     var pd = widget.padding;
+    var cost = Price.boost * (Prefs.getCount(widget.type) + 1);
     var adyCost = Price.boost ~/ Ads.costCoef;
     var theme = Theme.of(context);
     Callout.chromeWidth = 220.d;
@@ -65,7 +66,8 @@ class _CalloutState extends AbstractDialogState<Callout> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(widget.text, style: theme.textTheme.subtitle2),
+                    Text("clt_${widget.type.name}_text".l(),
+                        style: theme.textTheme.subtitle2),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       SizedBox(
                           width: 98.d,
@@ -78,11 +80,11 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     SVG.show("coin", 24.d),
-                                    Text("${Price.boost}",
+                                    Text("$cost",
                                         style: theme.textTheme.headline5)
                                   ]),
                               onTap: () => buttonsClick(
-                                  context, widget.type, -Price.boost, false))),
+                                  context, widget.type.name, -cost, false))),
                       SizedBox(width: 8.d),
                       SizedBox(
                           width: 98.d,
@@ -104,7 +106,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                         style: theme.textTheme.headline5)
                                   ]),
                               onTap: () => buttonsClick(
-                                  context, widget.type, -adyCost, true)))
+                                  context, widget.type.name, -adyCost, true)))
                     ])
                   ]))),      Visibility(child: waiting, visible: waiting.visible)
 

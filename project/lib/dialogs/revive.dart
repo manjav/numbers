@@ -29,21 +29,28 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
   var _cells = "";
   var _lastBig = 0;
   var _maxRandom = 0;
-  var _numRevives = 0;
   var _score = 0;
+  var _revivesCount = 0;
+  var _boostColorCount = 0;
+  var _boostOneCount = 0;
 
   @override
   void initState() {
     // Immediate reset game stats (Anti fraud)
     _cells = Prefs.getString("cells");
-    _lastBig = Pref.lastBig.value;
+    _boostColorCount = Prefs.getCount(Pref.boostRemoveColor);
+    _boostOneCount = Prefs.getCount(Pref.boostRemoveOne);
+    _revivesCount = Prefs.getCount(Pref.revive);
     _maxRandom = Pref.maxRandom.value;
-    _numRevives = Pref.numRevives.value;
+    _lastBig = Pref.lastBig.value;
     _score = Pref.score.value;
+
     Prefs.setString("cells", "");
-    Pref.lastBig.set(Cell.firstBigRecord);
+    Prefs.setCount(Pref.boostRemoveColor, 0);
+    Prefs.setCount(Pref.boostRemoveOne, 0);
+    Prefs.setCount(Pref.revive, 0);
     Pref.maxRandom.set(Cell.maxRandomValue);
-    Pref.numRevives.set(0);
+    Pref.lastBig.set(Cell.firstBigRecord);
     Pref.score.set(0);
 
     super.initState();
@@ -51,7 +58,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
 
   @override
   Widget contentFactory(ThemeData theme) {
-    var cost = Price.revive * pow(2, _numRevives).round();
+    var cost = Price.revive * pow(2, _revivesCount).round();
     var adyCost = cost ~/ Ads.costCoef;
     return Stack(
       alignment: Alignment.topCenter,
@@ -110,9 +117,11 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
 
     // Reterive game stats (Anti fraud)
     Prefs.setString("cells", _cells);
-    Pref.lastBig.set(_lastBig);
+    Prefs.setCount(Pref.boostRemoveColor, _boostColorCount);
+    Prefs.setCount(Pref.boostRemoveOne, _boostOneCount);
+    Prefs.setCount(Pref.revive, _revivesCount);
     Pref.maxRandom.set(_maxRandom);
-    Pref.numRevives.set(_numRevives);
+    Pref.lastBig.set(_lastBig);
     Pref.score.set(_score);
     Navigator.of(context).pop([type, coin]);
   }

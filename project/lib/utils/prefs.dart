@@ -12,8 +12,8 @@ class Prefs {
       var now = DateTime.now().millisecondsSinceEpoch;
       if (!contains("visitCount")) {
         Pref.rateTarget.set(2);
-        Pref.removeOne.set(3);
-        Pref.removeColor.set(3);
+        Pref.boostRemoveOne.set(3);
+        Pref.boostRemoveColor.set(3);
       }
       Pref.dayFirst.setIfEmpty(now - Days.dayLen);
       Pref.lastBig.setIfEmpty(Cell.firstBigRecord);
@@ -39,11 +39,23 @@ class Prefs {
   static int getBig(int value) => _instance!.getInt("big_$value") ?? 0;
   static void increaseBig(int value) {
     var key = "big_$value";
-    setInt(key, getInt(key) + 1, true);
+    setInt(key, getInt(key) + 1, false);
+  }
+
+  static int getCount(Pref type) => getInt("${type.name}_count");
+  static void setCount(Pref type, int value) =>
+      setInt("${type.name}_count", value, false);
+  static void increaseCount(Pref type) {
+    var key = "${type.name}_count";
+    setInt(key, getInt(key) + 1, false);
   }
 }
 
 enum Pref {
+  boostBig,
+  boostNext,
+  boostRemoveColor,
+  boostRemoveOne,
   coin,
   coinPiggy,
   dayCount,
@@ -53,14 +65,12 @@ enum Pref {
   noAds,
   lastBig,
   maxRandom,
-  numRevives,
   playCount,
   rate,
   ratedBefore,
   rateTarget,
   record,
-  removeOne,
-  removeColor,
+  revive,
   score,
   tutorMode,
   visitCount
@@ -69,6 +79,14 @@ enum Pref {
 extension PrefExt on Pref {
   String get name {
     switch (this) {
+      case Pref.boostBig:
+        return "boostBig";
+      case Pref.boostNext:
+        return "boostNext";
+      case Pref.boostRemoveColor:
+        return "boostRemoveColor";
+      case Pref.boostRemoveOne:
+        return "boostRemoveOne";
       case Pref.coin:
         return "coin";
       case Pref.coinPiggy:
@@ -85,8 +103,6 @@ extension PrefExt on Pref {
         return "lastBig";
       case Pref.maxRandom:
         return "maxRandom";
-      case Pref.numRevives:
-        return "numRevives";
       case Pref.noAds:
         return "noAds";
       case Pref.playCount:
@@ -99,10 +115,8 @@ extension PrefExt on Pref {
         return "ratedBefore";
       case Pref.record:
         return "record";
-      case Pref.removeOne:
-        return "removeOne";
-      case Pref.removeColor:
-        return "removeColor";
+      case Pref.revive:
+        return "revive";
       case Pref.score:
         return "score";
       case Pref.tutorMode:

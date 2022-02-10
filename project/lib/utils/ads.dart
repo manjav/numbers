@@ -9,7 +9,7 @@ class Ads {
   static Function(AdPlace, AdState)? onUpdate;
   static String platform = Platform.isAndroid ? "Android" : "iOS";
   static const rewardCoef = 10;
-  static const costCoef = 6;
+  static const costCoef = 5;
   static const isSupportAdMob = true;
   static const isSupportUnity = false;
 

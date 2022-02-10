@@ -131,7 +131,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               borderRadius: const BorderRadius.all(Radius.circular(16))),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text("clt_${_game!.removingMode!}_tip".l()),
+            Text("clt_${_game!.removingMode!.name}_tip".l()),
             GestureDetector(
                 child: SVG.show("close", 32.d), onTap: _onRemoveBlock)
           ]));
@@ -144,17 +144,17 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       SizedBox(width: 6.d),
       Expanded(
         child: GestureDetector(
-            onTap: () => _boost("piggy"),
+            onTap: () => _boost(Pref.coinPiggy),
             child: Components.slider(
                 theme, 0, _rewardLineAnimation!.value.round(), Price.piggy,
                 icon: SVG.show("piggy", 40.d))),
       ),
       SizedBox(width: 6.d),
-      _button(theme, "remove-color", () => _boost("color"),
-          badge: _badge(theme, Pref.removeColor.value)),
+      _button(theme, Pref.boostRemoveColor.name, () => _boost(Pref.boostRemoveColor),
+          badge: _badge(theme, Pref.boostRemoveColor.value)),
       SizedBox(width: 2.d),
-      _button(theme, "remove-one", () => _boost("one"),
-          badge: _badge(theme, Pref.removeOne.value)),
+      _button(theme, Pref.boostRemoveOne.name, () => _boost(Pref.boostRemoveOne),
+          badge: _badge(theme, Pref.boostRemoveOne.value)),
     ]);
   }
 
@@ -235,7 +235,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     Widget? _widget;
     switch (event) {
       case GameEvent.boost:
-        await _boost("next");
+        await _boost(Pref.boostNext);
         break;
       case GameEvent.celebrate:
         _confettiController!.play();
@@ -356,35 +356,32 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     }
   }
 
-  _boost(String type) async {
-    if (type == "piggy") {
+  _boost(Pref type) async {
+    if (type == Pref.coinPiggy) {
       _game!.onGameEvent?.call(GameEvent.rewardPiggy, 0);
       return;
     }
     MyGame.isPlaying = false;
-    if (type == "one" && Pref.removeOne.value > 0 ||
-        type == "color" && Pref.removeColor.value > 0) {
+    if (type.value > 0) {
       setState(() => _game!.removingMode = type);
       return;
     }
     EdgeInsets padding = EdgeInsets.only(
         right: MyGame.bounds.left, top: MyGame.bounds.bottom - 78.d);
-    if (type == "next") {
+    if (type == Pref.boostNext) {
       padding = EdgeInsets.only(
           left: (Device.size.width - Callout.chromeWidth) * 0.5,
           top: MyGame.bounds.top + 68.d);
     }
-    var result = await Rout.push(
-        context, Callout("clt_${type}_text".l(), type, padding: padding),
+    var result = await Rout.push(context, Callout(type, padding: padding),
         barrierColor: Colors.transparent, barrierDismissible: true);
     if (result != null) {
       await Coins.change(result[1], "game", result[0]);
-      if (type == "next") {
+      if (type == Pref.boostNext) {
         _game!.boostNext();
         return;
       }
-      if (type == "one") Pref.removeOne.set(1);
-      if (type == "color") Pref.removeColor.set(1);
+      type.set(1);
       setState(() => _game!.removingMode = type);
       return;
     }

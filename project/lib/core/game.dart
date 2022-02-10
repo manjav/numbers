@@ -42,7 +42,7 @@ class MyGame extends FlameGame with TapDetector {
   static Rect bounds = const Rect.fromLTRB(0, 0, 0, 0);
 
   final Function(GameEvent, int)? onGameEvent;
-  String? removingMode;
+  Pref? removingMode;
 
   bool _tutorMode = false;
   int _reward = 0;
@@ -61,7 +61,8 @@ class MyGame extends FlameGame with TapDetector {
   List<Rect>? _rects;
   final Paint _linePaint = Paint();
   final Paint _mainPaint = Paint()..color = TColors.dark.value[2];
-  final Paint _zebraPaint = Paint()..color = TColors.dark.value[3].withAlpha(10);
+  final Paint _zebraPaint = Paint()
+    ..color = TColors.dark.value[3].withAlpha(10);
   FallingEffect? _fallingEffect;
   ColumnHint? _columnHint;
 
@@ -259,14 +260,14 @@ class MyGame extends FlameGame with TapDetector {
               .clamp(0, Cells.height - 1)
               .floor());
       if (cell == null || cell.state != CellState.fixed) return;
-      if (removingMode == "one") {
-        Pref.removeOne.increase(-1);
+      if (removingMode == Pref.boostRemoveOne) {
         Quests.increase(QuestType.removeone, 1);
         _removeCell(cell.column, cell.row, true);
       } else {
-        Pref.removeColor.increase(-1);
         _removeCellsByValue(cell.value);
       }
+      removingMode!.increase(-1);
+      Prefs.increaseCount(removingMode!);
       isPlaying = true;
       _fallAll();
       onGameEvent?.call(GameEvent.remove, 0);
@@ -464,7 +465,7 @@ class MyGame extends FlameGame with TapDetector {
 
   void revive() {
     _linePaint.color = TColors.dark.value[0];
-    Pref.numRevives.increase(1);
+    Prefs.increaseCount(Pref.revive);
     for (var i = 0; i < Cells.width; i++) {
       for (var j = Cells.height - 3; j < Cells.height; j++) {
         _removeCell(i, j, false);
