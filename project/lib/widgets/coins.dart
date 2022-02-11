@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:project/theme/skinnedtext.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/sounds.dart';
 import 'package:project/utils/utils.dart';
@@ -129,12 +130,12 @@ class _CoinsState extends State<Coins> with TickerProviderStateMixin {
                   content: Row(children: [
                 SVG.show("coin", 32.d),
                 Expanded(
-                    child: Text(text,
+                    child: SkinnedText(text,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyText2!.copyWith(
                             fontSize: text.length > 5 ? 17.d : 22.d))),
                 widget.clickable
-                    ? Text("+  ",
+                    ? SkinnedText("+  ",
                         textAlign: TextAlign.center,
                         style: theme.textTheme.button)
                     : const SizedBox()
@@ -148,7 +149,7 @@ class _CoinsState extends State<Coins> with TickerProviderStateMixin {
                   padding: _padding.value,
                   child: Opacity(
                       opacity: _alpha.value,
-                      child: Text("+$_value",
+                      child: SkinnedText("+$_value",
                           style: theme.textTheme.headline2!
                               .copyWith(fontSize: _sizeOut.value * 0.5)))))),
       Positioned(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project/dialogs/dialogs.dart';
 import 'package:project/dialogs/shop.dart';
 import 'package:project/dialogs/toast.dart';
+import 'package:project/theme/skinnedtext.dart';
 import 'package:project/theme/themes.dart';
 import 'package:project/utils/ads.dart';
 import 'package:project/utils/localization.dart';
@@ -80,7 +81,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     SVG.show("coin", 24.d),
-                                    Text("$cost",
+                                    SkinnedText("$cost",
                                         style: theme.textTheme.headline5)
                                   ]),
                               onTap: () => buttonsClick(
@@ -102,7 +103,7 @@ class _CalloutState extends AbstractDialogState<Callout> {
                                     SVG.icon("A", theme, scale: 0.7),
                                     SizedBox(width: 2.d),
                                     SVG.show("coin", 18.d),
-                                    Text("$adyCost",
+                                    SkinnedText("$adyCost",
                                         style: theme.textTheme.headline5)
                                   ]),
                               onTap: () => buttonsClick(

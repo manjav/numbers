@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:project/dialogs/dialogs.dart';
+import 'package:project/theme/skinnedtext.dart';
 
 class Rout {
   static dynamic push(BuildContext context, Widget page,
@@ -53,13 +54,13 @@ class SVG {
     return SvgPicture.asset("assets/images/$name.svg", width: size);
   }
 
-  static Text icon(String name, ThemeData theme, {double? scale}) {
+  static SkinnedText icon(String name, ThemeData theme, {double? scale}) {
     if (scale != null) {
-      return Text(name,
+      return SkinnedText(name,
           style: theme.textTheme.overline!
               .copyWith(fontSize: theme.textTheme.overline!.fontSize! * scale));
     }
-    return Text(name, style: theme.textTheme.overline);
+    return SkinnedText(name, style: theme.textTheme.overline);
   }
 }
 

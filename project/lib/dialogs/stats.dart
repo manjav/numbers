@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project/core/cell.dart';
 import 'package:project/dialogs/dialogs.dart';
+import 'package:project/theme/skinnedtext.dart';
 import 'package:project/theme/themes.dart';
 import 'package:project/utils/analytic.dart';
 import 'package:project/utils/localization.dart';
@@ -79,7 +80,7 @@ class _StatsDialogState extends AbstractDialogState<StatsDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SVG.icon("I", theme),
-                        Text("share_l".l(), style: theme.textTheme.headline5)
+                        SkinnedText("share_l".l(), style: theme.textTheme.headline5)
                       ]))
         ]));
   }

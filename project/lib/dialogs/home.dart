@@ -131,7 +131,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             SVG.show("coin", 24.d),
-                            Text("${Price.boost}",
+                            SkinnedText("${Price.boost}",
                                 style: theme.textTheme.headline5)
                           ]),
                       onTap: () => _onBoostTap(boost, Price.boost, false))),
@@ -150,7 +150,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
                             SVG.icon("A", theme, scale: 0.7),
                             SizedBox(width: 2.d),
                             SVG.show("coin", 18.d),
-                            Text("$adyCost", style: theme.textTheme.headline5)
+                            SkinnedText("$adyCost", style: theme.textTheme.headline5)
                           ]),
                       onTap: () => _onBoostTap(boost, adyCost, true))),
               SizedBox(height: 6.d)
