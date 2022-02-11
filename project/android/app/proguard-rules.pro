@@ -1,1 +1,1 @@
-#-keep class com.apptutti.sdk.** {*;}
+-keep class com.apptutti.sdk.** {*;}
