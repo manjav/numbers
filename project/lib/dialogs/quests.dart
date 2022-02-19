@@ -212,7 +212,7 @@ extension QuestTypeExt on QuestType {
       case QuestType.merges:
         return "merge";
       case QuestType.removeone:
-        return "remove-one";
+        return "boostRemoveOne";
       case QuestType.video:
         return "tv";
     }
