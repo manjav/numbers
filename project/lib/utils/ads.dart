@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_tutti/apptutti.dart';
 import 'package:flutter/material.dart';
+import 'package:project/dialogs/quests.dart';
 import 'package:project/utils/prefs.dart';
 
 class Ads {
@@ -59,6 +60,7 @@ class Ads {
   static void _listener(Map<dynamic, dynamic> args) {
     if (args[Apptutti.ADTYPE] == Apptutti.ADTYPE_REWARDED &&
         args[Apptutti.ADEVENT] == Apptutti.ADEVENT_COMPLETE) hasReward = true;
+    if (hasReward) Quests.increase(QuestType.video, 1);
     debugPrint("Ads => $args   $hasReward");
   }
 }
