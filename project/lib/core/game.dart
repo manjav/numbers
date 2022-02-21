@@ -428,7 +428,7 @@ class MyGame extends FlameGame with TapDetector {
 
     // Show big number popup
     if (cell.value > _valueRecord) {
-      if (cell.value == 11) Quests.increase(QuestType.b2048, 1);
+      if (cell.value == 11) Quests.increase(QuestType.ce11, 1);
       Pref.lastBig.set(_valueRecord = cell.value);
       Prefs.increaseBig(_valueRecord);
       onGameEvent?.call(GameEvent.rewardBig, _valueRecord);

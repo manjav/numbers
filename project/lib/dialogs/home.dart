@@ -51,7 +51,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
   @override
   Widget headerFactory(ThemeData theme, double width) {
     return Container(
-        height: 144.d,
+        height: 150.d,
         padding: EdgeInsets.only(bottom: 4.d),
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -150,7 +150,8 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
                             SVG.icon("A", theme, scale: 0.7),
                             SizedBox(width: 2.d),
                             SVG.show("coin", 18.d),
-                            SkinnedText("$adyCost", style: theme.textTheme.headline5)
+                            SkinnedText("$adyCost",
+                                style: theme.textTheme.headline5)
                           ]),
                       onTap: () => _onBoostTap(boost, adyCost, true))),
               SizedBox(height: 6.d)

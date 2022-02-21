@@ -103,7 +103,7 @@ class Quests {
     _addQuest(QuestType.merges);
     _addQuest(QuestType.removeone);
     _addQuest(QuestType.video);
-    _addQuest(QuestType.b2048);
+    _addQuest(QuestType.ce11);
   }
 
   static bool get hasCompleted {
@@ -164,7 +164,7 @@ class Quest {
 
   static int _getCheckpoint(QuestType type, int stage) {
     switch (type) {
-      case QuestType.b2048:
+      case QuestType.ce11:
         return pow(2, stage).toInt();
       case QuestType.merges:
         return pow(2, stage + 6).toInt();
@@ -177,7 +177,7 @@ class Quest {
 
   int get reward {
     switch (type) {
-      case QuestType.b2048:
+      case QuestType.ce11:
         return (level + 1) * 100;
       case QuestType.merges:
         return (level + 1) * 100;
@@ -189,13 +189,13 @@ class Quest {
   }
 }
 
-enum QuestType { merges, removeone, video, b2048 }
+enum QuestType { ce11, merges, removeone, video }
 
 extension QuestTypeExt on QuestType {
   String get name {
     switch (this) {
-      case QuestType.b2048:
-        return "b2048";
+      case QuestType.ce11:
+        return "ce11";
       case QuestType.merges:
         return "merges";
       case QuestType.removeone:
@@ -207,8 +207,8 @@ extension QuestTypeExt on QuestType {
 
   String get icon {
     switch (this) {
-      case QuestType.b2048:
-        return "2048";
+      case QuestType.ce11:
+        return "ce11";
       case QuestType.merges:
         return "merge";
       case QuestType.removeone:

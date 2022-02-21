@@ -37,7 +37,7 @@
     "quest_passed": "任务完成！",
     "quest_merges": "合并 %s 块",
     "quest_removeone": "使用 `移除一个方块` %s 次",
-    "quest_b2048": "创建 `2048` %s 次",
+    "quest_ce11": "创建 `2048` %s 次",
     "quest_video": "观看 %s 个视频",
     "day_l": "第 %s 天",
     "daily_l": "每日奖励",
