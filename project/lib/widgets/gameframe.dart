@@ -150,10 +150,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 icon: SVG.show("piggy", 40.d))),
       ),
       SizedBox(width: 6.d),
-      _button(theme, Pref.boostRemoveColor.name, () => _boost(Pref.boostRemoveColor),
+      _button(theme, Pref.boostRemoveColor.name,
+          () => _boost(Pref.boostRemoveColor),
           badge: _badge(theme, Pref.boostRemoveColor.value)),
       SizedBox(width: 2.d),
-      _button(theme, Pref.boostRemoveOne.name, () => _boost(Pref.boostRemoveOne),
+      _button(
+          theme, Pref.boostRemoveOne.name, () => _boost(Pref.boostRemoveOne),
           badge: _badge(theme, Pref.boostRemoveOne.value)),
     ]);
   }
@@ -347,7 +349,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     switch (type) {
       case "home":
         Pref.score.set(Prefs.score);
-        Navigator.of(context).pop();
+        Rout.pop(
+          context,
+        );
         break;
       case "resume":
         MyGame.isPlaying = true;
@@ -431,6 +435,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   void _closeGame(result) {
     Analytics.endProgress(
         "main", Pref.playCount.value, Pref.record.value, Prefs.score);
-    Navigator.of(context).pop(result);
+    Rout.pop(context, result);
   }
 }

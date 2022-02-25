@@ -16,7 +16,7 @@ class Callout extends AbstractDialog {
   static double chromeHeight = 84.d;
   final Pref type;
   final bool? hasCoinButton;
-  const Callout(this.type,
+  Callout(this.type,
       {Key? key,
       EdgeInsets? padding,
       double? width,

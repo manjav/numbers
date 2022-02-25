@@ -123,6 +123,6 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
     Pref.maxRandom.set(_maxRandom);
     Pref.lastBig.set(_lastBig);
     Pref.score.set(_score);
-    Navigator.of(context).pop([type, coin]);
+    Rout.pop(context, [type, coin]);
   }
 }

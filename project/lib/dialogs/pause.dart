@@ -40,7 +40,7 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               BumpedButton(
-                  onTap: () => Navigator.of(context).pop(["home"]),
+                  onTap: () => Rout.pop(context, ["home"]),
                   colors: TColors.green.value,
                   cornerRadius: 16.d,
                   content: Row(
@@ -51,7 +51,7 @@ class _PauseDialogState extends AbstractDialogState<PauseDialog> {
                             style: theme.textTheme.headline5)
                       ])),
               BumpedButton(
-                  onTap: () => Navigator.of(context).pop(["resume"]),
+                  onTap: () => Rout.pop(context, ["resume"]),
                   colors: TColors.blue.value,
                   cornerRadius: 16.d,
                   content: Row(

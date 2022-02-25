@@ -5,10 +5,13 @@ import 'package:project/dialogs/dialogs.dart';
 import 'package:project/theme/skinnedtext.dart';
 
 class Rout {
+  static var _lastPageName = "";
   static dynamic push(BuildContext context, Widget page,
       {Color? barrierColor,
       Tween<Offset>? tween,
       bool barrierDismissible = false}) async {
+    if (_lastPageName == page.key.toString()) return null;
+    _lastPageName = page.toStringShort();
     var popDuration = (page is AbstractDialog) ? (page.popDuration ?? 1) : 1;
     return await Navigator.of(context).push(PageRouteBuilder(
         opaque: false,
@@ -23,6 +26,11 @@ class Rout {
                         .chain(CurveTween(curve: Curves.easeOutExpo))),
                 child: child),
         pageBuilder: (c, _, __) => page));
+  }
+
+  static void pop<T extends Object?>(BuildContext context, [T? result]) {
+    _lastPageName = "";
+    Navigator.of(context).pop(result);
   }
 }
 

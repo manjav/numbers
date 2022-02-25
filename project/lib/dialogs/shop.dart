@@ -14,7 +14,7 @@ class Price {
 }
 
 class ShopDialog extends AbstractDialog {
-  const ShopDialog({Key? key})
+  ShopDialog({Key? key})
       : super(
           DialogMode.shop,
           key: key,

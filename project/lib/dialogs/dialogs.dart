@@ -31,7 +31,7 @@ class AbstractDialog extends StatefulWidget {
   final Map<String, dynamic>? args;
   final int? popDuration;
 
-  const AbstractDialog(
+  AbstractDialog(
     this.mode, {
     Key? key,
     this.sfx,
@@ -48,7 +48,7 @@ class AbstractDialog extends StatefulWidget {
     this.closeOnBack,
     this.args,
     this.popDuration,
-  }) : super(key: key);
+  }) : super(key: key ??= Key(mode.name));
   @override
   AbstractDialogState createState() => AbstractDialogState();
 }
@@ -114,7 +114,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
       Ads.showInterstitial(AdPlace.interstitial);
       return;
     }
-    Navigator.of(context).pop([type, coin]);
+    Rout.pop(context, [type, coin]);
   }
 
   void _onWaitAdTap() {
@@ -161,7 +161,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
                         child: SVG.show("close", 28.d),
                         onTap: () {
                           widget.onWillPop?.call();
-                          Navigator.of(context).pop();
+                          Rout.pop(context);
                         })
             ]));
   }

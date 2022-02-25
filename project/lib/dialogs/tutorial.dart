@@ -51,7 +51,7 @@ class _TutorialDialogState extends AbstractDialogState<TutorialDialog> {
           bottom: 0,
           left: 0,
           child: BumpedButton(
-              onTap: () => Navigator.of(context).pop(["tutorReset"]),
+              onTap: () => Rout.pop(context, ["tutorReset"]),
               colors: TColors.yellow.value,
               cornerRadius: 16.d,
               content: Row(
@@ -67,7 +67,7 @@ class _TutorialDialogState extends AbstractDialogState<TutorialDialog> {
           bottom: 0,
           right: 0,
           child: BumpedButton(
-              onTap: () => Navigator.of(context).pop(["tutorFinish"]),
+              onTap: () => Rout.pop(context, ["tutorFinish"]),
               colors: TColors.green.value,
               cornerRadius: 16.d,
               content: Row(

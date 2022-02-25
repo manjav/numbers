@@ -51,7 +51,7 @@ class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {
                       child: SVG.show("close", 28.d),
                       onTap: () {
                         widget.onWillPop?.call();
-                        Navigator.of(context).pop();
+                        Rout.pop(context);
                       })
             ]));
   }

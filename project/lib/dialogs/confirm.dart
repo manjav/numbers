@@ -48,7 +48,7 @@ class _ConfirmState extends AbstractDialogState<Confirm> {
             : SizedBox(
                 width: 100.d,
                 child: BumpedButton(
-                    onTap: () => Navigator.of(context).pop(false),
+                    onTap: () => Rout.pop(context, false),
                     colors: TColors.orange.value,
                     cornerRadius: 12.d,
                     content: Center(
@@ -59,7 +59,7 @@ class _ConfirmState extends AbstractDialogState<Confirm> {
             : SizedBox(
                 width: 158.d,
                 child: BumpedButton(
-                    onTap: () => Navigator.of(context).pop(true),
+                    onTap: () => Rout.pop(context, true),
                     colors: TColors.blue.value,
                     cornerRadius: 12.d,
                     content: Center(
