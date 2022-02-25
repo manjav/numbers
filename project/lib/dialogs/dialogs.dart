@@ -85,8 +85,8 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     rows.add(chromeFactory(theme, width));
     children.add(
         Column(mainAxisAlignment: MainAxisAlignment.center, children: rows));
-    children.add(Visibility(child: waiting, visible: waiting.visible));
     children.addAll(stepChildren);
+    children.add(Visibility(child: waiting, visible: waiting.visible));
     children.add(coinsButtonFactory(theme));
 
     return WillPopScope(
