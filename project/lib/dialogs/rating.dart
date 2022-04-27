@@ -10,7 +10,7 @@ import 'package:project/utils/localization.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/utils.dart';
 import 'package:project/widgets/buttons.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class RatingDialog extends AbstractDialog {
   static Future<bool> showRating(BuildContext context) async {
@@ -81,7 +81,9 @@ class RatingDialog extends AbstractDialog {
       inAppReview.openStoreListing();
     } else {
       var url = "app_url".l();
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+      await canLaunchUrlString(url)
+          ? await launchUrlString(url)
+          : throw 'Could not launch $url';
     }
     return true;
   }
