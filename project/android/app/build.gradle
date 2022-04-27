@@ -50,7 +50,7 @@ android {
 
     defaultConfig {
         applicationId "game.block.puzzle.drop.the.number.merge"
-        minSdkVersion 19//flutter.minSdkVersion
+        minSdkVersion 21//flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
