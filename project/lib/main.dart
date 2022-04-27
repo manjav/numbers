@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:games_services/games_services.dart';
+import 'package:install_prompt/install_prompt.dart';
+import 'package:project/dialogs/confirm.dart';
 import 'package:project/dialogs/daily.dart';
 import 'package:project/dialogs/quests.dart';
 import 'package:project/dialogs/quit.dart';
@@ -88,8 +90,15 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 
   Future<bool> _onWillPop() async {
-    var result =
-        await Rout.push(context, QuitDialog(), barrierDismissible: true);
+    var result = await Rout.push(
+        context,
+        Confirm(
+            "Install the game on your device to make sure you’ll always have your progress saved and safe!",
+            acceptText: "Install",
+            declineText: "Not yet"));
+    if (result) InstallPrompt.showInstallPrompt();
+    result = await Rout.push(context, QuitDialog(showAvatar: !result),
+        barrierDismissible: true);
     return result != null;
   }
 

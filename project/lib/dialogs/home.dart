@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:install_prompt/install_prompt.dart';
 import 'package:project/core/game.dart';
+import 'package:project/dialogs/confirm.dart';
 import 'package:project/dialogs/daily.dart';
 import 'package:project/dialogs/dialogs.dart';
 import 'package:project/dialogs/quests.dart';
@@ -200,8 +202,17 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
         (Prefs.getString("cells").isEmpty ? "start_l" : "continue_l").l();
     _onUpdate();
     if (result != null) {
-      await RatingDialog.showRating(context);
-    }
+      var accept = await Rout.push(
+          context,
+          Confirm(
+              "Install the game on your device to make sure you’ll always have your progress saved and safe!",
+              acceptText: "Install",
+              declineText: "Not yet"));
+      if (accept) {
+        InstallPrompt.showInstallPrompt();
+      } else {
+        await RatingDialog.showRating(context);
+      }    }
   }
 
   _onUpdate() => setState(() {});

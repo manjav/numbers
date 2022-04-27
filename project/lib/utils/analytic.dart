@@ -44,7 +44,7 @@ class Analytics {
     GameAnalytics.configureAvailableResourceItemTypes(
         ["game", "confirm", "shop", "start"]);
 
-    var type = "installed";
+    var type = "instant";
     GameAnalytics.setCustomDimension01(type);
     _appsflyerSdk.logEvent("type_$type", {});
     _firebaseAnalytics.setUserProperty(name: "buildType", value: type);
