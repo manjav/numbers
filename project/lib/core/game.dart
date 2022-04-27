@@ -16,7 +16,7 @@ import 'package:project/core/cells.dart';
 import 'package:project/dialogs/quests.dart';
 import 'package:project/theme/themes.dart';
 import 'package:project/utils/analytic.dart';
-import 'package:project/utils/gamehub.dart';
+import 'package:project/utils/games.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/sounds.dart';
 import 'package:project/utils/utils.dart';
@@ -80,7 +80,7 @@ class MyGame extends FlameGame with TapDetector {
     var _new = Prefs.score += Cell.getScore(value);
     onGameEvent?.call(GameEvent.score, _new);
     if (Pref.record.value >= Prefs.score) return;
-    GameHub.submitScore(Prefs.score);
+    Games.submitScore(Prefs.score);
     Pref.record.set(Prefs.score);
     _newRecord = Prefs.score;
   }

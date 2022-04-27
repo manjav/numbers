@@ -2,20 +2,20 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:games_services/games_services.dart';
 import 'package:install_prompt/install_prompt.dart';
 import 'package:project/dialogs/confirm.dart';
 import 'package:project/dialogs/daily.dart';
+import 'package:project/dialogs/home.dart';
 import 'package:project/dialogs/quests.dart';
 import 'package:project/dialogs/quit.dart';
-import 'package:project/dialogs/home.dart';
+import 'package:project/theme/themes.dart';
 import 'package:project/utils/ads.dart';
 import 'package:project/utils/analytic.dart';
+import 'package:project/utils/games.dart';
 import 'package:project/utils/localization.dart';
 import 'package:project/utils/notification.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/sounds.dart';
-import 'package:project/theme/themes.dart';
 import 'package:project/utils/utils.dart';
 
 Future<void> main() async {
@@ -108,7 +108,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
 
     Ads.init();
     Sound.init();
-    GamesServices.signIn();
+    Games.signIn();
     Prefs.init(() async {
       await Localization.init();
       Analytics.init(widget.analytics);

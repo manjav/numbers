@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:project/utils/gamehub.dart';
+import 'package:project/utils/games.dart';
 import 'package:project/utils/prefs.dart';
 import 'package:project/utils/utils.dart';
 import 'package:project/widgets/buttons.dart';
@@ -14,8 +14,9 @@ class Components {
         tag: "score",
         child: GestureDetector(
             onTap: () {
-              GameHub.showLeaderboards(source);
-              onTap?.call();
+              if (Games.showLeaderboards(source)) {
+                onTap?.call();
+              }
             },
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
