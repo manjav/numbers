@@ -14,15 +14,15 @@ import 'package:project/widgets/buttons.dart';
 import 'package:project/widgets/coins.dart';
 
 class Price {
-  static int ad = 100;
-  static int big = 20;
-  static int cube = 20;
-  static int piggy = 40;
-  static int record = 20;
-  static int tutorial = 400;
+  static int ad = 50;
+  static int big = 10;
+  static int cube = 10;
+  static int piggy = 20;
+  static int record = 10;
+  static int tutorial = 200;
 
-  static int boost = 100;
-  static int revive = 100;
+  static int boost = 200;
+  static int revive = 200;
 }
 
 class ShopDialog extends AbstractDialog {

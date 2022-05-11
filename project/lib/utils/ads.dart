@@ -22,7 +22,7 @@ class Ads {
   static Function(MyAd)? onUpdate;
   static String platform = Platform.isAndroid ? "Android" : "iOS";
   static const rewardCoef = 10;
-  static const costCoef = 5;
+  static const costCoef = 10;
   static const prefix = "ca-app-pub-5018637481206902/";
   static const maxFailedLoadAttempts = 3;
   static const AdSDK _initialSDK = AdSDK.google;
