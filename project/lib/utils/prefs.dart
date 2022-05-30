@@ -1,6 +1,7 @@
 import 'package:project/core/cell.dart';
 import 'package:project/dialogs/daily.dart';
 import 'package:project/utils/analytic.dart';
+import 'package:project/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Prefs {
@@ -12,9 +13,9 @@ class Prefs {
       _instance = prefs;
       var now = DateTime.now().millisecondsSinceEpoch;
       if (!contains("visitCount")) {
-        Pref.rateTarget.set(2);
         Pref.boostRemoveOne.set(3);
         Pref.boostRemoveColor.set(3);
+        Pref.rateLastTime.set(DateTime.now().hoursSinceEpoch - 23);
       }
       Pref.dayFirst.setIfEmpty(now - Days.dayLen);
       Pref.lastBig.setIfEmpty(Cell.firstBigRecord);
@@ -78,7 +79,7 @@ enum Pref {
   playCount,
   rate,
   ratedBefore,
-  rateTarget,
+  rateLastTime,
   record,
   revive,
   score,
@@ -117,12 +118,12 @@ extension PrefExt on Pref {
         return "noAds";
       case Pref.playCount:
         return "playCount";
-      case Pref.rateTarget:
-        return "rateTarget";
       case Pref.rate:
         return "rate";
       case Pref.ratedBefore:
         return "ratedBefore";
+      case Pref.rateLastTime:
+        return "rateLastTime";
       case Pref.record:
         return "record";
       case Pref.revive:

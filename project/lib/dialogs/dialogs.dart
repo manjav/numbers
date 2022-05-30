@@ -110,11 +110,11 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     var shouldPop = true;
     var exchangeMode = "withoutAd";
     if (showAd) {
-      var reward = await Ads.showRewarded();
+      var reward = await Ads.showRewarded(widget.mode.name);
       shouldPop = reward != null;
       exchangeMode = "withAd";
     } else if (coin > 0 && Ads.showSuicideInterstitial) {
-      await Ads.showInterstitial(AdPlace.interstitial);
+      await Ads.showInterstitial(AdPlace.interstitial, widget.mode.toString());
     }
     if (widget.mode == DialogMode.big ||
         widget.mode == DialogMode.cube ||
@@ -129,7 +129,8 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
 
   Widget bannerAdsFactory(String type) {
     if (!Ads.isReady(AdPlace.interstitial)) return const SizedBox();
-    return Positioned(bottom: 8.d, child: Ads.getBannerWidget(type));
+    return Positioned(
+        bottom: 8.d, child: Ads.getBannerWidget(type, widget.mode.name));
   }
 
   Widget rankButtonFactory(ThemeData theme) {

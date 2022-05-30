@@ -16,13 +16,12 @@ class Analytics {
   static late FirebaseAnalytics _firebaseAnalytics;
 
   static final _funnelConfigs = {
+    "open": [1],
     "adinterstitial": [1],
-    "adrewardedad": [1, 4, 10, 20, 30],
+    "adrewarded": [1, 4, 10, 20, 30],
     "adbannerclick": [1, 5, 10, 20],
     "round_end": [1, 2, 4, 8],
-    "big6": [1],
-    "big7": [1],
-    "big10": [1],
+    "block": [1],
   };
 
   static init(FirebaseAnalytics analytics) {
@@ -54,11 +53,13 @@ class Analytics {
     GameAnalytics.initialize("ga_key".l(), "ga_secret".l());
 
     updateVariantIDs();
+    funnle("open");
   }
 
   static Future<void> updateVariantIDs() async {
     var testVersion = Prefs.getString("testVersion");
     var version = "app_version".l();
+    debugPrint("Analytics version ==> $version testVersion ==> $testVersion");
     if (testVersion.isNotEmpty && testVersion != version) {
       return;
     }
@@ -69,8 +70,8 @@ class Analytics {
     var variantId =
         await GameAnalytics.getRemoteConfigsValueAsString(testName, "1");
     variant = int.parse(variantId ?? "1");
-    debugPrint("testVariantId ==> $variant");
-    if (variant == 2) {
+    debugPrint("Analytics testVariantId ==> $variant");
+    if (variant == 3) {
       Price.ad = 40; //50 //100
       Price.big = 5; //10 //20
       Price.cube = 5; //10 //20
@@ -184,12 +185,13 @@ class Analytics {
     if (round % 3 == 0) _appsflyerSdk.logEvent("end_round", map);
   }
 
-  static funnle(String name) {
+  static funnle(String type, [String? name]) {
+    name = name == null ? type : "${type}_$name";
     var step = Prefs.increase(name, 1);
 
     // Unique events
-    if (_funnelConfigs.containsKey(name)) {
-      var values = _funnelConfigs[name];
+    if (_funnelConfigs.containsKey(type)) {
+      var values = _funnelConfigs[type];
 
       for (var value in values!) {
         if (value == step) {
@@ -197,15 +199,15 @@ class Analytics {
           break;
         }
       }
-      return;
     }
     _funnle(name, step);
   }
 
   static _funnle(String name, [int step = -1]) {
-    // print("_funnle $name  value $value");
-    design(name, parameters: {"step": step});
-    _appsflyerSdk.logEvent(name, {"step": step});
+    var args = step > 0 ? {"step": step} : null;
+    // print("Analytics _funnle $name args $args");
+    design(name, parameters: args);
+    _appsflyerSdk.logEvent(name, args);
   }
 
   static Future<void> design(String name,

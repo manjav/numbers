@@ -14,13 +14,20 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class RatingDialog extends AbstractDialog {
   static Future<bool> showRating(BuildContext context) async {
+    var hours = DateTime.now().hoursSinceEpoch;
     debugPrint(
-        "Rate:${Pref.rate.value}, plays:${Pref.playCount.value}, target:${Pref.rateTarget.value}");
+        "Rate:${Pref.rate.value}, The last rating time elapsed:${hours - Pref.rateLastTime.value}");
+
     // Repeat rating request
-    // Already 5 rating or pending to reach target play count
-    if (Pref.rate.value >= 5 || Pref.playCount.value < Pref.rateTarget.value) {
+    // Already 5 rating or pending to proper time
+    if (Pref.rate.value >= 5 || (hours - Pref.rateLastTime.value) < 24) {
       return false;
     }
+    // Bad rating and pending to proper time
+    if (Pref.rate.value > 0 && (hours - Pref.rateLastTime.value) < 24 * 3) {
+      return false;
+    }
+
     int rating = 0;
     try {
       rating = await Rout.push(context, RatingDialog());
@@ -28,7 +35,7 @@ class RatingDialog extends AbstractDialog {
       return false;
     }
     Pref.rate.set(rating);
-    Pref.rateTarget.increase(2);
+    Pref.rateLastTime.set(hours);
 
     String comment = "";
     if (rating > 0) {

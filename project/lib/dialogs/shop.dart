@@ -289,7 +289,7 @@ class _ShopDialogState extends AbstractDialogState<ShopDialog> {
   }
 
   _freeCoin() async {
-    var reward = await Ads.showRewarded();
+    var reward = await Ads.showRewarded(widget.mode.name);
     if (reward != null) {
       Coins.change(Price.ad, "shop", "ad");
     }

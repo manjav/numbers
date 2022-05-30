@@ -432,7 +432,7 @@ class MyGame extends FlameGame with TapDetector {
 
     // Send block data
     if (cell.value > 5) {
-      Analytics.funnle("block_${Cell.getScore(cell.value)}");
+      Analytics.funnle("block", Cell.getScore(cell.value).toString());
     }
 
     // Show big number popup

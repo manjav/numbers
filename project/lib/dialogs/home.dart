@@ -172,7 +172,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
         return;
       }
     } else {
-      var reward = await Ads.showRewarded();
+      var reward = await Ads.showRewarded(widget.mode.name);
       if (reward == null) return;
     }
     await Coins.change(-cost, "start", boost.name);
@@ -193,7 +193,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
     _onUpdate();
     await Analytics.updateVariantIDs();
     if (Pref.playCount.value > AdPlace.interstitialVideo.threshold) {
-      await Ads.showInterstitial(AdPlace.interstitialVideo);
+      await Ads.showInterstitial(AdPlace.interstitialVideo, widget.mode.name);
     }
     var result = await Rout.push(context, const GamePage());
     MyGame.boostNextMode = 0;

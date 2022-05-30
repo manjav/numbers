@@ -56,7 +56,7 @@ class Ads {
     }
   }
 
-  static BannerAd _getBanner(String type, {AdSize? size}) {
+  static BannerAd _getBanner(String type, String origin, {AdSize? size}) {
     var place = AdPlace.banner;
 
     if (_placements[place]!.containsAd(type)) {
@@ -70,7 +70,7 @@ class Ads {
           ad.dispose();
         },
         onAdOpened: (ad) {
-          Analytics.funnle("adbannerclick");
+          Analytics.funnle("adbannerclick", origin);
           _updateState(place, AdState.clicked, ad);
         },
         onAdClosed: (ad) => _updateState(place, AdState.closed, ad),
@@ -86,7 +86,7 @@ class Ads {
         type) as BannerAd;
   }
 
-  static Widget getBannerWidget(String type, {AdSize? size}) {
+  static Widget getBannerWidget(String type, String origin, {AdSize? size}) {
     var width = 320.d;
     var height = 50.d;
     Widget? adWidget;
@@ -96,7 +96,7 @@ class Ads {
       height = unityBanner.size.height.toDouble();
       adWidget = unityBanner;
     } else {
-      var banner = _getBanner(type, size: size);
+      var banner = _getBanner(type, origin, size: size);
       width = banner.size.width.toDouble();
       height = banner.size.height.toDouble();
       adWidget = AdWidget(ad: banner);
@@ -174,7 +174,7 @@ class Ads {
         _placements[p]!.state == AdState.loaded;
   }
 
-  static showInterstitial(AdPlace place) async {
+  static showInterstitial(AdPlace place, String origin) async {
     if (Pref.noAds.value > 0) return;
     if (!isReady(place)) {
       debugPrint("Ads ==> ${place.name} is not ready.");
@@ -202,11 +202,10 @@ class Ads {
     iAd.show();
     myAd.clearAd();
     await _waitForClose(place);
-    Analytics.funnle("adinterstitial");
-    Analytics.design("adinterstitial_n");
+    Analytics.funnle("adinterstitial", origin);
   }
 
-  static Future<RewardItem?> showRewarded() async {
+  static Future<RewardItem?> showRewarded(String origin) async {
     reward = null;
     if (!isReady()) {
       debugPrint("Ads ==> ${AdPlace.rewarded.name} is not ready.");
@@ -240,8 +239,7 @@ class Ads {
     myAd.clearAd();
     if (reward != null) {
       Quests.increase(QuestType.video, 1);
-      Analytics.funnle("adrewarded");
-      Analytics.design("adrewarded_n");
+      Analytics.funnle("adrewarded", origin);
     }
     return reward;
   }

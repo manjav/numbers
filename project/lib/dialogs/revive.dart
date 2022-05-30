@@ -108,10 +108,10 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
       return;
     }
     if (showAd) {
-      var reward = await Ads.showRewarded();
+      var reward = await Ads.showRewarded(widget.mode.name);
       if (reward == null) return;
     } else if (coin > 0 && Ads.showSuicideInterstitial) {
-      await Ads.showInterstitial(AdPlace.interstitial);
+      await Ads.showInterstitial(AdPlace.interstitial, widget.mode.name);
     }
 
     // Reterive game stats (Anti fraud)

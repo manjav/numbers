@@ -87,3 +87,9 @@ extension Device on double {
 extension DeviceI on int {
   double get d => this * Device.ratio;
 }
+
+extension DateTimeExt on DateTime {
+  int get hoursSinceEpoch {
+    return (millisecondsSinceEpoch / 1000 / 3600).round();
+  }
+}
