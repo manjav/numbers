@@ -17,7 +17,7 @@ class QuitDialog extends AbstractDialog {
           padding: EdgeInsets.fromLTRB(16.d, 4.d, 16.d, 8.d),
         );
   @override
-  _QuitDialogState createState() => _QuitDialogState();
+  createState() => _QuitDialogState();
 }
 
 class _QuitDialogState extends AbstractDialogState<QuitDialog> {

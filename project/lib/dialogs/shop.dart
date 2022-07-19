@@ -38,7 +38,7 @@ class ShopDialog extends AbstractDialog {
           scoreButton: const SizedBox(),
         );
   @override
-  _ShopDialogState createState() => _ShopDialogState();
+  createState() => _ShopDialogState();
 }
 
 class _ShopDialogState extends AbstractDialogState<ShopDialog> {

@@ -18,7 +18,7 @@ class Toast extends AbstractDialog {
           padding: EdgeInsets.fromLTRB(12.d, 4.d, 12.d, 8.d),
         );
   @override
-  _ToastState createState() => _ToastState();
+  createState() => _ToastState();
 }
 
 class _ToastState extends AbstractDialogState<Toast> {

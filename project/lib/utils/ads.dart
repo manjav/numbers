@@ -63,7 +63,7 @@ class Ads {
       return _placements[place]!.getAd(type) as BannerAd;
     }
 
-    var _listener = BannerAdListener(
+    var listener = BannerAdListener(
         onAdLoaded: (ad) => _updateState(place, AdState.loaded, ad),
         onAdFailedToLoad: (ad, error) {
           _updateState(place, AdState.failedLoad, ad, error.toString());
@@ -80,7 +80,7 @@ class Ads {
         BannerAd(
             size: size ?? AdSize.largeBanner,
             adUnitId: place.id,
-            listener: _listener,
+            listener: listener,
             request: _request)
           ..load(),
         type) as BannerAd;

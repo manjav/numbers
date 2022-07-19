@@ -41,7 +41,7 @@ class PunchButton extends StatefulWidget {
       this.cornerRadius})
       : super(key: key);
   @override
-  _PunchButtonState createState() => _PunchButtonState();
+  createState() => _PunchButtonState();
 }
 
 class _PunchButtonState extends State<PunchButton>

@@ -56,7 +56,7 @@ class Coins extends StatefulWidget {
       this.height})
       : super(key: key);
   @override
-  _CoinsState createState() => _CoinsState();
+  createState() => _CoinsState();
 }
 
 class _CoinsState extends State<Coins> with TickerProviderStateMixin {

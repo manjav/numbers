@@ -18,8 +18,8 @@ extension Localization on String {
 
   static _getData(String file) async {
     var data = await rootBundle.loadString('texts/$file');
-    var _result = json.decode(data);
-    _result.forEach((String key, dynamic value) {
+    var result = json.decode(data);
+    result.forEach((String key, dynamic value) {
       _sentences![key] = value.toString();
     });
   }

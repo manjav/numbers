@@ -34,7 +34,7 @@ class HomeDialog extends AbstractDialog {
           padding: EdgeInsets.fromLTRB(12.d, 12.d, 12.d, 14.d),
         );
   @override
-  _HomeDialogState createState() => _HomeDialogState();
+  createState() => _HomeDialogState();
 }
 
 class _HomeDialogState extends AbstractDialogState<HomeDialog> {
@@ -195,6 +195,7 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
     if (Pref.playCount.value > AdPlace.interstitialVideo.threshold) {
       await Ads.showInterstitial(AdPlace.interstitialVideo, widget.mode.name);
     }
+    if (!mounted) return;
     var result = await Rout.push(context, const GamePage());
     MyGame.boostNextMode = 0;
     MyGame.boostBig = false;
@@ -210,9 +211,10 @@ class _HomeDialogState extends AbstractDialogState<HomeDialog> {
               declineText: "Not yet"));
       if (accept) {
         InstallPrompt.showInstallPrompt();
-      } else {
-        await RatingDialog.showRating(context);
-      }    }
+      } else if (mounted) {
+        await Rout.push(context, RatingDialog());
+      }
+    }
   }
 
   _onUpdate() => setState(() {});

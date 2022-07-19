@@ -95,14 +95,14 @@ class Components {
           right: 0,
           height: 20.d,
           child: Container(
+              decoration: badgeDecoration(),
               child: ClipRRect(
                   borderRadius: BorderRadius.only(
                       topRight: round,
                       bottomRight: round,
                       bottomLeft: hasIcon ? Radius.zero : round,
                       topLeft: hasIcon ? Radius.zero : round),
-                  child: LinearProgressIndicator(value: value / max)),
-              decoration: badgeDecoration())),
+                  child: LinearProgressIndicator(value: value / max)))),
       icon ?? const SizedBox(),
       Positioned(
           left: hasIcon ? 32.d : 4.d,

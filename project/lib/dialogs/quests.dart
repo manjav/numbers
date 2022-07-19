@@ -20,7 +20,7 @@ class QuestsDialog extends AbstractDialog {
           title: "quests_l".l(),
         );
   @override
-  _QuestsDialogState createState() => _QuestsDialogState();
+  createState() => _QuestsDialogState();
 }
 
 class _QuestsDialogState extends AbstractDialogState<QuestsDialog> {
@@ -146,7 +146,7 @@ class Quest {
 
   bool get isDone => value >= max;
 
-  String get text => ("quest_" + type.name).l([max.toString()]);
+  String get text => ("quest_${type.name}").l([max.toString()]);
 
   void levelUp() {
     Coins.change(reward, "quest", type.name);

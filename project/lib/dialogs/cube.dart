@@ -27,7 +27,7 @@ class CubeDialog extends AbstractDialog {
           padding: EdgeInsets.fromLTRB(16.d, 0, 16.d, 16.d),
         );
   @override
-  _CubeDialogState createState() => _CubeDialogState();
+  createState() => _CubeDialogState();
 }
 
 class _CubeDialogState extends AbstractDialogState<CubeDialog> {

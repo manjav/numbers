@@ -25,7 +25,7 @@ class BumpedButton extends StatefulWidget {
       this.cornerRadius})
       : super(key: key);
   @override
-  _BumpedButtonState createState() => _BumpedButtonState();
+  createState() => _BumpedButtonState();
 }
 
 class _BumpedButtonState extends State<BumpedButton> {
@@ -62,11 +62,11 @@ class _BumpedButtonState extends State<BumpedButton> {
         },
         child: Container(
             padding: padding,
-            child: widget.content ?? const SizedBox(),
             decoration: ButtonDecor(widget.colors ?? TColors.white.value,
                 widget.cornerRadius ?? 10.d, enable, _isPressed),
             width: 144.d,
-            height: 52.d));
+            height: 52.d,
+            child: widget.content ?? const SizedBox()));
   }
 }
 
@@ -113,20 +113,20 @@ class _ButtonDecorationPainter extends BoxPainter {
     var s = 0.8.d;
     var b = isEnable ? 2.0.d : 0;
     var pressed = isPressed && isEnable;
-    var _cr = cornerRadius;
+    var cr = cornerRadius;
     var r = RRect.fromLTRBXY(
         offset.dx,
         offset.dy,
         offset.dx + configuration.size!.width,
         offset.dy + configuration.size!.height,
-        _cr * 1.2,
-        _cr * 1.2);
+        cr * 1.2,
+        cr * 1.2);
     var sr = RRect.fromLTRBXY(
-        r.left - s, r.top, r.right + s, r.bottom + s * 3, _cr * 1.2, _cr * 1.2);
+        r.left - s, r.top, r.right + s, r.bottom + s * 3, cr * 1.2, cr * 1.2);
     var mr = RRect.fromLTRBXY(r.left + b, r.top + b + (isEnable ? 2.d : 0),
-        r.right - b, r.bottom - b, _cr, _cr);
+        r.right - b, r.bottom - b, cr, cr);
     var or = RRect.fromLTRBXY(
-        r.left + b, r.top + b, r.right - b, r.bottom - b - 5.d, _cr, _cr);
+        r.left + b, r.top + b, r.right - b, r.bottom - b - 5.d, cr, cr);
 
     _overPaint = Paint()
       ..shader = ui.Gradient.linear(

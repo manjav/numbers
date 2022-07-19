@@ -24,7 +24,7 @@ class Confirm extends AbstractDialog {
           height: 0,
         );
   @override
-  _ConfirmState createState() => _ConfirmState();
+  createState() => _ConfirmState();
 }
 
 class _ConfirmState extends AbstractDialogState<Confirm> {

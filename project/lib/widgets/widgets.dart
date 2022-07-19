@@ -7,12 +7,12 @@ class Widgets {
     return Container(
         padding: EdgeInsets.only(bottom: 6.d),
         alignment: Alignment.center,
-        child: Text("${Cell.getScore(value)}",
-            textAlign: TextAlign.center,
-            style: textStyle ?? theme.textTheme.headline4),
         decoration: CellDecoration(value),
         width: 154.d,
-        height: 52.d);
+        height: 52.d,
+        child: Text("${Cell.getScore(value)}",
+            textAlign: TextAlign.center,
+            style: textStyle ?? theme.textTheme.headline4));
   }
 }
 
@@ -45,18 +45,18 @@ class _CellDecorationPainter extends BoxPainter {
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     var b = 2.0;
-    var _cr = 7.d;
+    var cr = 7.d;
     var r = RRect.fromLTRBXY(
         offset.dx,
         offset.dy,
         offset.dx + configuration.size!.width,
         offset.dy + configuration.size!.height,
-        _cr * 1.1,
-        _cr * 1.1);
+        cr * 1.1,
+        cr * 1.1);
     var mr = RRect.fromLTRBXY(
-        r.left + b, r.top + b, r.right - b, r.bottom - b, _cr, _cr);
+        r.left + b, r.top + b, r.right - b, r.bottom - b, cr, cr);
     var or = RRect.fromLTRBXY(
-        r.left + b, r.top + b, r.right - b, r.bottom - b - 5.d, _cr, _cr);
+        r.left + b, r.top + b, r.right - b, r.bottom - b - 5.d, cr, cr);
 
     canvas.drawRRect(r, _shadowPaint);
     canvas.drawRRect(r, _backPaint);

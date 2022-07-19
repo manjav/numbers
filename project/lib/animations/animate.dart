@@ -16,7 +16,7 @@ class Animate {
 
   int index = 0;
   Function? onComplete;
-  List<ComponentEffect> effects;
+  List<Effect> effects;
   PositionComponent owner;
   Animate(this.owner, this.effects, {this.onComplete}) {
     _onEffectComplete();

@@ -18,7 +18,7 @@ class DailyDialog extends AbstractDialog {
           title: "daily_l".l(),
         );
   @override
-  _DailyDialogState createState() => _DailyDialogState();
+  createState() => _DailyDialogState();
 }
 
 class _DailyDialogState extends AbstractDialogState<DailyDialog> {
@@ -120,7 +120,7 @@ class TimeWidget extends StatefulWidget {
   final Function callback;
   const TimeWidget(this.label, this.callback, {Key? key}) : super(key: key);
   @override
-  _TimeWidgetState createState() => _TimeWidgetState();
+  createState() => _TimeWidgetState();
 }
 
 class _TimeWidgetState extends State<TimeWidget> {

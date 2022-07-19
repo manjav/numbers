@@ -17,7 +17,7 @@ class PauseDialog extends AbstractDialog {
           showCloseButton: false,
         );
   @override
-  _PauseDialogState createState() => _PauseDialogState();
+  createState() => _PauseDialogState();
 }
 
 class _PauseDialogState extends AbstractDialogState<PauseDialog> {

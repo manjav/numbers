@@ -11,7 +11,7 @@ class QuestNotification extends StatefulWidget {
   final double size;
   const QuestNotification(this.quest, this.size, {Key? key}) : super(key: key);
   @override
-  _QuestNotificationyState createState() => _QuestNotificationyState();
+  createState() => _QuestNotificationyState();
 }
 
 class _QuestNotificationyState extends State<QuestNotification>

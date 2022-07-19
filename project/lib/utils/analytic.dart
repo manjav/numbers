@@ -11,7 +11,7 @@ import 'package:project/utils/localization.dart';
 import 'package:project/utils/prefs.dart';
 
 class Analytics {
-  static late int variant = 1;
+  static int variant = 1;
   static late AppsflyerSdk _appsflyerSdk;
   static late FirebaseAnalytics _firebaseAnalytics;
 

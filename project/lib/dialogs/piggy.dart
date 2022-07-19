@@ -20,7 +20,7 @@ class PiggyDialog extends AbstractDialog {
             title: "piggy_l".l(),
             padding: EdgeInsets.all(18.d));
   @override
-  _PiggyDialogState createState() => _PiggyDialogState();
+  createState() => _PiggyDialogState();
 }
 
 class _PiggyDialogState extends AbstractDialogState<PiggyDialog> {

@@ -21,7 +21,7 @@ class ReviveDialog extends AbstractDialog {
           width: 310.d,
         );
   @override
-  _ReviveDialogState createState() => _ReviveDialogState();
+  createState() => _ReviveDialogState();
 }
 
 class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
@@ -113,6 +113,7 @@ class _ReviveDialogState extends AbstractDialogState<ReviveDialog> {
     } else if (coin > 0 && Ads.showSuicideInterstitial) {
       await Ads.showInterstitial(AdPlace.interstitial, widget.mode.name);
     }
+    if (!mounted) return;
 
     // Reterive game stats (Anti fraud)
     Prefs.setString("cells", _cells);

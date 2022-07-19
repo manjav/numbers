@@ -26,7 +26,7 @@ class BigBlockDialog extends AbstractDialog {
           title: Device.aspectRatio < 0.7 ? "big_l".l() : null,
         );
   @override
-  _BigBlockDialogState createState() => _BigBlockDialogState();
+  createState() => _BigBlockDialogState();
 }
 
 class _BigBlockDialogState extends AbstractDialogState<BigBlockDialog> {

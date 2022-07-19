@@ -13,88 +13,6 @@ import 'package:project/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class RatingDialog extends AbstractDialog {
-  static Future<bool> showRating(BuildContext context) async {
-    var hours = DateTime.now().hoursSinceEpoch;
-    debugPrint(
-        "Rate:${Pref.rate.value}, The last rating time elapsed:${hours - Pref.rateLastTime.value}");
-
-    // Repeat rating request
-    // Already 5 rating or pending to proper time
-    if (Pref.rate.value >= 5 || (hours - Pref.rateLastTime.value) < 24) {
-      return false;
-    }
-    // Bad rating and pending to proper time
-    if (Pref.rate.value > 0 && (hours - Pref.rateLastTime.value) < 24 * 3) {
-      return false;
-    }
-
-    int rating = 0;
-    try {
-      rating = await Rout.push(context, RatingDialog());
-    } catch (e) {
-      return false;
-    }
-    Pref.rate.set(rating);
-    Pref.rateLastTime.set(hours);
-
-    String comment = "";
-    if (rating > 0) {
-      if (rating < 5) {
-        var r = await Rout.push(context, ReviewDialog());
-        if (r != null) {
-          comment = r;
-          var url =
-              "https://numbers.sarand.net/review/?rate=$rating&comment=$comment&visits=${Pref.visitCount.value}";
-          var response = await http.get(Uri.parse(url));
-          if (response.statusCode != 200) debugPrint('Failure status code 😱');
-        }
-      } else {
-        await _requestReview();
-      }
-      await Rout.push(context, Toast("thanks_l".l()), barrierDismissible: true);
-    }
-    Analytics.design('rate', parameters: <String, dynamic>{
-      'rating': rating,
-      'visits': Pref.visitCount.value,
-      'comment': comment
-    });
-    debugPrint(
-        "Rating rate: ${Pref.rate.value} rating: $rating comment: $comment");
-    return true;
-  }
-
-  // Send to store
-  static Future<bool> _requestReview() async {
-    if (Pref.rate.value != 5) return false;
-    Pref.rate.set(6);
-    // if (Configs.instance.buildConfig!.target == "cafebazaar") {
-    //   if (Platform.isAndroid) {
-    //     AndroidIntent intent = AndroidIntent(
-    //         data: 'bazaar://details?id=com.gerantech.muslim.holy.quran',
-    //         action: 'android.intent.action.EDIT',
-    //         package: 'com.farsitel.bazaar');
-    //     await intent.launch();
-    //   }
-    //   return;
-    // }
-
-    final InAppReview inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      if (Pref.ratedBefore.value == 0) {
-        inAppReview.requestReview();
-        Pref.ratedBefore.set(1);
-        return true;
-      }
-      inAppReview.openStoreListing();
-    } else {
-      var url = "app_url".l();
-      await canLaunchUrlString(url)
-          ? await launchUrlString(url)
-          : throw 'Could not launch $url';
-    }
-    return true;
-  }
-
   final int initialRating;
   RatingDialog({Key? key, this.initialRating = 1})
       : super(
@@ -106,11 +24,38 @@ class RatingDialog extends AbstractDialog {
           padding: EdgeInsets.fromLTRB(22.d, 18.d, 22.d, 22.d),
         );
   @override
-  _RatingDialogState createState() => _RatingDialogState();
+  createState() => _RatingDialogState();
 }
 
 class _RatingDialogState extends AbstractDialogState<RatingDialog> {
-  int _response = 0;
+  var _response = 0;
+  var _hours = 0;
+
+  @override
+  void initState() {
+    _hours = DateTime.now().hoursSinceEpoch;
+    debugPrint(
+        "Rate => ${Pref.rate.value}, The last rating time elapsed:${_hours - Pref.rateLastTime.value}");
+
+    // Repeat rating request
+    // Already 5 rating or pending to proper time
+    if (Pref.rate.value >= 5 || (_hours - Pref.rateLastTime.value) < 24) {
+      Navigator.pop(context, _response = -1);
+      return;
+    }
+    // Bad rating and pending to proper time
+    if (Pref.rate.value > 0 && (_hours - Pref.rateLastTime.value) < 24 * 3) {
+      Navigator.pop(context, _response = -1);
+      return;
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return super.build(context);
+  }
+
   @override
   Widget contentFactory(ThemeData theme) {
     return WillPopScope(
@@ -145,8 +90,70 @@ class _RatingDialogState extends AbstractDialogState<RatingDialog> {
                   content: Center(
                       child:
                           Text("rate_l".l(), style: theme.textTheme.headline5)),
-                  onTap: () => Navigator.pop(context, _response)))
+                  onTap: _onSubmit))
         ]));
+  }
+
+  _onSubmit() async {
+    Pref.rate.set(_response);
+    Pref.rateLastTime.set(_hours);
+
+    String comment = "";
+    if (_response > 0) {
+      if (_response < 5) {
+        var r = await Rout.push(context, ReviewDialog());
+        if (r != null) {
+          comment = r;
+          var url =
+              "https://numbers.sarand.net/review/?rate=$_response&comment=$comment&visits=${Pref.visitCount.value}";
+          var response = await http.get(Uri.parse(url));
+          if (response.statusCode != 200) debugPrint('Failure status code 😱');
+        }
+      } else {
+        await _requestReview();
+      }
+      if (!mounted) return;
+      await Rout.push(context, Toast("thanks_l".l()), barrierDismissible: true);
+    }
+    Analytics.design('rate', parameters: <String, dynamic>{
+      'rating': _response,
+      'visits': Pref.visitCount.value,
+      'comment': comment
+    });
+    debugPrint(
+        "Rating rate: ${Pref.rate.value} rating: $_response comment: $comment");
+  }
+
+  // Send to store
+  static Future<bool> _requestReview() async {
+    if (Pref.rate.value != 5) return false;
+    Pref.rate.set(6);
+    // if (Configs.instance.buildConfig!.target == "cafebazaar") {
+    //   if (Platform.isAndroid) {
+    //     AndroidIntent intent = AndroidIntent(
+    //         data: 'bazaar://details?id=com.gerantech.muslim.holy.quran',
+    //         action: 'android.intent.action.EDIT',
+    //         package: 'com.farsitel.bazaar');
+    //     await intent.launch();
+    //   }
+    //   return;
+    // }
+
+    final InAppReview inAppReview = InAppReview.instance;
+    if (await inAppReview.isAvailable()) {
+      if (Pref.ratedBefore.value == 0) {
+        inAppReview.requestReview();
+        Pref.ratedBefore.set(1);
+        return true;
+      }
+      inAppReview.openStoreListing();
+    } else {
+      var url = "app_url".l();
+      await canLaunchUrlString(url)
+          ? await launchUrlString(url)
+          : throw 'Could not launch $url';
+    }
+    return true;
   }
 }
 
@@ -162,7 +169,7 @@ class ReviewDialog extends AbstractDialog {
           padding: EdgeInsets.all(16.d),
         );
   @override
-  _ReviewDialogState createState() => _ReviewDialogState();
+  createState() => _ReviewDialogState();
 }
 
 class _ReviewDialogState extends AbstractDialogState<ReviewDialog> {

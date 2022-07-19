@@ -124,7 +124,7 @@ class AbstractDialogState<T extends AbstractDialog> extends State<T> {
     }
     Analytics.design("adconfirm_$type",
         parameters: {"type": exchangeMode, "coin": coin});
-    if (shouldPop) Rout.pop(context, [type, coin]);
+    if (shouldPop && mounted) Rout.pop(context, [type, coin]);
   }
 
   Widget bannerAdsFactory(String type) {

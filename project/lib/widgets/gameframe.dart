@@ -31,7 +31,7 @@ import 'package:rive/rive.dart';
 class GamePage extends StatefulWidget {
   const GamePage({Key? key}) : super(key: key);
   @override
-  _GamePageState createState() => _GamePageState();
+  createState() => _GamePageState();
 }
 
 class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
@@ -138,7 +138,8 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text("clt_${_game!.removingMode!.name}_tip".l()),
             GestureDetector(
-                child: SVG.show("close", 32.d), onTap: _onRemoveBlock)
+                onTap: _onRemoveBlock,
+                child: SVG.show("close", 32.d))
           ]));
     }
     return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -200,8 +201,8 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   height: 44.d,
                   alignment: Alignment.center,
                   padding: EdgeInsets.symmetric(horizontal: 12.d),
-                  child: Text("cube_catch".l()),
-                  decoration: Components.badgeDecoration(color: Colors.white)),
+                  decoration: Components.badgeDecoration(color: Colors.white),
+                  child: Text("cube_catch".l())),
             ])));
   }
 
@@ -235,13 +236,13 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         left: 0,
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8.d),
+            decoration: Components.badgeDecoration(),
             child: Text(value == 0 ? "free_l".l() : "$value",
-                style: theme.textTheme.headline6),
-            decoration: Components.badgeDecoration()));
+                style: theme.textTheme.headline6)));
   }
 
   void _onGameEventHandler(GameEvent event, int value) async {
-    Widget? _widget;
+    Widget? myWidget;
     switch (event) {
       case GameEvent.boost:
         await _boost(Pref.boostNext);
@@ -250,11 +251,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         _confettiController!.play();
         return;
       case GameEvent.completeTutorial:
-        _widget = TutorialDialog(_confettiController!);
+        myWidget = TutorialDialog(_confettiController!);
         break;
       case GameEvent.lose:
         await Future.delayed(const Duration(seconds: 1));
-        _widget = ReviveDialog();
+        myWidget = ReviveDialog();
         break;
       case GameEvent.remove:
         _onRemoveBlock();
@@ -275,25 +276,26 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         return;
       case GameEvent.rewardBig:
         await Future.delayed(const Duration(milliseconds: 250));
-        _widget = BigBlockDialog(value, _confettiController!);
+        myWidget = BigBlockDialog(value, _confettiController!);
         break;
       case GameEvent.rewardCube:
-        _widget = CubeDialog();
+        myWidget = CubeDialog();
         break;
       case GameEvent.rewardPiggy:
-        _widget = PiggyDialog(value > 0);
+        myWidget = PiggyDialog(value > 0);
         break;
       case GameEvent.rewardRecord:
-        _widget = RecordDialog(_confettiController!);
+        myWidget = RecordDialog(_confettiController!);
         break;
       case GameEvent.score:
         setState(() {});
         return;
     }
 
-    if (_widget != null) {
+    if (myWidget != null) {
       MyGame.isPlaying = false;
-      var result = await Rout.push(context, _widget);
+    if (!mounted) return;
+      var result = await Rout.push(context, myWidget);
       if (event == GameEvent.lose) {
         if (result == null) {
           if (value > 0) {

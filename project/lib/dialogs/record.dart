@@ -22,7 +22,7 @@ class RecordDialog extends AbstractDialog {
           padding: EdgeInsets.fromLTRB(18.d, 0.d, 18.d, 18.d),
         );
   @override
-  _RecordDialogState createState() => _RecordDialogState();
+  createState() => _RecordDialogState();
 }
 
 class _RecordDialogState extends AbstractDialogState<RecordDialog> {

@@ -30,7 +30,7 @@ class Callout extends AbstractDialog {
           height: height,
         );
   @override
-  _CalloutState createState() => _CalloutState();
+  createState() => _CalloutState();
 }
 
 class _CalloutState extends AbstractDialogState<Callout> {
