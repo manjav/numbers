@@ -3,7 +3,7 @@ description: Drop Number 2048 is amazing number games ! So Merge number block & 
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.55+55
+version: 0.0.56+56
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
